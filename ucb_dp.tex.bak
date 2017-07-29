@@ -1,0 +1,285 @@
+\section{UCB-ALP Algorithm for Constrained Contextual Bandits} \label{sec:ucb_dp}
+%In Section~\ref{sec:oracle_solution}, we study the optimal and near-optimal algorithms in unit-cost systems with known statistics.
+Now we get back  to the constrained contextual bandits, where the agent does not have information of the expected rewards.
+%We still focus on unit-cost systems and assume the agent knows the context distribution.
+We assume the agent knows the context distribution as \cite{Badanidiyuru2014COLT}, which will be relaxed in Section~\ref{sec:unknown_dist}.
+%Thanks to its desirable properties discussed earlier, the ALP algorithm can be extended  to the  bandit settings when combined with estimation policies that can quickly provide correct ranking with high probability.
+Thanks to the desirable properties of ALP, the maxim of ``optimism under uncertainty'' \cite{Auer2007UCB4RL} is still applicable and ALP can be extended  to the  bandit settings when combined with estimation policies that can quickly provide correct ranking with high probability.
+Here, combining ALP with the UCB method \cite{Auer2002ML:UCB}, we propose a UCB-ALP algorithm for constrained contextual bandits.
+%We propose  UCB-based algorithms  that achieve  sublinear regrets by combining the well-known approach UCB1 \cite{Auer2002ML:UCB} with the DP or ALP algorithms proposed in Section~\ref{sec:oracle_solution}.
+
+
+\subsection{UCB: Notations and Property}
+Let $C_{j,k}(t)$ be the number of times that action  $k \in \mathcal{A}$ has been taken under context $j$ up to round $t$. If $C_{j,k}(t-1) > 0$, let $\bar{u}_{j,k}(t)$ be the empirical reward of action $k$ under context $j$, i.e.,
+$\bar{u}_{j,k}(t) = \frac{1}{C_{j,k}(t-1)}\sum_{t' = 1}^{t-1} {Y_{t'} \mathds{1}({X_{t'} = j, A_{t'} = k})}$,
+where $\mathds{1}(\cdot)$ is the indicator function.
+We define the UCB of $u_{j,k}$ at $t$ as
+$\hat{u}_{j,k}(t) = \bar{u}_{j,k}(t) + \sqrt{\frac{{\log t}}{2C_{j,k}(t-1)}}$ for $C_{j,k}(t-1) > 0$, and $\hat{u}_{j,k}(t) = 1$ for $C_{j,k}(t-1) = 0$. Furthermore, we define the UCB of the maximum expected reward under context $j$ as
+$
+\hat{u}_{j}^*(t) = \max_{k \in \mathcal{A}}\hat{u}_{j,k}(t)
+$.
+As suggested in \cite{Garivierkl2011COLT:KL-UCB}, we use a smaller coefficient in the exploration term $\sqrt{\frac{{\log t}}{2C_{j,k}(t-1)}}$ than the traditional UCB algorithm \cite{Auer2002ML:UCB} to achieve better performance.
+
+We present the following property of UCB that is important in regret analysis.
+\begin{lemma} \label{thm:context_action_pair_errorprob}
+For two context-action pairs, $(j, k)$ and $(j', k')$, if $u_{j,k} < u_{j',k'}$, then for any $t \leq T$,
+\begin{eqnarray}
+\mathbb{P}\{\hat{u}_{j,k}(t) \geq \hat{u}_{j',k'}(t)|C_{j,k}(t-1) \geq \ell_{j,k}\} \leq 2t^{-1},
+\end{eqnarray}
+where $\ell_{j,k} =  \frac{2\log T}{(u_{j',k'} - u_{j,k})^2}$.
+\end{lemma}
+
+Lemma~\ref{thm:context_action_pair_errorprob} states that for two context-action pairs, the ordering of their expected rewards can be identified correctly with high probability, as long as the suboptimal pair has been executed for sufficient times (on the order of $O(\log T)$). This property has been widely applied in the analysis of UCB-based algorithms \cite{Auer2002ML:UCB,Jiang2013CDC}, and its proof can be found in \cite{Jiang2013CDC,Golovin2009Lecture} with a minor modification on the coefficients.
+% The proof  can be found in \cite{Auer2002ML:UCB,Jiang2013CDC} and is omitted here.
+
+
+%The UCB-based approach is described in Alg.~\ref{alg:cc_ucb}.
+%
+%{For the two-context case, equation \eqref{eq:decide_pull_or_not} can be reduced as: pull the best arm if the current context is the better context (with higher $\hat{u}_{j}^*(t)$).}
+%
+%\red{For general cases with more than two contexts, we may further consider other approximation algorithms (e.g., approximate linear programming with adaptive resource constraint).}
+
+
+
+\subsection{UCB-ALP Algorithm}
+We propose a UCB-based adaptive linear programming (UCB-ALP) algorithm, as shown in Algorithm~\ref{alg:ucb_alp}.
+As indicated by the name, the UCB-ALP algorithm maintains UCB estimates of expected rewards for all context-action pairs
+and then implements the ALP algorithm based on these estimates. Note that the UCB estimates  $\hat{u}_j^*(t)$'s may be non-decreasing in $j$. Thus, the solution of $\mathcal{LP}_{\tau,b}$ based on $\hat{u}_j^*(t)$ depends on the actual ordering of $\hat{u}_j^*(t)$'s and may be different from Eq.~\eqref{eq:LP_solution}. We use $\hat{p}_{j}(\cdot)$ rather than $p_j(\cdot)$ to indicate this difference.
+%  These context ranking errors is one source of regret, as will be discussed later.
+
+\begin{algorithm}[htbp]
+\caption{UCB-ALP}
+\label{alg:ucb_alp}
+\begin{algorithmic}
+\STATE {\bfseries Input:} Time-horizon $T$, budget $B$, and context distribution $\pi_j$'s;
+
+\STATE {\bfseries Init:} $\tau = T$, $b = B$; \\
+~~~~~~$C_{j,k}(0) = 0$, $\bar{u}_{j,k}(0) = 0$, $\hat{u}_{j,k}(0) = 1$, $\forall j \in \mathcal{X}$ and $\forall k\in \mathcal{A}$; $\hat{u}^*_{j}(0) = 1$, $\forall j \in \mathcal{X}$;
+
+\FOR{$t = 1$ {\bfseries to} $T$}
+\STATE{$k^{*}_j(t) \gets \argmax_{k} \hat{u}_{j,k}(t), ~\forall j$;}
+\STATE{$\hat{u}_{j}^*(t) \gets \hat{u}_{j,k_{j}^*(t)}^*(t)$;}
+\IF{$b > 0$}
+\STATE{ Obtain the probabilities $\hat{p}_{j}(b/\tau)$'s by solving $\mathcal{LP}_{\tau,b}$ with $u_j^*$ replaced by $\hat{u}_j^*(t)$;}
+\STATE{ Take action $k^{*}_{X_t}(t)$ with probability $\hat{p}_{X_t}(b/\tau)$;}
+\ENDIF
+\STATE{Update $\tau$, $b$, $C_{j,k}(t)$, $\bar{u}_{j,k}(t)$,  and $\hat{u}_{j,k}(t)$.}
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\vspace{-0.2cm}
+
+
+\subsection{Regret of UCB-ALP}
+We study the regret of UCB-ALP in this section. Due to space limitations, we only present a sketch of the analysis. Specific representations of the regret bounds and proof details can be found in the supplementary material.
+
+Recall that $q_j = \sum_{j'=1}^j \pi_{j'}$ ($1 \leq j \leq J$) are the boundaries defined in Section~\ref{sec:oracle_solution}.
+We show that as the budget $B$ and the time-horizon $T$ grow to infinity in proportion, the proposed UCB-ALP algorithm achieves logarithmic regret except for the boundary cases.
+%We show that the UCB-ALP algorithm achieve logarithmic regret in the non-boundary cases (Theorem~\ref{thm:regret_ucb_alp_nonboundary}) and $O(\sqrt{T})$ regret for all possible $\rho$'s (Theorem~\ref{thm:regret_ucb_alp_all}).
+
+\begin{theorem}\label{thm:regret_ucb_alp}
+Given $\pi_j$'s, $u_{j,k}$'s and a fixed $\rho \in (0,1)$, the regret of UCB-ALP satisfies:\\
+1) (Non-boundary cases) if $\rho \neq q_j$ for any $j \in \{1, 2, \ldots, J-1\}$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(JK\log T\big)$.\\
+%\begin{eqnarray}
+%\limsup_{T\to \infty} \frac{R_{\rm{UCB-ALP}}(T, B)}{\log T} \leq \Theta^{\rm (c)}_{\rm nb} + \Theta^{\rm (a)}, \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (c)}_{\rm nb} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27}{2g_{\tilde{j}(\rho)+1} [\Delta^{(j)}_{\tilde{j}(\rho)+1,k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+2}^{J}\sum_{k=1}^K\frac{27}{2g_j [\Delta^{(\tilde{j}(\rho)+1)}_{j,k}]^2} + KJ \bigg\}$,
+%$\Theta^{\rm (a)} = \sum_{j=1}^J \sum_{k \neq k_j^*} \big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big)$
+%with $\bar{u}^* = \sum_{j = 1}^J \pi_j u_j^*$, and $v(\rho)$ defined in \eqref{eq:LP_single_step_value}.\\
+2) (Boundary cases) if $\rho = q_j$ for some $j \in \{ 1,2, \ldots, J-1\}$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(\sqrt{T} + JK\log T \big)$.
+%\begin{eqnarray}
+%R_{\text{UCB-ALP}}(T, B) \leq \Theta^{\rm (o)} \sqrt{T}  + [\Theta^{\rm (c)}_{\rm b} + \Theta^{\rm (a)}]\log T + O(1), \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (o)} =  2(u_1^* - u_J^*) \sqrt{\rho (1-\rho)}$,
+%%$\Theta^{\rm (a)}$ is defined as in Theorem~\ref{thm:regret_ucb_alp_nonboundary},
+%\begin{align}
+%\Theta^{\rm (c)}_{\rm b} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)-1}\sum_{k=1}^K\frac{27}{2g'_{\tilde{j}(\rho)} [\Delta^{(j)}_{\tilde{j}(\rho),k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+1}^{J}\sum_{k=1}^K\frac{27}{2g'_j [\Delta^{(\tilde{j}(\rho))}_{j,k}]^2} + KJ \bigg\},
+%\end{align}
+%and $g'_j = \min\big\{\pi_j, \frac{1}{2}(\rho - q_{\tilde{j}(\rho)-1}), \frac{1}{2}(q_{\tilde{j}(\rho)+1} -\rho)\big\}$.
+\end{theorem}
+Theorem~\ref{thm:regret_ucb_alp} differs from Theorem~\ref{thm:alp_regret} by an additional term $O(JK\log T)$. This term results from using UCB to learn the ordering of expected rewards. Under UCB, each of the $JK$ content-action pairs should be executed roughly $O(\log T)$ times to obtain  the correct ordering.
+For the non-boundary cases, UCB-ALP is order-optimal because obtaining the correct action ranking under each context will result in $O(\log T)$ regret \cite{Lai1985AAM}.
+Note that our results do not contradict  the lower bound in \cite{Badanidiyuru2014COLT} because we consider discrete contexts and actions, and focus on instance-dependent regret. For the boundary cases, we keep both the $\sqrt{T}$ and $\log T$ terms  because the constant in the $\log T$ term is typically much larger than that in the $\sqrt{T}$ term. Therefore, the $\log T$ term may dominate the regret particularly when the number of context-action pairs is large for medium $T$.
+It is still an open problem if one can achieve regret lower than $O(\sqrt{T})$ in these cases.
+
+%\proof{We divide the regret $R_{\rm{UCB-ALP}}(T, B)$  into two parts, the regret from context ranking errors and the regret from action ranking errors, and bound them respectively.  The difference is that when bounding the regret from context ranking errors, we need to consider both the context ranking errors and the fluctuation of the remaining budget. Details can be found in Appendix~\ref{app:proof_regret_ucb_alp_nonboundary} of the supplementary material.}
+
+
+
+{\it \textbf{Sketch of Proof:}} We bound the regret of UCB-ALP by comparing its performance  with the benchmark $\widehat{U}(T,B)$. The analysis of this bound is challenging due to the close interactions among different sources of regret and the randomness of context arrivals. We first partition the regret according to the sources and then bound each part of regret, respectively.
+
+\textbf{Step 1: Partition the regret.}
+By analyzing the implementation of UCB-ALP, we show that its regret is bounded as
+\vspace{-0.1cm}
+\begin{equation}
+R_{\rm {UCB-ALP}}(T, B) \leq R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) + R_{\rm {UCB-ALP}}^{({\rm c})}(T, B),\nonumber
+\end{equation}
+where the first part $R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) = \sum_{j=1}^J \sum_{k\neq k_j^*} (u_j^* - u_{j,k})\mathbb{E}[C_{j,k}(T)]$ is the regret from action ranking errors within a context, and the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau  = 1}^T \mathbb{E}\big[v(\rho) -\sum_{j = 1}^J \hat{p}_j(b_{\tau}/\tau) \pi_j u_j^*\big]$  is the regret from the fluctuations of $b_{\tau}$ and context ranking errors.
+%(because the probability $\hat{p}_j( b_{\tau}/\tau)$ depends on both the value of $b_\tau$ and the ordering of contexts based on their UCBs).
+
+\textbf{Step 2: Bound each part of regret. }
+For the first part, we can show that $R^{\rm (a)}_{\rm{UCB-ALP}}(T, B) = O(\log T)$ using similar techniques for
+traditional UCB methods \cite{Golovin2009Lecture}.
+The major challenge of regret analysis for UCB-ALP then lies in the evaluation of the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$.
+
+We first verify that the evolution of $b_\tau$ under UCB-ALP is similar to that under ALP and Lemma~\ref{thm:alp_to_hypergeo} still holds under UCB-ALP. With respect to context ranking errors, we note that unlike classic UCB methods,  not all context ranking errors contribute to the regret due to the threshold structure of ALP. Therefore, we carefully categorize the context ranking results based on their contributions. We briefly discuss the analysis for the non-boundary cases here. Recall that $\tilde{j}(\rho)$ is the threshold for the static LP problem $\mathcal{LP}_{T,B}$. We define the following events that capture all possible ranking results based on UCBs:
+\begin{align}
+&\mathcal{E}_{\rm rank,0}(t) = \big\{\forall j \leq \tilde{j}(\rho), \hat{u}^*_j(t) > \hat{u}^*_{\tilde{j}(\rho) +1}(t); \forall j > \tilde{j}(\rho) +1,\hat{u}^*_j(t) < \hat{u}^*_{\tilde{j}(\rho) +1}(t)\big\},\nonumber\\
+&\mathcal{E}_{\rm rank,1}(t)  = \big\{\exists j \leq \tilde{j}(\rho), \hat{u}^*_j(t) \leq \hat{u}^*_{\tilde{j}(\rho) +1}(t); \forall j > \tilde{j}(\rho) +1,\hat{u}^*_j(t) < \hat{u}^*_{\tilde{j}(\rho) +1}(t)\big\},\nonumber\\
+&\mathcal{E}_{\rm rank,2}(t)  = \big\{\exists j > \tilde{j}(\rho) +1,\hat{u}^*_j(t) \geq \hat{u}^*_{\tilde{j}(\rho) +1}(t)\big\}. \nonumber
+\end{align}
+The first event  $\mathcal{E}_{\rm rank,0}(t)$ indicates a roughly correct context ranking, because under $\mathcal{E}_{\rm rank,0}(t)$ UCB-ALP obtains a correct solution for $\mathcal{LP}_{\tau, b_{\tau}}$ if  $b_{\tau}/\tau \in [q_{\tilde{j}(\rho)}, q_{\tilde{j}(\rho) + 1}]$. The last two events $\mathcal{E}_{\rm rank,s}(t)$, $s = 1, 2$, represent two types of context ranking errors: $\mathcal{E}_{\rm rank,1}(t)$ corresponds to ``certain contexts with above-threshold reward having lower UCB'', while $\mathcal{E}_{\rm rank,2}(t)$ corresponds to ``certain contexts with below-threshold reward having higher UCB''.
+Let $T^{(s)} = \sum_{t = 1}^T \mathds{1}(\mathcal{E}_{{\rm rank}, s}(t))$ for $0 \leq s \leq 2$.
+%The following lemma bounds the number of these ranking errors.
+%\begin{lemma}\label{thm:error_ranking}
+%Given $\pi_j$'s, $u_{j,k}$'s and a fixed $\rho \in [0,1]$, $\rho  \neq q_j$ ($1 \leq j \leq J-1$), under the UCB-ALP algorithm, we have
+%$\mathbb{E}[T^{(1)}] = O(JK\log T)$ and $\mathbb{E}[T^{(2)}] = O(JK\log T)$.
+%\end{lemma}
+We can show that the expected number of context ranking errors satisfies $\mathbb{E}[T^{(s)}] = O(JK\log T)$, $s = 1,2$, implying that $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = O(JK\log T)$. Summarizing the two parts, we have $R_{\rm {UCB-ALP}}(T, B) = O(JK\log T)$ for the non-boundary cases. The regret for the boundary cases can be bounded using similar arguments.
+
+{\textbf{Key Insights from UCB-ALP:}} Constrained contextual bandits involve complicated interactions between information acquisition and decision making. UCB-ALP alleviates these interactions by approximating the oracle with ALP for decision making. This approximation  achieves near-optimal performance while tolerating certain estimation errors of system statistics, and thus enables the combination with estimation methods such as UCB in unknown statistics cases. Moreover, the adaptation property of UCB-ALP guarantees the concentration property of the system status, e.g., $b_\tau/\tau$. This allows us to separately study the impact of action or context ranking errors and conduct rigorous analysis of regret. These insights can be applied in algorithm design and analysis for constrained contextual bandits under more general settings.
+
+%Therefore, as we will see in the experimental results, the $\log T$ term may dominate the regret particularly when the number of context-action pair is large.
+
+%\subsection{{Discussion about the multi-context case}}
+%
+%From Fig.~\ref{fig:regret_alp}, we can see that in the perfect knowledge case, ALP achieves a logarithmic regret except some corner cases. If this is true, we should be able to show that under the case without priori knowledge, ALP combining with UCB will achieve logarithmic regret in most cases.
+%
+%The reason that the conjecture may be true is: under the ALP algorithm, the ratio of $b/\tau$ fluctuates along certain value (Fig.~\ref{fig:RemainResource_multicontext}), where the decision making by ALP is close to the optimal decision (or the reward is close to that achieved by DP; Fig.~\ref{fig:Threshold_approx}). Not sure about the specific analysis, may be more difficult when extending to the case with different cost since the optimal algorithm may be more complex.
+%
+%
+%\begin{figure}[thbp]
+%    \begin{center}
+%        \subfigure[\text{In the middle ($B/T = 0.75$)}]{
+%        \includegraphics[width = 0.6\linewidth]{fig/RegretOfAdpAver_Medium}
+%        \label{fig:RegretOfAdpAver_Medium}}
+%        \subfigure[\text{Near the boundary ($B/T = 0.63$)}]{
+%        \includegraphics[width = 0.6\linewidth]{fig/RegretOfAdpAver_NearBoundary}
+%        \label{fig:RegretOfAdpAver_NearBoundary}}
+%        \subfigure[\text{On the boundary ($B/T = 0.65$)}]{
+%        \includegraphics[width = 0.6\linewidth]{fig/RegretOfAdpAver_boundary}
+%        \label{fig:RegretOfAdpAver_boundary}}
+%    \end{center}
+%    \caption{Regret of ALP ( $\bs{\pi} = [0.1, 0.25, 0.25, 0.4]$; assume perfect knowledge about the reward statistic; Compared with the DP algorithm; ``AdpAver'' represents ``ALP''; ``Hybrid algorithm'' is another approximation algorithm, when $b$ or $\tau$ is smaller than a threshold, it uses the DP algorithm, when one of them is greater than the threshold, it scales $b$ and $\tau$ and uses the decision for the scaled parameters).} \label{fig:regret_alp}
+%\vspace{-0.2cm}
+%\end{figure}
+%
+%\begin{figure}[thbp]
+%\begin{center}
+%        {\includegraphics[angle = 0,width = 0.75\linewidth]{fig/RemainResource_multicontext}}
+%\end{center}
+%\vspace{-0.2cm}
+%\caption{Evolution of remaining budget.}
+%\label{fig:RemainResource_multicontext}
+%\end{figure}
+%
+%\begin{figure}[thbp]
+%\begin{center}
+%        {\includegraphics[angle = 0,width = 0.75\linewidth]{fig/Threshold_approx}}
+%\end{center}
+%\vspace{-0.2cm}
+%\caption{Threshold based on DP and LP approximation.}
+%\label{fig:Threshold_approx}
+%\end{figure}
+%
+%\begin{figure}[thbp]
+%\begin{center}
+%        {\includegraphics[angle = 0,width = 0.75\linewidth]{fig/ThresholdVersusRemainingTime}}
+%\end{center}
+%\vspace{-0.2cm}
+%\caption{Single-step gap between DP and ALP approximation {(For a fixed $\rho = b/\tau$, the DP threshold $V_{\tau}(b+1) - V_{\tau}(b)$ converges to the threshold obtained by LP approximation, with convergence rate $O(1/\tau)$)}.}
+%\label{fig:ThresholdVersusRemainingTime}
+%\end{figure}
+
+%\textbf{Discussion on the proof:} consider the simple case: two-context with single arm.
+%
+%
+%Note that both CC-UCB and the oracle solution will use all the budget, i.e., $C_{1}(T) + C_{2}(T) = C_{1}^*(T) + C_{2}^*(T) = B$ (we use ``*'' to represent the statistics related to the oracle solution.
+%The regret under CC-UCB can be calculated as {(It is difficult to obtain the closed-form for $\mathbb{E}[C_{1}^*(T)]$ or $\mathbb{E}[C_{2}^*(T)]$, so we just put it in the expressions; using the linear approximation, $\mathbb{E}[C_{2}^*(T)] = T\min(\rho, \pi_2)$ is not accurate enough to obtain the logarithmal regret, but probably $O(\sqrt{T})$.)}
+%\begin{eqnarray}
+%\mathbb{E}[Regret(T)] = (u_2^* - u_1^*)\mathbb{E}[C_{2}^*(T) - C_{2}(T)] =  (u_2^* - u_1^*)\mathbb{E}[C_{1}(T) - C_{1}^*(T)].
+%\end{eqnarray}
+%
+%We would like to show that $\mathbb{E}[C_{1}(T) - C_{1}^*(T)] = O(\log T)$. As shown in Fig.~\ref{fig:evol_remainres}, let $T^*$ be the first round that the remaining budget $b$ = the remaining time $\tau$ under the oracle solution; similarly, let $T^\sharp$ be the first round that $b = \tau$ under CC-UCB. Then,
+%\begin{eqnarray}
+%\mathbb{E}[C_{1}(T) - C_{1}^*(T)] &=& \mathbb{E}\big[\sum_{t = 1}^T (I_1(t) - I^*_1(t))\big]\nonumber\\
+%&=  & \mathbb{E}\big[\sum_{t = 1}^{T^\sharp} I_1(t) + [T^* - T^\sharp]^+\big],
+%\end{eqnarray}
+%where $I_1(t) = 1$ if CC-UCB pulls under context 1, and  $I_1^*(t) = 1$ if the oracle solution pulls under context 1. The second equality is because:  the oracle solution only pulls under context 2 before $T^*$, and CC-UCB will pull under any context after $T^\sharp$.
+%
+%Similar to the analysis of traditional UCB, it is easy to show that $\mathbb{E}\big[\sum_{t = 1}^{T^\sharp} I_1(t)\big] = O(\log T)$.
+%
+%
+%{1) But I don't know how to show that $[T^* - T^\sharp]^+ = O(\log T)$. The difficulty due to the context-based decision: unlike traditional MAB or budgeted-MAB without context, there are always certain arms will be pulled in each time-unit. \\However, in constrained contextual bandits, the algorithm may not take an action if the current context is not expected to obtain high reward. \\In this case, even we can show that the number of pulling under sub-optimal context is $O(\log T)$, it is still possible that  the best context may still be missed (and these opportunities will be given to the sub-optimal context after $T^\sharp$.)}
+%
+%{2) Comparison to the linear approximation. In \cite{Badanidiyuru2014COLT}, they take the linear perfect value as the baseline. The author told me that is instance-independent, so the lower bound of the regret is $O(\sqrt{KT})$ (though not proved). However, I suspect that using stationary algorithm, and compared with the linear perfect solution, it will never get a $O(\log T)$ regret. \\See the following two-context-single-arm example: $\rho = B/T$, the probability of the better context is $\pi_2 = \rho$. Then the linear perfect solution will be $u_2^* \rho T$ (For context 2, pull the arm; otherwise, don't pull the arm; the objective value is the limit of the value as $T$ goes to infinity). However, compared to this value, the oracle solution will still achieve a $O(\sqrt{T})$ regret (though it does eventually achieve this limit). This is because: under the oracle algorithm, the number of pulls under the worse context is $\mathbb{E}[N_1 - (T-B)]^+ = O(\sqrt{T}$, while is 0 under the linear perfect solution. }
+%
+%{3) Without budget constraints, our problem is just a special case of that in Auer's paper on reinforce learning \cite{Auer2007UCB4RL}. However, when considering constraint, the stationary algorithm and related analysis probably do not work in our case.  }
+%
+%
+%
+%\subsection{Preliminary Simulation Results}
+%
+%\textbf{Simulation settings:} 3-context, 2-arm
+%
+%$\rho = 0.6$; $\bs{\pi} = (0.5, 0.3, 0.2)$, $u_1(:) = (1/6, 2/6)$, $u_2(:) = (2/6, 4/6)$, $u_3(:) = (3/6, 6/6)$.
+%
+%\textbf{Observations:}
+%
+%1) UCB is good for choosing the better arm for a given context (the arms under the same context will have similar UCB, and the sub-optimal arms will be only pulled logarithmical times.)
+%
+%2) The UCB of different contexts will get separated if one of them is identified to be the best one, and sufficient resource is allocated to exploit it. Others may still be close, but this will not affect the decisions (Note that the threshold is decreasing, it is not the time to exploit these contexts yet; spending logarithmical resource to explore them is enough).
+%
+%{What's the impact of the expected reward on the decision? From the averaging perspective (serve the contexts with $j > j_{\rm th}$, where $j_{\rm th} = \min\{j: \sum_{j'}^{J} \pi_{j'} \leq \rho\}$, and serve the context $j_{\rm th}$ with the remaining resource), only the relative value matters. However, if we turn to the value function, the absolute value may also have certain impact. }
+%
+%\begin{figure}[thbp]
+%    \begin{center}
+%        \subfigure[\text{Evolution of UCB}]{
+%        \includegraphics[]{fig/evol_ucb_3context}
+%        \label{fig:evol_ucb_3context}}
+%        \subfigure[\text{Number of pulls}]{
+%        \includegraphics[]{fig/evol_pullnum_3context}
+%        \label{fig:evol_pullnum_3context}}
+%    \end{center}
+%    \caption{$\rho = 0.6$.} \label{fig:rho_0p6}
+%\vspace{-0.2cm}
+%\end{figure}
+%
+%\begin{figure}[thbp]
+%    \begin{center}
+%        \subfigure[\text{Evolution of UCB}]{
+%        \includegraphics[]{fig/evol_ucb_3context_rho0p4}
+%        \label{fig:evol_ucb_3context_rho0p4}}
+%        \subfigure[\text{Number of pulls}]{
+%        \includegraphics[]{fig/evol_pullnum_3context_rho0p4}
+%        \label{fig:evol_pullnum_3context_rho0p4}}
+%    \end{center}
+%    \caption{$\rho = 0.4$.} \label{fig:rho_0p4}
+%\vspace{-0.2cm}
+%\end{figure}
+%
+%
+%
+%\begin{figure}[thbp]
+%\begin{center}
+%        {\includegraphics[angle = 0,width = 0.75\linewidth]{fig/RemainResource_TwoContext}}
+%\end{center}
+%\vspace{-0.2cm}
+%\caption{Evolution of remaining budget and remaining time in real system.}
+%\label{fig:RemainResource_TwoContext}
+%\end{figure}
+%
+%\begin{figure}[thbp]
+%    \begin{center}
+%        \subfigure[\text{Regret ($\rho = 0.75$)}]{
+%        \includegraphics[]{fig/RegretOfAdpAver_Medium}
+%        \label{fig:RegretOfAdpAver_Medium}}
+%        \subfigure[\text{Regret ($\rho = 0.6$)}]{
+%        \includegraphics[]{fig/RegretOfAdpAver_boundary}
+%        \label{fig:RegretOfAdpAver_boundary}}
+%    \end{center}
+%    \caption{$\pi_1 = 0.4, \pi_2 = 0.6$.} \label{fig:}
+%\vspace{-0.2cm}
+%\end{figure}

@@ -1,0 +1,53 @@
+%APPENDICES are optional
+\clearpage
+\newpage
+\pagebreak
+%\balancecolumns
+\title{Algorithms with Logarithmic or Sublinear Regret for\\
+ Constrained Contextual Bandits}
+
+
+\author{
+Huasen Wu \\
+University of California at Davis\\
+\texttt{hswu@ucdavis.edu}
+\And
+R.~Srikant \\
+University of Illinois at Urbana-Champaign \\
+\texttt{rsrikant@illinois.edu}
+\And
+Xin Liu \\
+University of California at Davis\\
+\texttt{liu@cs.ucdavis.edu}
+\And
+Chong Jiang \\
+University of Illinois at Urbana-Champaign\\
+\texttt{jiang17@illinois.edu}
+}
+
+
+\appendix
+%Appendix A
+\section*{Appendices}
+
+%This note contains supplementary materials to \emph{Algorithms with Logarithmic or Sublinear Regret for  Constrained Contextual Bandits}.
+
+%
+
+\input{app_upper_bound}
+
+\input{app_alp_analysis}
+
+
+\input{app_ucb_analysis}
+
+\input{app_two_context}
+
+\input{app_unknown_dist}
+
+\input{app_het_cost}
+
+\input{sim_results}
+
+%\input{app_regret_newproof}
+

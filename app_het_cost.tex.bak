@@ -1,0 +1,338 @@
+\section{Constrained Contextual Bandits with Heterogeneous Costs} \label{app:het_cost}
+
+%%%%%%%%%%
+In this section, we consider the case where the cost for each action $k$ under context $j$ is fixed at $c_{j,k}$, which may be different for different $j$ and $k$. We discuss how to use the insight from unit-cost systems in  heterogeneous-cost systems.
+
+\subsection{Approximation of the Oracle Algorithm}
+Similar to unit-cost systems, we first study the case with known statistics. We generalize the upper bound and the ALP algorithm in Section~\ref{sec:oracle_solution} to general-cost systems.
+
+\subsubsection{Upper Bound}
+ With known statistics, the agent knows the context distribution $\pi_j$'s, the costs $c_{j,k}$'s, and the expected rewards $u_{j,k}$'s.
+In heterogeneous-cost systems, the quality of a context-action pair $(j,k)$ is roughly captured by the normalized reward, denoted by $\eta_{j,k} = u_{j,k}/c_{j,k}$.
+However, unlike the unit-cost case, the agent \emph{cannot} only focus on the ``best'' action with highest normalized reward, i.e., $k_j^* = \argmax_k \eta_{j,k}$, when making a decision under context $j$. This is because there may exist another action $k$ such that $\eta_{j,k} < \eta_{j,k_{j}^*}$, but $u_{j,k} > u_{j,k_j^*}$ (and of course, $c_{j,k} > c_{j, k_j^*}$). If there is sufficient budget allocated for context $j$, then the agent may take action $k$ to maximize the expected reward.
+Therefore, the agent needs to consider all actions under all contexts. Let $p_{j,k}$ be the probability that action $k$ is taken under context $j$. We define the following LP problem:
+%\begin{eqnarray}
+%(\widetilde{\mathcal{LP}}_{T,B})~~\text{maximize} && \sum_{j = 1}^J \pi_j \sum_{k = 1}^K p_{j,k} u_{j,k},  \label{eq:LP_general_obj} \\
+%\text{subject to} && \sum_{j = 1}^J \pi_j \sum_{k = 1}^K p_{j,k} c_{j,k} \leq B/T, \label{eq:LP_general_cost_const}\\
+%&&\sum_{k = 1}^K p_{j,k} \leq 1, ~\forall j, \label{eq:_LP_intra_cont_const} \\
+%&& p_{j,k} \in [0,1].\nonumber
+%\end{eqnarray}
+\begin{align}
+({\mathcal{LP}}'_{T,B})~~\text{maximize} &~~ \sum_{j = 1}^J \pi_j \sum_{k = 1}^K p_{j,k} u_{j,k},  \label{eq:LP_general_obj} \\
+\text{subject to} &~~ \sum_{j = 1}^J \pi_j \sum_{k = 1}^K p_{j,k} c_{j,k} \leq B/T, \label{eq:LP_general_cost_const}\\
+&~~\sum_{k = 1}^K p_{j,k} \leq 1, ~\forall j, \label{eq:LP_intra_cont_const} \\
+&~~ p_{j,k} \in [0,1].\nonumber
+\end{align}
+The above LP problem ${\mathcal{LP}}'_{T,B}$ can be solved efficiently by optimization tools. Let $\hat{v}(\rho)$ be the maximum value of ${\mathcal{LP}}'_{T,B}$.
+Similar to Lemma~\ref{thm:upper_bound}, we can show that $T\hat{v}(\rho)$ is an upper bound of the expected total reward, i.e., $T\hat{v}(\rho) \geq U^*(T,B)$.
+
+To obtain insight from the solution of ${\mathcal{LP}}'_{T,B}$, we derive an explicit representation for the solution by analyzing the structure of ${\mathcal{LP}}'_{T,B}$. Note that there are two types of (non-trivial) constraints in ${\mathcal{LP}}'_{T,B}$, one is the ``inter-context'' budget constraint \eqref{eq:LP_general_cost_const}, the other is the ``intra-context'' constraint \eqref{eq:LP_intra_cont_const}. These constraints can be decoupled by first allocating budget for each context, and then solving a subproblem with the allocated budget constraint for each context. Specifically, let $\rho_j$ be the budget allocated to context $j$ when it arrives, then ${\mathcal{LP}}'_{T,B}$ can be decomposed as follows:
+\begin{align}
+~~\text{maximize} &~~ \sum_{j = 1}^J \pi_j \hat{v}_j(\rho_j),  \nonumber\\
+\text{subject to} &~~ \sum_{j = 1}^J \pi_j \rho_j \leq  B/T,  \nonumber
+\end{align}
+where
+\begin{align}
+(\mathcal{SP}_j)~~v_j(\rho_j) = \text{maximize} &~ \sum_{k = 1}^K p_{j,k} u_{j,k},  \\
+\text{subject to} &~~ \sum_{k = 1}^K p_{j,k} c_{j,k} \leq \rho_j, \\
+&~~\sum_{k = 1}^K p_{j,k} \leq 1,   \\
+&~~ p_{j,k} \in [0,1].\nonumber
+\end{align}
+Next, by analyzing sub-problem $\mathcal{SP}_j$, we show that some actions can be deleted without affecting the performance, i.e., the probability is 0 in the optimal solution.
+\begin{lemma} \label{thm:intra_context_LP}
+For any given $\rho_j \geq 0$, there exists an optimal solution of $\mathcal{SP}_j$, i.e.,  $\boldsymbol{p}^*_j = (p_{j, 1}, p_{j, 2}, \ldots, p_{j,K})$, satisfies:\\
+(1) For $k_1$, if there exists another action $k_2$, such that $\eta_{j, k_1} \leq \eta_{j, k_2}$ and $u_{k_1} \leq u_{k_2}$, then $p^*_{j, k_1} = 0$;\\
+(2) For $k_1$, if there exists two actions $k_2$ and $k_3$, such that $\eta_{j, k_2} \leq \eta_{j, k_1} \leq \eta_{j, k_3}$, $u_{j,k_2}\geq u_{j,k_1} \geq u_{j,k_3}$, and $\frac{u_{j, k_1} - u_{j,k_3}}{c_{j, k_1} - c_{j,k_3}} \leq \frac{u_{j, k_2} - u_{j,k_3}}{c_{j, k_2} - c_{j,k_3}}$, then $p^*_{j, k_1} = 0$.
+\end{lemma}
+Intuitively, the first part of Lemma~\ref{thm:intra_context_LP} shows that if an action has small normalized and original expected reward, then it can be removed. The second part of Lemma~\ref{thm:intra_context_LP} shows that if an action has small normalized expected reward and medium original expected reward, but the increasing rate is smaller than another action with larger expected reward, then it can also be removed.
+\begin{proof}
+The key idea of this proof is that, if the conditions is satisfied, and there is a feasible solution $\boldsymbol{p}_j = (p_{j,1}, p_{j,2}, \ldots, p_{j,K})$ such that $p_{j,k_1} > 0$, then we can construct another feasible solution $\boldsymbol{p}'_j$ such that $p'_{j,k_1} = 0$, without reducing the objective value $v_j(\rho_j)$.
+
+We first prove part (1). Under the conditions of part $(1)$, if $\boldsymbol{p}_j$ is a feasible solution of $\mathcal{SP}_j$ with $p_{j,k_1} > 0$, then consider another solution $\boldsymbol{p}'_j$, where $p'_{j,k} = p_{j,k}$ for $k \neq k_1$ or $k \neq k_2$, $p'_{j, k_1} = 0$, and $p'_{j, k_2} = p_{j,k_2} + p_{j,k_1} \min\{\frac{c_{j,k_1}}{c_{j,k_2}}, 1\}$. Then, we can verify that $\boldsymbol{p}'_j$ is a feasible solution of $(\mathcal{SP}_j)$, and the objective value under $\boldsymbol{p}'_j$ is no less than that under $\boldsymbol{p}_j$.
+
+For the second part, if the conditions are satisfied and $p_{j,k_1} > 0$, then we construct a new solution $\boldsymbol{p}'_j$ by re-allocating the budget consumed by action $k_1$ to actions $k_2$ and $k_3$, without violating the constraints. Specifically, we set the probability the same as the original solution for other actions, i.e., $p'_{j,k} = p_{j,k}$ for $k \notin \{k_1, k_2, k_3\}$, and set $p'_{j,k_1} = 0$ for action $k_1$. For $k_2$ and $k_3$, to maximize the objective function, we would like to allocate as much budget as possible to $k_3$ unless there is remaining budget. Therefore, we set
+$p'_{j,k_2} = p_{j,k_2}$ and $p'_{j,k_3} = p_{j,k_3} + \frac{p_{j,k_1}c_{j,k_1}}{c_{j,k_3}}$, if $\sum_{k \neq k_1} p_{j,k} + \frac{p_{j,k_1}c_{j,k_1}}{c_{j,k_3}} \leq 1$; or,
+$p'_{j,k_2} = p_{j,k_2} + \frac{p_{j,k_1}c_{j,k_1} - (1 - \sum_{k\neq k_1}p_{j,k})c_{j,k_3}}{c_{j,k_2} - c_{j,k_3}}$ and $p'_{j,k_3} = p_{j,k_3} + \frac{(1 - \sum_{k\neq k_1}p_{j,k})c_{j,k_2} - p_{j,k_1}c_{j,k_1}}{c_{j,k_2} - c_{j,k_3}}$, if $\sum_{k \neq k_1} p_{j,k} + \frac{p_{j,k_1}c_{j,k_1}}{c_{j,k_3}} > 1$. We can verify that $\boldsymbol{p}_j$ satisfies the constraints of $(\mathcal{SP}_j)$ but the objective value is no less than that under $\boldsymbol{p}_j$.
+\end{proof}
+
+With Lemma~\ref{thm:intra_context_LP}, the agent can ignore some actions that will obviously be allocated zero probability under a given context $j$. We call the set of the remaining actions as \emph{candidate set} for context $j$, denoted as $\mathcal{A}_j$. We propose an algorithm to construct the candidate action set for context $j$, as shown in Algorithm~\ref{alg:find_candidates}.
+
+\begin{algorithm}[htbp]
+\caption{Find Candidate Set for Context $j$}
+\label{alg:find_candidates}
+\begin{algorithmic}
+\STATE{\bfseries Input:} $c_{j,k}$'s, $u_{j,k}$'s, for all $1 \leq k \leq K$;\\
+\STATE{\bfseries Output:} $\mathcal{A}_j$;\\
+\STATE{\bfseries Init:} $\mathcal{A}_j = \{1,2,\ldots, K\}$ ;\\
+\STATE{Calculate normalized rewards: $\eta_{j,k} = u_{j,k}/c_{j,k}$}; \\
+\STATE{Sort actions in descending order of their normalized rewards:}
+ \begin{equation}
+ \eta_{j,k_{1}} \geq \eta_{j,k_{2}} \geq  \ldots \geq \eta_{j,k_{K}}. \nonumber
+ \end{equation}
+\FOR{$a  = 2$ {\bfseries to} $K$}
+\IF{$\exists a' < a$ such that $u_{j,k_a} \leq u_{j,{k_{a'}}}$}
+\STATE{$\mathcal{A}_j = \mathcal{A}_j \backslash \{k_{a}\}$;}
+\ENDIF
+\ENDFOR
+\STATE{$a = 1$;}
+\WHILE{$a \leq K - 1$}
+\STATE{Find the action with highest increasing rate:
+\begin{equation}
+a^* = \argmax_{a': a' > a, k_{a'} \in \mathcal{A}_j} \frac{u_{j, k_{a'}} - u_{j, k_{a}}}{c_{j, k_{a'}} - c_{j, k_{a}}}. \nonumber
+\end{equation}}
+\STATE{Remove the actions in between:
+\begin{equation}
+\mathcal{A}_j = \mathcal{A}_j \backslash \{k_{a'}: a < a' < a^*\}.\nonumber
+\end{equation} }
+\STATE{Move to the next candidate action: $a = a^*$; }
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+For context $j$, assume that the candidate set $\mathcal{A}_j = \{k_{j,1}, k_{j,2}, \ldots, k_{j, K_j}\}$ has been sorted in descending order of their normalized rewards, i.e., $\eta_{j,k_{j,1}} \geq \eta_{j,k_{j,2}} \geq \ldots \geq \eta_{j, k_{j, K_j}}$. From Algorithm~\ref{alg:find_candidates}, we know that $u_{j, k_{j,1}} < u_{j, k_{j,2}} < \ldots < u_{j, k_{j, K_j}}$, and $ c_{j, k_{j,1}} < c_{j, k_{j,2}} < \ldots < c_{j, k_{j, K_j}}$.
+
+The agent now only needs to consider the actions in the candidate set $\mathcal{A}_j$. To decouple the ``intra-context'' constraint \eqref{eq:LP_intra_cont_const}, we introduce the following transformation:
+\begin{eqnarray}
+p_{j, k_{j,a}} =
+\begin{cases}
+\tilde{p}_{j, k_{j,a}} - \tilde{p}_{j, k_{j, a+1}},&\text{if $ 1 \leq a \leq K_j - 1$},\\
+\tilde{p}_{j, k_{j, K_j}}, &\text{if $a = K_j$},
+\end{cases}\nonumber
+\end{eqnarray}
+where $\tilde{p}_{j, k_{j,a}} \in [0, 1]$, and $\tilde{p}_{j, k_{j,a}} \geq \tilde{p}_{j, k_{j, a+1}}$ for $ 1 \leq a \leq K_j - 1$.
+Substituting the transformations into $({\mathcal{SP}}_j)$ and reorganize it as
+\begin{align}
+(\widetilde{\mathcal{SP}}_j)~~ \text{maximize} &~ \sum_{a = 1}^{K_j} \tilde{p}_{j,k_{j,a}} \tilde{u}_{j,k_{j,a}}, \nonumber \\
+\text{subject to} &~~ \sum_{a = 1}^{K_j} \tilde{p}_{j,k_{j,a}} \tilde{c}_{j,k_{j, a}} \leq \rho_j, \nonumber \\
+&~~ \tilde{p}_{j, k_{j,a}} \geq \tilde{p}_{j, k_{j, a+1}}, ~1 \leq a \leq K_j - 1, \label{eq:virtual_lp_ineff}\\
+&~~ \tilde{p}_{j,k_{j,a}} \in [0,1], ~\forall a,\nonumber
+\end{align}
+where
+\begin{eqnarray}
+\tilde{u}_{j,k_{j,a}} =
+\begin{cases}
+u_{j, k_{j,1}},&\text{if $a = 1$},\\
+u_{j, k_{j,a}} - u_{j, k_{j, a-1}}, &\text{if $2 \leq a \leq K_j$},
+\end{cases}\nonumber
+\end{eqnarray}
+\begin{eqnarray}
+\tilde{c}_{j,k_{j, a}} =
+\begin{cases}
+c_{j, k_{j, 1}},&\text{if $a = 1$},\\
+c_{j, k_{j, a}} - c_{j, k_{j, a-1}}, &\text{if $2 \leq a \leq K_j$}.
+\end{cases}\nonumber
+\end{eqnarray}
+
+Next, we show that the constraint \eqref{eq:virtual_lp_ineff} can indeed be removed.
+For each $k_{j,a}$, we can view $\tilde{c}_{j,k_{j,a}}$ and $\tilde{u}_{j,k_{j,a}}$ as the cost and expected reward of a virtual action.
+Let $\tilde{\eta}_{j,k_{j, a}} = \tilde{u}_{j,k_{j,a}}/\tilde{c}_{j, k_{j, a}}$ be the normalized expected reward of virtual action $k_{j,a}$.
+For $a = 1$, using $\frac{u_{j, k_{j,1}}}{c_{j, k_{j,1}}} \geq \frac{u_{j, k_{j,2}}}{c_{j, k_{j,2}}}$, we can show that $\tilde{\eta}_{j,k_{j,1}} \geq \tilde{\eta}_{j,k_{j,2}}$. For $2 \leq K_j -1$,  using $\frac{u_{j, k_{j,a}} - u_{j, k_{j,a-1}}}{c_{j, k_{j,a}} - c_{j, k_{j,a-1}}} \geq \frac{u_{j, k_{j,a+1}} - u_{j, k_{j,a-1}}}{c_{j, k_{j,a+1}} - c_{j, k_{j,a-1}}}$, we can show that $\tilde{\eta}_{j,k_{j,1}} \geq \tilde{\eta}_{j,k_{j,2}}$. In other words, we can verify that $\tilde{\eta}_{j,k_{j,1}} \geq \tilde{\eta}_{j,k_{j,2}} \geq \ldots \geq \tilde{\eta}_{j, k_{j,K_j}}$. Thus, without constraint \eqref{eq:virtual_lp_ineff},  there is still an optimal solution $\tilde{\boldsymbol{p}}^*_j = [\tilde{p}^*_{j, k_1}, \tilde{p}^*_{j, k_2}, \ldots, \tilde{p}^*_{j, k_{K_j}}]$, such that
+$\tilde{p}^*_{j, k_1} \geq \tilde{p}^*_{j, k_2} \geq  \ldots \geq \tilde{p}^*_{j, k_{K_j}}$. Hence, we can remove the constraint \eqref{eq:virtual_lp_ineff}, and thus decouple the probability constraint under a context.
+
+With the above transformations, we can thus rewrite the global LP problem
+\begin{align}
+(\widetilde{{\mathcal{LP}}}'_{T,B})~~\text{maximize} &~~ \sum_{j = 1}^J \sum_{a = 1}^{K_j}\pi_j \tilde{p}_{j,k_{j,a}} \tilde{u}_{j,k_{j,a}}, \nonumber \\
+\text{subject to} &~~ \sum_{j = 1}^J \sum_{a = 1}^{K_j}\pi_j \tilde{p}_{j,k_{j,a}} \tilde{c}_{j,k_{j,a}} \leq B/T, \nonumber \\
+&~~ \tilde{p}_{j,k_{j,a}} \in [0,1], ~\forall j, ~\text{and $1\leq a \leq K_j$}.\nonumber
+\end{align}
+The solution of $\widetilde{{\mathcal{LP}}}'_{T,B}$ follows a threshold structure.
+We sort all context-(virtual-)action pairs $(j,k_a)$ in descending order of their normalized expected reward. Let $j^{(i)}, k^{(i)}$ be the context index and action index of the $i$-th pair, respectively. Namely, $\tilde{\eta}_{j^{(1)}, k^{(1)}} \geq \tilde{\eta}_{j^{(2)}, k^{(2)}} \geq \ldots \geq \tilde{\eta}_{j^{(M)}, k^{(M)}}$, where $M = \sum_{j=1}^J K_j$ is the total number of candidate actions for all contexts.
+Define a threshold corresponding to $\rho = B/T$,
+\begin{eqnarray} %\label{eq:context_threhold}
+\tilde{i}(\rho) = \max\{i: \sum_{i' = 1}^i\pi_{j^{(i')}} \tilde{c}_{j^{(i')},k^{(i')}} \leq \rho\},
+\end{eqnarray}
+where $\rho = B/T$ is the average budget.
+We can verify that the following solution is optimal for $\widetilde{{\mathcal{LP}}}'_{T,B}$:
+\begin{eqnarray}
+\tilde{p}_{j^{(i)}, k^{(i)}}(\rho) =
+\begin{cases}
+1, &\text{if $1 \leq i \leq  \tilde{i}(\rho)$},\\
+\frac{\rho - \sum_{i' = 1}^{\tilde{i}(\rho)}\pi_{j^{(i')}} \tilde{c}_{j^{(i')},k^{(i')}}}{\pi_{j^{(\tilde{i}(\rho)+1)}} \tilde{c}_{j^{(\tilde{i}(\rho)+1)},k^{(\tilde{i}(\rho)+1)}}}, & \text{if $i = \tilde{i}(\rho)+1$},\\
+0, & \text{if $i > \tilde{i}(\rho) + 1$}.\\
+\end{cases}\nonumber
+\end{eqnarray}
+Then, the optimal solution of $\widetilde{{\mathcal{LP}}}'_{T,B}$ can be calculated using the reverse transformation from
+$\tilde{p}_{j, k}(\rho)$'s to ${p}_{j, k}(\rho)$'s
+%Then, the optimal solution of $\widetilde{{\mathcal{LP}}}'_{T,B}$ is given by
+
+\subsubsection{ALP Algorithm}
+Similar to unit-cost systems, the ALP algorithm replaces the average constraint $B/T$ in ${\mathcal{LP}}'_{T,B}$ with the average remaining budget $b_\tau/\tau$, and obtains probability $p_{j, k}(b_\tau/\tau)$. Under context $j$, the ALP algorithm take action $k$ with probability $p_{j, k}(b_\tau/\tau)$.
+
+Unlike unit-cost systems, the remaining budget $b_{\tau}$ does not follow any classic distribution in heterogeneous-cost systems. However, we can show that the concentration property still holds for this general case by using the method of averaged bounded differences \cite{Dubhashi2009Concentration}.
+\begin{lemma}\label{thm:alp_concentrate_general_cost}
+For  $0 < \delta < 1$, there exists a positive number $\kappa$, such that under the ALP algorithm, the remaining budget $b_{\tau}$ satisfies
+\begin{eqnarray}
+\mathbb{P}\{b_{\tau} > (\rho+\delta)\tau \} \leq e^{-\kappa\delta^2 \tau}\nonumber, \\
+\mathbb{P}\{b_{\tau} < (\rho-\delta)\tau \} \leq e^{-\kappa\delta^2 \tau}\nonumber.
+\end{eqnarray}
+\end{lemma}
+\begin{proof}
+We prove the lemma using the method of averaged bounded differences \cite{Dubhashi2009Concentration}. The process is similar to Section 7.1 in \cite{Dubhashi2009Concentration}, except that we consider the remaining budget and the successive differences of the remaining budget are bounded by $c_{\max}$.
+
+Specifically, let $\tilde{c}_{t'}$, $1 \leq t' \leq T$ be the budget consumed under ALP, and let $\tilde{\boldsymbol{c}}_{t'} = (\tilde{c}_{1}, \tilde{c}_{2}, \tilde{c}_{t'})$. Then the remaining budget at round $t$ (the remaining time $\tau = T-t+1$), i.e.,  $b_{T-t+1}$ is a function of $\tilde{\boldsymbol{c}}_t$. We note that under ALP, the expectation of the ratio between the remaining budget and the remaining time does not change, i.e., for any $b\leq \sum_{j = 1}\pi_j c_j^*$, if $b_{\tau} = b$, then $\mathbb{E}[b_{\tau-1}/(\tau-1)] =b/\tau$. Thus, we can verify that for any $1\leq t' \leq t$, we have
+\begin{eqnarray}
+\mathbb{E}[b_{T-t+1}|\tilde{\boldsymbol{c}}_{t'}] = b_{T - t' + 1} - \frac{b_{T - t' + 1}}{T-t'+1}(t - t').
+\end{eqnarray}
+Note that $\Delta b = b_{T - t' + 2} - b_{T - t' + 1}  \leq c_{\max}$ and $b_{T - t' + 2} \geq -c_{\max}$, we have
+\begin{eqnarray}
+&&\big|\mathbb{E}[b_{T-t+1}|\tilde{\boldsymbol{c}}_{t'}] - \mathbb{E}[b_{T-t+1}|\tilde{\boldsymbol{c}}_{t'-1}]\big| \nonumber \\
+&\leq &  \max_{0 \leq \Delta b \leq c_{\max}}\bigg\{\big|\Delta b - \frac{b_{T - t' + 2}}{T - t' + 2}\big|  \bigg\} \frac{T - t+1}{T - t' + 1}\nonumber \\
+&\leq & \frac{2 c_{\max}(T - t+1)}{T - t' + 1}.
+\end{eqnarray}
+Moreover,
+\begin{eqnarray}
+&&\sum_{t' = 1}^t \big[\frac{2 c_{\max}(T - t+1)}{T - t' + 1}\big]^2 \nonumber \\
+& =&  4 c_{\max}^2(T - t+1)^2\sum_{t' = 1}^t\frac{1}{(T - t' + 1)^2}\nonumber \\
+& =&  4 c_{\max}^2(T - t+1)^2\sum_{\tau' = T - t+1}^{T}\frac{1}{(\tau')^2}\nonumber \\
+&\approx &4 c_{\max}^2(T - t+1)^2\int_{T - t+1}^{T}\frac{1}{(\tau')^2}{\rm d}\tau'\nonumber\\
+&= & 4 c_{\max}^2(T - t+1)\frac{t-1}{T}.
+\end{eqnarray}
+According to Theorem~5.3 in \cite{Dubhashi2009Concentration}, and noting $\tau = T-t+1$, $\mathbb{E}[b_{\tau}] = \rho\tau$, we have
+\begin{eqnarray}
+\mathbb{P}\{b_{\tau} > \mathbb{E}[b_{\tau}] + \delta \tau \}\leq  e^{-\frac{2T (\delta \rho\tau)^2}{4c_{\max}^2(T-t+1)(t-1)}}\leq e^{-\frac{T \delta^2B^2\tau}{2c_{\max}^2T^2(t-1)}}
+\leq e^{-\frac{\delta^2\rho^2}{2c_{\max}^2}\tau},
+\end{eqnarray}
+and similarly,
+\begin{eqnarray}
+\mathbb{P}\{b_{\tau} < \mathbb{E}[b_{\tau}] - \delta \tau \}\leq e^{-\frac{\delta^2\rho^2}{2c_{\max}^2}\tau},
+\end{eqnarray}
+Choosing $\kappa = \frac{\rho^2}{2c_{\max}^2}$ concludes the proof.
+\end{proof}
+Then, using similar methods in Section~\ref{sec:oracle_solution}, we can show that the generalized ALP algorithm achieves $O(1)$ regret in non-boundary cases, and $O(\sqrt{T})$ regret in boundary cases, where the boundaries are now defined as $Q_i = \sum_{i' = 1}^i\pi_{j^{(i')}} \tilde{c}_{j^{(i')},k^{(i')}}$.
+
+%\subsection{Algorithms with Unknown Statistics}
+%When the expected rewards are unknown, it is difficult to combine UCB method with the proposed ALP for general systems.
+%As a special case, when  all actions have the same cost under a given context, i.e., $c_{j,k} = c_j$ for all $k$ and $j$, the normalized expected reward $\eta_{j,k}$ represents the quality of action $k$ under context $j$. In this case, the candidate set for each context only contains one action, which is the action with the highest expected reward.
+%Thus, the ALP algorithm for the known statistics case is simple. When the expected rewards are unknown, we can extend the UCB-ALP algorithm by managing the UCB for the normalized expected rewards.
+%
+%When the costs for different actions under the same context are heterogeneous, it is difficult to combine ALP with the UCB method since the ALP algorithm in this case not only requires the ordering of $\eta_{j,k}$'s, but also the ordering of $u_{j,k}$'s and the ratios $\frac{u_{j,k_1} - u_{j, k_2}}{c_{j,k_1} - c_{j, k_2}}$. Algorithm design for such general heterogeneous-cost systems is still an open problem.
+
+\subsection{$\epsilon$-First ALP Algorithm}
+When the expected rewards are unknown, it is difficult to combine UCB method with the proposed ALP for general systems.
+As a special case, when  all actions have the same cost under a given context, i.e., $c_{j,k} = c_j$ for all $k$ and $j$, the normalized expected reward $\eta_{j,k}$ represents the quality of action $k$ under context $j$. In this case, the candidate set for each context only contains one action, which is the action with the highest expected reward.
+Thus, the ALP algorithm for the known statistics case is simple. When the expected rewards are unknown, we can extend the UCB-ALP algorithm by managing the UCB for the normalized expected rewards.
+
+When the costs for different actions under the same context are heterogeneous, it is difficult to combine ALP with the UCB method since the ALP algorithm in this case not only requires the ordering of $\eta_{j,k}$'s, but also the ordering of $u_{j,k}$'s and the ratios $\frac{u_{j,k_1} - u_{j, k_2}}{c_{j,k_1} - c_{j, k_2}}$.
+We propose an $\epsilon$-First ALP Algorithm that explores and exploits separately: the agent takes actions under all contexts in the first $\lceil\epsilon(T)\rceil$ rounds to estimate the expected rewards, and runs ALP based on the estimates in the remaining $T-\lceil\epsilon(T)\rceil$ rounds.
+
+\begin{algorithm}[htbp]
+\caption{$\epsilon$-First ALP}
+\label{alg:eps_first_alp}
+\begin{algorithmic}
+\STATE{\bfseries Input:} Time horizon $T$, budget $B$, exploration budget ratio $\epsilon$, and $c_{j,k}$'s, for all $j$ and $k$;\\
+\STATE{\bfseries Init:} Remaining budget $b = B$;\\
+$C_{j,k} = 0$, $\bar{u}_{j,k} = 0$;
+\FOR{$t  = 1$ {\bfseries to} $\lceil\epsilon(T)\rceil$}
+\IF{$b > 0$}
+\STATE{Take action $A_t = \argmin_{k\in \mathcal{A}} C_{X_t,k}$ (with random tie-breaking);}
+\STATE{Observe the reward $Y_{A_t,t}$;}
+\STATE{Update counter $C_{X_t,A_t} = C_{X_t,A_t} + 1$; update remaining budget $b = b - c_{X_t,A_t}$;}
+\STATE{Update the reward estimate:
+\begin{equation}
+\bar{u}_{X_t,A_t} = \frac{(C_{X_t,A_t} -1) \bar{u}_{X_t,A_t} + Y_{A_t,t}}{C_{X_t,A_t}}.\nonumber
+\end{equation} }
+\ENDIF
+\ENDFOR
+\FOR{$t = \lceil\epsilon(T)\rceil+1$ {\bfseries to} $T$}
+\STATE{Remaining time $\tau = T- t + 1$;}
+\IF{$b > 0$}
+\STATE{Obtain the probabilities ${p}_{j,k}(b/\tau)$'s by solving the problem $({\mathcal{LP}}'_{\tau,b})$ with $u_{j,k}$ replaced by $\bar{u}_{j,k}$;}
+\STATE{Take action $k$ with probability ${p}_{X_t,k}(b/\tau)$;}
+\STATE{Remaining budget $b = b - c_{X_t,A_t}$;}
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+Let $\xi_{j,k_1,k_2} = \frac{u_{j,k_1} - u_{j,k_2}}{c_{j,k_1} - c_{j,k_2}}$ for $j \in \mathcal{X}$, $k_1,k_2 \in \{0\}\cup\mathcal{A}$, and $k_1 \neq k_2$ (recall that $u_{j,0} = 0$ and $c_{j,0} = 0$ for the dummy action). Let $\Delta_{\min}$ be the minimal difference between any $\xi_{j_1, k_{11}, k_{12}}$ and $\xi_{j_2, k_{21}, k_{22}}$, i.e.,
+\begin{equation}
+\Delta_{\min} = \min_{\overset{j_1,j_2 \in \mathcal{X}}{ k_{11},k_{12},k_{21},k_{22} \in \{0\}\cup\mathcal{A}}} \{|\xi_{j_1, k_{11}, k_{12}} - \xi_{j_2, k_{21}, k_{22}}|\}.\nonumber
+\end{equation}
+Moreover, let $\pi_{\min} = \min_{j\in \mathcal{X}}\pi_j$ and $\bar{\xi}_{j,k_1,k_2}$ be the estimate of $\xi_{j,k_1,k_2}$ at the end of the exploration stage, i.e.,  $\bar{\xi}_{j,k_1,k_2} = \frac{\bar{u}_{j,k_1} - \bar{u}_{j,k_2}}{c_{j,k_1} - c_{j,k_2}}$. Then, the following lemma states that under $\epsilon$-First ALP with a sufficiently large $\epsilon(T)$, the agent will obtain a correct ordering of $\xi_{j,k_1,k_2}$'s with high probability at the end of the exploration stage.
+\begin{lemma}\label{thm:eps_first_estimate}
+Under $\epsilon$-First ALP, if
+\begin{equation}
+\epsilon(T) \geq \frac{K}{(1-\delta)\pi_{\min}} + \log T \max\bigg\{\frac{1}{\delta^2}, \frac{16 K}{(1 - \delta)\pi_{\min}(\Delta_{\min})^2}\bigg\}, \nonumber
+\end{equation}
+then for any contexts $j_1,j_2 \in \mathcal{X}$, and actions $k_{11}, k_{12}, k_{21}, k_{22} \in \{0\}\cup\mathcal{A}$, if $\xi_{j_1,k_{11},k_{12}} < \xi_{j_2,k_{21},k_{22}}$, then at the end of the $\lceil \epsilon(T) \rceil$-th round, we have
+\begin{equation}
+\mathbb{P}\bigg\{\bar{\xi}_{j_1,k_{11},k_{12}} \geq \bar{\xi}_{j_2,k_{21},k_{22}} \bigg\} \leq (J + 4)T^{-2}.\nonumber
+\end{equation}
+Moreover, the agent ranks all the $\xi_{j,k_1,k_2}$'s correctly with probability no less than $1 - (4K + 1)JT^{-2}$.
+\end{lemma}
+
+\begin{proof}
+We first analyze the number of executions for each context-action pair $(j,k)$ in the exploration stage.
+Let $N_j = \sum_{t = 1}^{\lceil\epsilon(T)\rceil} \mathds{1}(X_t = j)$ be the number of occurrences of context $j$ up to round $\lceil\epsilon(T)\rceil$. Recall that the contexts $X_t$ arrive i.i.d.~in each round. Thus, using Hoeffding-Chernoff Bound for each context $j$, we have
+\begin{align}
+&\quad \mathbb{P}\bigg\{\forall j \in \mathcal{X}, N_j \geq (1-\delta) \pi_j \lceil\epsilon(T)\rceil \bigg\} \nonumber \\
+& \geq 1 - \sum_{j = 1}^J \mathbb{P}\bigg\{N_j < (1-\delta) \pi_j \lceil\epsilon(T)\rceil \bigg\} \nonumber \\
+& \geq 1 - J e^{-2\delta^2 \lceil\epsilon(T)\rceil} \nonumber \\
+& \geq  1 - J e^{-2 \log T} \nonumber \\
+& = 1 - J T^{-2}
+\end{align}
+On the other hand, the lower bound $(1-\delta) \pi_j \lceil\epsilon(T)\rceil \geq K + \frac{16K\log T}{(\Delta_{\min})^2}$. From the implementation of the exploration stage in Algorithm~\ref{alg:eps_first_alp}, we know that if $N_j \geq (1-\delta) \pi_j \lceil\epsilon(T)\rceil$, then
+\begin{align}
+C_{j,k} \geq \big\lfloor 1 + \frac{16\log T}{(\Delta_{\min})^2}\big\rfloor \geq \frac{16\log T}{(\Delta_{\min})^2},~~\forall k \in \mathcal{A}.
+\end{align}
+Therefore,
+\begin{align}
+&\quad \mathbb{P}\bigg\{\forall j \in \mathcal{X}, \forall k \in \mathcal{A}, C_{j,k} \geq  \frac{16\log T}{(\Delta_{\min})^2} \bigg\} \nonumber \\
+& \geq 1 - J T^{-2}
+\end{align}
+
+Next, we study the relationship between the estimates $\bar{\xi}_{j_1,k_{11},k_{12}}$ and $\bar{\xi}_{j_2,k_{21},k_{22}} $ at the end of the exploration stage. We note that
+\begin{align}
+&\quad \bar{\xi}_{j_1,k_{11},k_{12}} \geq \bar{\xi}_{j_2,k_{21},k_{22}}  \nonumber \\
+&\Leftrightarrow \big( \bar{\xi}_{j_1,k_{11},k_{12}} - \xi_{j_1,k_{11},k_{12}} - \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{2} \big) \nonumber\\
+&~~- \big(\bar{\xi}_{j_2,k_{21},k_{22}} -\xi_{j_2,k_{21},k_{22}} + \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{2} \big) \geq 0 \nonumber\\
+&\Leftrightarrow \big( \frac{\bar{u}_{j_1,k_{11}} - u_{j_1,k_{11}}}{c_{j_1,k_{11}} - c_{j_1,k_{12}}} - \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{4} \big) \nonumber\\
+&\quad -\big(\frac{\bar{u}_{j_1,k_{12}} - u_{j_1,k_{12}}}{c_{j_1,k_{11}} - c_{j_1,k_{12}}} + \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{4} \big) \nonumber\\
+& \quad - \big( \frac{\bar{u}_{j_2,k_{21}} - u_{j_2,k_{21}}}{c_{j_2,k_{21}} - c_{j_2,k_{22}}} + \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{4} \big) \nonumber\\
+& \quad + \big(\frac{\bar{u}_{j_2,k_{22}} - u_{j_2,k_{22}}}{c_{j_2,k_{21}} - c_{j_1,k_{22}}} - \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{4} \big) \geq 0.\nonumber\\
+\end{align}
+Thus, for the event $\bar{\xi}_{j_1,k_{11},k_{12}} \geq \bar{\xi}_{j_2,k_{21},k_{22}}$ to be true, we require that at least one term (with the sign) in the last inequation above is no less than zero. Conditioned on $C_{j,k} \geq \frac{16\log T}{(\Delta_{\min})^2}$, we can bound the probability of each term according to the Hoeffding-Chernoff bound. For example, for the first term, since $|c_{j_1,k_{11}} - c_{j_1,k_{12}}| \geq 1$ and $\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}} \geq \Delta_{\min}$, we have
+\begin{align}
+&\quad \mathbb{P}\big\{ \frac{\bar{u}_{j_1,k_{11}} - u_{j_1,k_{11}}}{c_{j_1,k_{11}} - c_{j_1,k_{12}}} - \frac{\xi_{j_2,k_{21},k_{22}}- \xi_{j_1,k_{11},k_{12}}}{4} \geq 0 \nonumber \\
+& \quad\quad\quad |C_{j_1,k_{11}} \geq \frac{16\log T}{(\Delta_{\min})^2} \big\} \nonumber \\
+& \leq \mathbb{P}\big\{\bar{u}_{j_1,k_{11}} \geq u_{j_1,k_{11}}+  \frac{\Delta_{\min}}{4} |C_{j_1,k_{11}} \geq \frac{16\log T}{(\Delta_{\min})^2}\big\}\nonumber \\
+& \leq e^{-2\log T} = T^{-2}. \nonumber
+\end{align}
+The conclusion then follows by considering the event  $\big\{C_{j,k} \geq \frac{16\log T}{(\Delta_{\min})^2}, \forall j \in \mathcal{X}, \forall k \in \mathcal{X}\big\}$ and its negation.
+\end{proof}
+
+
+\begin{theorem}\label{thm:eps_first_alp}
+Under $\epsilon$-First ALP, if
+\begin{equation}
+\epsilon(T) \geq \frac{K}{(1-\delta)\pi_{\min}} + \log T \max\bigg\{\frac{1}{\delta^2}, \frac{16 K}{(1 - \delta)\pi_{\min}(\Delta_{\min})^2}\bigg\}, \nonumber
+\end{equation}
+then the regret of $\epsilon$-First ALP satisfies:\\
+1) if $\rho = B/T \neq Q_i$, then $R_{\epsilon-\rm First ALP}(T,B) = O(\log T)$;
+
+2) if $\rho = B/T = Q_i$, then $R_{\epsilon-\rm First ALP}(T,B) = O(\sqrt{T})$.
+\end{theorem}
+
+\proof{(Sketch) The key idea of proving this theorem is considering the event where the $\xi_{j,k_1,k_2}$'s are ranked correctly and its negation. When the $\xi_{j,k_1,k_2}$'s are ranked correctly, we can use the properties of the ALP algorithm with modification on the time horizon and budget (subtracting the time and budget in the exploration stage, which is $O(\log T)$); otherwise, if the agent obtains a wrong ranking results, the regret is bounded as $O(1)$ because the probability is $O(T^{-2})$ and the reward in each round is bounded. }
+
+\subsection{Deciding $\epsilon(T)$ without Prior Information}
+In Theorem~\ref{thm:eps_first_alp}, the agent requires the value of $\Delta_{\min}$ to calculate $\epsilon(T)$. This is usually impractical since the expected rewards are unknown {\it a priori}.
+Thus, without the knowledge of $\Delta_{\min}$, we propose a Confidence Level Test (CLT) algorithm  for deciding when to end the exploration stage.
+
+Specifically, assume $\Delta_{\min} > 0$ and is unknown by the agent. In each round of the exploration stage, the agent tries to solve the problem $({\mathcal{LP}}'_{\tau,b})$ with $u_{j,k}$ replaced by $\bar{u}_{j,k}$ using comparison, i.e., using Algorithm~\ref{alg:find_candidates} and sorting the virtual actions. For each comparison, the agent tests the confidence level according to Algorithm~\ref{alg:clt}. If all comparisons pass the test, i.e., \texttt{flagSucc = true} for all comparisons, then the agent ends the exploration stage and starts the exploitation stage.
+
+\begin{algorithm}[htbp]
+\caption{Confidence Level Test (CLT)}
+\label{alg:clt}
+\begin{algorithmic}
+\STATE{\bfseries Input:} Time horizon $T$, estimates $\bar{\xi}_{j_1,k_{11}, k_{12}}$, $\bar{\xi}_{j_2,k_{21}, k_{22}}$, number of executions $C_{j_1,k_{11}}$, $C_{j_1,k_{12}}$, $C_{j_2,k_{21}}$, and $C_{j_2,k_{22}}$;\\
+\STATE{\bfseries Output:} \texttt{flagSucc};\\
+\STATE{\bfseries Init:} \texttt{flagSucc = false}, \\~~~~~~~~$\delta = \frac{\bar{\xi}_{j_1,k_{11}, k_{12}} - \bar{\xi}_{j_2,k_{21}, k_{22}}}{2}$;
+\IF{$e^{-2\delta^2 \min\{C_{j_1,k_{11}}, C_{j_1,k_{12}}\}} \leq T^{-2}$\\~~~~\& $e^{-2\delta^2 \min\{C_{j_2,k_{21}}, C_{j_2,k_{22}}\}} \leq T^{-2}$}
+\STATE{\texttt{flagSucc = true};}
+\ENDIF
+\STATE{\bfseries return} \texttt{flagSucc};
+\end{algorithmic}
+\end{algorithm}
+
+Next, we show that the $\epsilon$-First policy with CLT will achieve $O(\log T)$ regret except for the boundary cases, where it achieves $O(\sqrt{T})$ regret. On one hand, according to Hoeffding-Chernoff bound, if all comparisons pass the confidence level test, then with probability at least $1 - JK^2 T^{-2}$, the algorithm obtains the correct rank and provide a right solution for the problem $({\mathcal{LP}}'_{\tau,b})$. On the other hand, because $\Delta_{\min} > 0$, from the analysis in the previous section, we know that the exploration stage will end within $O(\log T)$ rounds with high probability. Therefore, the expected regret is the same as that in the case with known $\Delta_{\min}$. 

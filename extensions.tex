@@ -1,0 +1,41 @@
+\section{Discussions} \label{sec:extensions}
+\subsection{Thompson-Lyapunov Optimization}
+Combination of Thompson Sampling and Lyapunov Optimization.
+
+Consider Bernoulli reward and cost with expectation $u_{j,k}$ and $\bar{c}^{(i)}_{j,k}$. 
+
+For general case, one can use the method in \cite{Agrawal2012COLT:TS} to convert the problem to a binary scenario.
+
+
+\begin{algorithm}[htbp]
+\caption{Thompson-Lyapunov Optimization (TLO)}
+\label{alg:tlo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand\algorithmiccomment[1]{%
+{//{\it ~{#1}}}%
+}
+\begin{algorithmic}[1]
+\STATE{\algorithmicrequire $T$, $\bs{b}$, $V$;}
+\STATE{{\bfseries Init:} $S^{u}_{j,k}(0) \gets 0$, $F^{u}_{j,k}(0) \gets 0$; $S^{c(i)}_{j,k}(0) \gets 0$, $F^{c(i)}_{j,k}(0) \gets 0$;}
+\FOR{$t = 1$ {\bfseries to} $T$}
+\STATE{Observe context $X_t$};
+\STATE{Draw samples from the posterior: 
+\begin{eqnarray}
+&&\hspace{-0.8cm}\theta^{u}_{j,k}(t) \sim {\rm Beta}(S^{u}_{j,k}(t-1)+1, F^{u}_{j,k}(t-1) + 1),\nonumber \\
+&&\hspace{-0.8cm}\theta^{c(i)}_{j,k}(t) \sim {\rm Beta}(S^{c(i)}_{j,k}(t-1)+1, F^{c(i)}_{j,k}(t-1) + 1). \nonumber 
+\end{eqnarray}
+}
+\STATE{Choose the action as follows
+\begin{eqnarray} \label{eq:tlo_decision}
+A_t = \argmax_{k \in \mathcal{A}} V \theta^{u}_{j,k}(t) - \sum_{i = 1}^M Q_i(t)\theta^{c(i)}_{j,k}(t)
+\end{eqnarray}
+}
+\STATE{Receive reward $Y_t$ and costs $Z_{i,t}$, and update the empirical reward and costs.}
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+
+
+

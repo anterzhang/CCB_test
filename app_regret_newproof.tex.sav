@@ -1,0 +1,108 @@
+\newpage
+\begin{theorem}\label{thm:regret_ucb_alp_new}
+Given $\pi_j$'s, $u_{j,k}$'s and a fixed $\rho \in [0,1]$, the regret of UCB-ALP satisfies:\\
+1) (Non-boundary cases) if $\rho \neq q_j$, $1 \leq j \leq J-1$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(JK\log T\big)$.\\
+%\begin{eqnarray}
+%\limsup_{T\to \infty} \frac{R_{\rm{UCB-ALP}}(T, B)}{\log T} \leq \Theta^{\rm (c)}_{\rm nb} + \Theta^{\rm (a)}, \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (c)}_{\rm nb} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27}{2g_{\tilde{j}(\rho)+1} [\Delta^{(j)}_{\tilde{j}(\rho)+1,k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+2}^{J}\sum_{k=1}^K\frac{27}{2g_j [\Delta^{(\tilde{j}(\rho)+1)}_{j,k}]^2} + KJ \bigg\}$,
+%$\Theta^{\rm (a)} = \sum_{j=1}^J \sum_{k \neq k_j^*} \big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big)$
+%with $\bar{u}^* = \sum_{j = 1}^J \pi_j u_j^*$, and $v(\rho)$ defined in \eqref{eq:LP_single_step_value}.\\
+2) (Boundary cases) if $\rho = q_j$ for some $j \in \{ 1,2, \ldots, J-1\}$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(\sqrt{T} + JK\log T \big)$.
+%\begin{eqnarray}
+%R_{\text{UCB-ALP}}(T, B) \leq \Theta^{\rm (o)} \sqrt{T}  + [\Theta^{\rm (c)}_{\rm b} + \Theta^{\rm (a)}]\log T + O(1), \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (o)} =  2(u_1^* - u_J^*) \sqrt{\rho (1-\rho)}$,
+%%$\Theta^{\rm (a)}$ is defined as in Theorem~\ref{thm:regret_ucb_alp_nonboundary},
+%\begin{align}
+%\Theta^{\rm (c)}_{\rm b} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)-1}\sum_{k=1}^K\frac{27}{2g'_{\tilde{j}(\rho)} [\Delta^{(j)}_{\tilde{j}(\rho),k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+1}^{J}\sum_{k=1}^K\frac{27}{2g'_j [\Delta^{(\tilde{j}(\rho))}_{j,k}]^2} + KJ \bigg\},
+%\end{align}
+%and $g'_j = \min\big\{\pi_j, \frac{1}{2}(\rho - q_{\tilde{j}(\rho)-1}), \frac{1}{2}(q_{\tilde{j}(\rho)+1} -\rho)\big\}$.
+\end{theorem}
+
+
+\begin{proof}
+We bound the regret of UCB-ALP by comparing its performance  with the benchmark $\widehat{U}(T,B)$. To obtain this upper bound, we first partition the regret according to the sources and then bound the each part of regret, respectively.
+
+Before presenting the proof, we first introduce a notation that will be widely used later. For contexts $j$ and $j'$, and an action $k$, let $\Delta_{j,k}^{(j')}$ be the difference between the expected reward for action $k$ under context $j$ and the highest expected reward under context $j'$, i.e., $\Delta_{j,k}^{(j')} = u_{j'}^* - u_{j,k}$.
+When $j' = j$, $\Delta_{j,k}^{(j)}$ is the difference of expected reward between the suboptimal action $k$ and the best action under context $j$.
+
+
+%%%%%%%%%%
+\subsection{Step 1: Partition the Regret}
+%%%%%%%%%%
+
+Note that the total reward of the oracle solution $U^*(T,B)  \leq \widehat{U}(T,B)$. Thus, we can bound the regret of UCB-ALP by comparing its total expected reward $U_{\rm UCB-ALP}(T,B)$ with $\widehat{U}(T,B)$, i.e.,
+\begin{eqnarray}
+&&R_{\rm {UCB-ALP}}(T, B) \nonumber \\
+&=& U^*(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber \\
+& \leq &\widehat{U}(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber\\
+&= & T v(\rho) - \sum_{j = 1}^J \sum_{k =1}^K u_{j,k} \mathbb{E}[C_{j,k}(T)].
+\end{eqnarray}
+where $C_j(T) = \sum_{k=1}^K C_{j,k}(T)$ is the total number that actions have been taken under context $j$ up to round $T$.
+The total expected reward of UCB-ALP can be further divided as
+\begin{eqnarray}
+&& U_{\rm UCB-ALP}(T,B) \nonumber \\
+& =&  \sum_{j = 1}^J u_j^* \mathbb{E}\big[\sum_{k=1}^K C_{j,k}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)] \nonumber \\
+& =&  \sum_{j = 1}^J u_j^*\mathbb{E}\big[C_{j}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)]. \nonumber
+\end{eqnarray}
+
+
+Consequently, the regret of UCB-ALP can be bounded as
+\begin{eqnarray}\label{eq:regret_ucb_alp__nonboundary_details}
+R_{\rm {UCB-ALP}}(T, B) \leq R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) + R_{\rm {UCB-ALP}}^{({\rm c})}(T, B),
+\end{eqnarray}
+where
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) = \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau  = 1}^T \mathbb{E}\bigg[v(\rho) -\sum_{j = 1}^J \hat{p}_j(b_{\tau}/\tau) \pi_j u_j^*\bigg]. \nonumber
+\end{eqnarray}
+
+Eq.~\eqref{eq:regret_ucb_alp__nonboundary_details} clearly shows that the regret of the UCB-ALP algorithm can be divided into two parts: the first part $R_{\rm {UCB-ALP}}^{({\rm a})}(T, B)$ is from taking  suboptimal actions under a given context; the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ is from the deviation of remaining budget $b_{\tau}$ and context ranking errors.
+
+%%%%%%%%%%
+\subsection{Step 2: Bound Each Part of Regret}
+%%%%%%%%%%
+
+\subsubsection{Step 2.1: Bound of $R_{\text{UCB-ALP}}^{\rm (a)}(T, B)$.}
+For the regret from action ranking errors,
+we show in Lemma~\ref{thm:regret_withincontext} that $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) = O(\log T)$ using similar techniques for traditional UCB methods \cite{Golovin2009Lecture}.
+\begin{lemma}\label{thm:regret_withincontext}
+Under UCB-ALP, the regret due to the action ranking errors within context $j$ satisfies
+\begin{eqnarray} \label{eq:regret_ucb_alp_regret_withincontext}
+&& R_{\text{UCB-PB}}^{\rm (a)}(T, B) \nonumber\\
+&\leq& \sum_{j=1}^J \sum_{k \neq k_j^*} \bigg[\big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big) \log T + 2 \Delta_{j,k}^{(j)}\bigg].
+\end{eqnarray}
+\end{lemma}
+\begin{proof}
+For $k \neq k_j^*$, let $\ell_{j,k}^{(j)} = \frac{2\log T}{(\Delta_{j, k}^{(j)})^2}$. According to Lemma~\ref{thm:context_action_pair_errorprob}, we have
+\begin{eqnarray}
+&& \mathbb{E}[C_{j,k}(T)] \nonumber \\
+&\leq& \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k, C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k | C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + \sum_{t = 1}^T  2t^{-1}. \nonumber
+\end{eqnarray}
+The conclusion then follows by the facts that $\sum_{t = 1}^T t^{-1} \leq 1 + \log T$ and $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) =  \sum_{j = 1}^J\sum_{k \neq k_j^*} \Delta_{j,k}^{(j)} \mathbb{E}[C_{j,k}(T)]$.
+\end{proof}
+
+\subsubsection{Step 2.2: Bound of $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$.}
+Next, we show that the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ is also in the order of $O(\log T)$.
+\textbf{We first present the proof for the non-boundary cases}, and discuss the boundary cases later.
+
+Note that we have separately considered the regret due to action ranking errors in  $R_{\text{UCB-ALP}}^{\rm (a)}(T, B)$ and we only need to consider the best action of each context for $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$. Thus, we define $v^*_{\rm UCB-ALP}(\tau, b_{\tau})$ as follows:
+\begin{equation}
+v^*_{\rm UCB-ALP}(\tau, b_{\tau})= \sum_{j = 1}^J \tilde{p}_j(b_{\tau}/\tau) \pi_j u_j^*.\nonumber
+\end{equation}
+Let $\Delta v_\tau$ be the single-round difference between  UCB-ALP and the upper bound, i.e.,
+\begin{eqnarray}
+\Delta v_\tau = v(\rho) -v^*_{\rm UCB-ALP}(\tau, b_{\tau}).\nonumber 
+\end{eqnarray}
+Then $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau = T}^1 \mathbb{E}[\Delta v_\tau]$. 
+
+
+\end{proof}

@@ -1,0 +1,51 @@
+%%%%%%%%%%
+\section{Proof of Theorem 1: Threshold Structure of DP}\label{app:proof_opt_threshold_struct}
+%%%%%%%%%%
+Recall that the dynamic programming (DP) value function $V_{\tau}(b)$ is the maximum expected total rewards when the remaining time is $\tau$ and remaining budget is $b$. As discussed in Section~\ref{sec:oracle_solution}, the value function can be expressed as follows:
+%\begin{eqnarray}
+%V_{\tau}(b) =
+%\begin{cases}
+%0,  &\text{if $\tau = 0$}, \\
+%\mathbb{E}_{X_{T - \tau+1}}\big\{\max_{\nu \in \{0, 1\land b\}} [\nu u_{X_{T - \tau+1}}^* + V_{\tau-1}(b - \nu)] \big\}, &\text{otherwise},
+%\end{cases}
+%\end{eqnarray}
+\begin{eqnarray}
+V_{\tau}(b) = 0,  \text{if $\tau = 0$}, \nonumber \\
+\end{eqnarray}
+and otherwise,
+\begin{eqnarray}
+V_{\tau}(b) =
+\mathbb{E}_{X_{T - \tau+1}}\big\{\max_{\nu \in \{0, 1\land b\}} [\nu u_{X_{T - \tau+1}}^* + V_{\tau-1}(b - \nu)] \big\}, \nonumber
+\end{eqnarray}
+where $1 \land b = \min\{1,b\}$. We show the optimality of the threshold algorithm by investigating the properties of the value function.
+
+When $b > 0$, $\tau > 0$, and $X_{T- \tau+1} = j$, an optimal algorithm would choose an action $\nu \in \{0, 1\}$ that maximizes $\nu u_{X_{T - \tau+1}}^* + V_{\tau-1}(b - \nu)$, i.e.,
+\begin{eqnarray}
+V_{\tau -1}(b) \underset{\nu = 1}{\overset{\nu = 0}{\gtrless}} u_j^* + V_{\tau-1}(b - 1).
+\end{eqnarray}
+The above criterion can be rewritten as
+\begin{eqnarray}
+V_{\tau-1}(b) - V_{\tau-1}(b - 1)\underset{\nu = 1}{\overset{\nu = 0}{\gtrless}} u_j^*.
+\end{eqnarray}
+This implies that if $\nu = 1$ for context $j$, then $\nu = 1$ for all $j' > j$.
+
+On the other hand, for given $j$, if $V_{\tau-1}(b+1) - V_{\tau-1}(b) \leq V_{\tau-1}(b) - V_{\tau-1}(b - 1)$, i.e., $V_{\tau-1}(b+1) + V_{\tau-1}(b - 1) \leq 2V_{\tau-1}(b)$, then  $\nu = 1$ for remaining budget $b$ implies $\nu = 1$ for all $b' > b$. Namely, the concavity of the value function on $\mathbb{N}$ is a sufficient condition for the optimality of the threshold algorithm. We can show the concavity of $V_{\tau}(b)$ by induction to $\tau$.
+
+When $\tau = 0$,
+$V_0(b)$ is concave on $\mathbb{N}$ since $V_0 (b) = 0$ for all $b \in \mathbb{N}$. For $\tau > 0$, assume $V_{\tau-1}(b)$ is a concave function on $\mathbb{N}$. Let $V_{\tau,j}(b)$ be the value function conditioned on $X_{T-\tau+1} = j$, i.e.,
+\begin{eqnarray}
+V_{\tau,j}(b) &=& \max_{\nu \in \{0, 1\land b\}} [\nu u_j^* + V_{\tau-1}(b - \nu)].
+\end{eqnarray}
+We note that when $b \geq 1$, $V_{\tau,j}(b) = \max_{\nu \in \{0, 1\}} [\nu u_j^* + V_{\tau-1}(b - \nu)]$ is concave since the maximization operation preserves concavity. To extend the concavity to the entire set of $\mathbb{N}$, it suffices to show that
+\begin{eqnarray}\label{eq:grad_1}
+V_{\tau,j}(0) + V_{\tau,j}(2) \leq 2V_{\tau,j}(1).
+\end{eqnarray}
+Note that
+\begin{eqnarray}
+V_{\tau,j}(0) &=& 0, \nonumber \\
+V_{\tau,j}(2) &=& \max\{V_{\tau-1}(2), u_j^* + V_{\tau-1}(1)\}, \nonumber\\
+2V_{\tau,j}(1) & = & \max\{2V_{\tau-1}(1), 2u_j^*  \} \nonumber.
+\end{eqnarray}
+Further, $u_j^* + V_{\tau-1}(1) \leq \max\{2V_{\tau-1}(1), 2u_j^*  \}$, and $V_{\tau-1}(2) = V_{\tau-1}(2) + V_{\tau-1}(0)\leq 2V_{\tau-1}(1)$ (because the concavity of $V_{\tau-1}(b)$ on $\mathbb{N}$). Thus, inequality~\eqref{eq:grad_1} holds and $V_{\tau,j}(b)$ is concave on $\mathbb{N}$, and $V_{\tau}(b) = \mathbb{E}_{X_{T-\tau+1}}V_{\tau,X_{T-\tau+1}}(b)$ is concave on  $\mathbb{N}$ because the expectation operation preserves concavity.
+
+Consequently, $V_{\tau}(b)$ is concave on $\mathbb{N}$ for all $1 \leq \tau \leq T$, and the threshold algorithm is optimal.

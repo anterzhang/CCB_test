@@ -1,0 +1,14 @@
+%%%%%%%%%%
+\section{Proof of Lemma~\ref{thm:upper_bound}: Upper Bound}\label{app:proof_upper_bound}
+%%%%%%%%%%
+%We compare $\widehat{U}(T,B)$ and $U^*(T,B)$ by considering a reward maximization problem with average budget constraint $\mathbb{E}\big[\sum_{t = 1}^T Z_t \big] \leq B$.
+
+%On one hand, for  any algorithm satisfying the average budget constraint, let $\bar{C}_j$ be the expected number of rounds that an action is taken under context $j$ and let $p'_j = \bar{C}_j/(\pi_j T)$. Because $\bar{C}_j \leq \pi_j T$ and $\sum_{j = 1}^J \bar{C}_j \leq B$, we can verify that $p'_j$'s satisfy the constraint in $\mathcal{LP}_{T,B}$, and the expected total reward can be represented by $T\sum_{j = 1}p'_j \pi_j u_j^*$. Thus, $\widehat{U}(T,B) = T v(\rho)$ is the maximal expected reward under average budget constraint.
+
+%On the other hand hand, the oracle algorithm guarantees the hard budget constraint, i.e., $\sum_{t = 1}^T Z_t \leq B$ for any realization. Thus, it also satisfies the average budget constraint and thus, the expected total reward $U^*(T,B) \leq \widehat{U}(T,B)$.
+
+%Thus, $\widehat{U}(T,B)$ is the maximum expected reward under expected budget constraint, and $\widehat{U}(T,B) \geq U^*(T,B)$.
+
+We prove Lemma~\ref{thm:upper_bound} by comparing $\widehat{U}(T,B)$ with the expected total reward under any feasible algorithm satisfying the budget constraint.
+
+Let $C_j$ be the number of rounds that an action is taken  under context $j$ for any realization under any feasible algorithm with known statistics. Let $p_j = \mathbb{E}[C_j]/(\pi_j T)$, which satisfies $0 \leq p_j \leq 1$. Then the expected total reward becomes $\sum_{j = 1}^J u_j^* \mathbb{E}[C_j] = T\sum_{j = 1}^J p_j \pi_j u_j^*$. Further, because the hard budget constraint is met for all realizations, i.e., $\sum_{j = 1}^J C_j \leq  B$, we have $\sum_{j = 1} p_j \pi_j = \sum_j E[C_j]/T \leq B/T$. Thus, the expected total reward obtained by any feasible algorithm, including the oracle algorithm, is upper bounded by $\widehat{U}(T,B)$. 

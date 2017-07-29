@@ -1,0 +1,186 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Agarwal \bgroup et al\mbox.\egroup
+  }{2014}]{Agarwal2014ICML:CMAB}
+Agarwal, A.; Hsu, D.; Kale, S.; Langford, J.; Li, L.; and Schapire, R.~E.
+\newblock 2014.
+\newblock Taming the monster: A fast and simple algorithm for contextual
+  bandits.
+\newblock In {\em International Conference on Machine Learning (ICML)}.
+
+\bibitem[\protect\citeauthoryear{Agrawal and Devanur}{2015}]{Agrawal2015TR:LCB}
+Agrawal, S., and Devanur, N.~R.
+\newblock 2015.
+\newblock Linear contextual bandits with global constraints and objective.
+\newblock {\em arXiv preprint arXiv:1507.06738}.
+
+\bibitem[\protect\citeauthoryear{Agrawal and Goyal}{2012}]{Agrawal2012COLT:TS}
+Agrawal, S., and Goyal, N.
+\newblock 2012.
+\newblock Analysis of {Thompson Sampling} for the multi-armed bandit problem.
+\newblock In {\em Conference on Learning Theory (COLT)}.
+
+\bibitem[\protect\citeauthoryear{Agrawal, Devanur, and
+  Li}{2015}]{Agrawal2015TR:CB}
+Agrawal, S.; Devanur, N.~R.; and Li, L.
+\newblock 2015.
+\newblock Contextual bandits with global constraints and objective.
+\newblock {\em arXiv preprint arXiv:1506.03374}.
+
+\bibitem[\protect\citeauthoryear{Auer and Ortner}{2007}]{Auer2007UCB4RL}
+Auer, P., and Ortner, R.
+\newblock 2007.
+\newblock Logarithmic online regret bounds for undiscounted reinforcement
+  learning.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  49--56.
+
+\bibitem[\protect\citeauthoryear{Auer, Cesa-Bianchi, and
+  Fischer}{2002}]{Auer2002ML:UCB}
+Auer, P.; Cesa-Bianchi, N.; and Fischer, P.
+\newblock 2002.
+\newblock Finite-time analysis of the multiarmed bandit problem.
+\newblock {\em Machine learning} 47(2-3):235--256.
+
+\bibitem[\protect\citeauthoryear{Badanidiyuru, Kleinberg, and
+  Singer}{2012}]{Badanidiyuru2012EC:OnlineProcurement}
+Badanidiyuru, A.; Kleinberg, R.; and Singer, Y.
+\newblock 2012.
+\newblock Learning on a budget: posted price mechanisms for online procurement.
+\newblock In {\em ACM Conference on Electronic Commerce},  128--145.
+
+\bibitem[\protect\citeauthoryear{Badanidiyuru, Kleinberg, and
+  Slivkins}{2013}]{Badanidiyuru2013FOCS}
+Badanidiyuru, A.; Kleinberg, R.; and Slivkins, A.
+\newblock 2013.
+\newblock Bandits with knapsacks.
+\newblock In {\em IEEE 54th Annual Symposium on Foundations of Computer Science
+  (FOCS)},  207--216.
+
+\bibitem[\protect\citeauthoryear{Badanidiyuru, Langford, and
+  Slivkins}{2014}]{Badanidiyuru2014COLT}
+Badanidiyuru, A.; Langford, J.; and Slivkins, A.
+\newblock 2014.
+\newblock Resourceful contextual bandits.
+\newblock In {\em Conference on Learning Theory (COLT)}.
+
+\bibitem[\protect\citeauthoryear{Combes, Jiang, and
+  Srikant}{2015}]{Combes&Srikant2015Sigmetrics}
+Combes, R.; Jiang, C.; and Srikant, R.
+\newblock 2015.
+\newblock Bandits with budgets: Regret lower bounds and optimal algorithms.
+\newblock In {\em ACM Sigmetrics}.
+
+\bibitem[\protect\citeauthoryear{Flajolet and
+  Jaillet}{2015}]{Flajolet&Patrick2015TR:BwK}
+Flajolet, A., and Jaillet, P.
+\newblock 2015.
+\newblock Low regret bounds for bandits with knapsacks.
+\newblock {\em arXiv preprint arXiv:1510.01800}.
+
+\bibitem[\protect\citeauthoryear{Jiang and Srikant}{2013}]{Jiang2013CDC}
+Jiang, C., and Srikant, R.
+\newblock 2013.
+\newblock Bandits with budgets.
+\newblock In {\em IEEE 52nd Annual Conference on Decision and Control (CDC)},
+  5345--5350.
+
+\bibitem[\protect\citeauthoryear{Lai and Liao}{2012}]{Lai2012SA}
+Lai, T.~L., and Liao, O. Y.-W.
+\newblock 2012.
+\newblock Efficient adaptive randomization and stopping rules in multi-arm
+  clinical trials for testing a new treatment.
+\newblock {\em Sequential Analysis} 31(4):441--457.
+
+\bibitem[\protect\citeauthoryear{Langford and Zhang}{2007}]{Langford2007NIPS}
+Langford, J., and Zhang, T.
+\newblock 2007.
+\newblock The epoch-greedy algorithm for contextual multi-armed bandits.
+\newblock In {\em Advances in Neural Information Processing Systems (NIPS)},
+  817--824.
+
+\bibitem[\protect\citeauthoryear{Li \bgroup et al\mbox.\egroup
+  }{2010}]{Li2010WWW:LinUCB}
+Li, L.; Chu, W.; Langford, J.; and Schapire, R.~E.
+\newblock 2010.
+\newblock A contextual-bandit approach to personalized news article
+  recommendation.
+\newblock In {\em ACM International Conference on World Wide Web (WWW)},
+  661--670.
+
+\bibitem[\protect\citeauthoryear{Lu, P{\'a}l, and
+  P{\'a}l}{2010}]{Lu2010ICAIS:CMAB}
+Lu, T.; P{\'a}l, D.; and P{\'a}l, M.
+\newblock 2010.
+\newblock Contextual multi-armed bandits.
+\newblock In {\em International Conference on Artificial Intelligence and
+  Statistics},  485--492.
+
+\bibitem[\protect\citeauthoryear{Neely, Rager, and
+  La~Porta}{2012}]{Neely2012TAC:MWLearning}
+Neely, M.~J.; Rager, S.~T.; and La~Porta, T.~F.
+\newblock 2012.
+\newblock Max weight learning algorithms for scheduling in unknown
+  environments.
+\newblock {\em IEEE Trans. on Automatic Control} 57(5):1179--1191.
+
+\bibitem[\protect\citeauthoryear{Neely}{2010}]{Neely2010Book:BP}
+Neely, M.~J.
+\newblock 2010.
+\newblock Stochastic network optimization with application to communication and
+  queueing systems.
+\newblock {\em Synthesis Lectures on Communication Networks} 3(1):1--211.
+
+\bibitem[\protect\citeauthoryear{Ouyang \bgroup et al\mbox.\egroup
+  }{2010}]{Ouyang&Shroff2010Allerton}
+Ouyang, W.; Murugesan, S.; Eryilmaz, A.; and Shroff, N.~B.
+\newblock 2010.
+\newblock Scheduling with rate adaptation under incomplete knowledge of
+  channel/estimator statistics.
+\newblock In {\em Communication, Control, and Computing (Allerton), 2010 48th
+  Annual Allerton Conference on},  670--677.
+\newblock IEEE.
+
+\bibitem[\protect\citeauthoryear{Slivkins}{2013}]{Slivkins2013TR}
+Slivkins, A.
+\newblock 2013.
+\newblock Dynamic ad allocation: Bandits with budgets.
+\newblock {\em arXiv preprint arXiv:1306.0155}.
+
+\bibitem[\protect\citeauthoryear{Slivkins}{2014}]{Slivkins2014JMLR:ContMAB}
+Slivkins, A.
+\newblock 2014.
+\newblock Contextual bandits with similarity information.
+\newblock {\em The Journal of Machine Learning Research} 15(1):2533--2568.
+
+\bibitem[\protect\citeauthoryear{Tran-Thanh \bgroup et al\mbox.\egroup
+  }{2012}]{Tran2012AAAI:MAB_BF}
+Tran-Thanh, L.; Chapman, A.~C.; Rogers, A.; and Jennings, N.~R.
+\newblock 2012.
+\newblock Knapsack based optimal policies for budget-limited multi-armed
+  bandits.
+\newblock In {\em AAAI Conference on Artificial Intelligence}.
+
+\bibitem[\protect\citeauthoryear{Wu \bgroup et al\mbox.\egroup
+  }{2015}]{Wu2015NIPS:CCB}
+Wu, H.; Srikant, R.; Liu, X.; and Jiang, C.
+\newblock 2015.
+\newblock Algorithms with logarithmic or sublinear regret for constrained
+  contextual bandits.
+\newblock In {\em The 29th Annual Conference on Neural Information Processing
+  Systems (NIPS)}.
+
+\bibitem[\protect\citeauthoryear{Xia \bgroup et al\mbox.\egroup
+  }{2015}]{Qin&Liu2015IJCAI:TS}
+Xia, Y.; Li, H.; Qin, T.; Yu, N.; and Liu, T.-Y.
+\newblock 2015.
+\newblock Thompson sampling for budgeted multi-armed bandits.
+\newblock In {\em International Joint Conference on Artificial Intelligence}.
+
+\bibitem[\protect\citeauthoryear{Zhou}{2015}]{Zhou2015CMAB:Survey}
+Zhou, L.
+\newblock 2015.
+\newblock A survey on contextual multi-armed bandits.
+\newblock {\em arXiv preprint arXiv:1508.03326}.
+
+\end{thebibliography}

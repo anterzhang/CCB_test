@@ -1,0 +1,114 @@
+\section{Numerical Experiments} \label{sec:sim_results}
+
+In this section, we evaluate the regret of the proposed algorithms through numerical simulations.
+%To the best of our knowledge, there are no existing computationally efficient algorithms for constrained contextual bandits.
+We study the performance of the proposed algorithms here for unit-cost systems as the parameter setting is relatively simple to control while providing  us useful insights. The performance in heterogeneous-cost systems is similar as we have shown theoretically, and omitted here.
+In the case with known statistics, we compare the proposed PB (two-context case) and ALP algorithms with Fixed LP (FLP) algorithm that uses a fixed average budget constraint $B/T$ since both \cite{Badanidiyuru2014COLT} and \cite{Agrawal2014EC} use fixed average budget constraint. Then, the UCB-based FLP, i.e., UCB-FLP, is evaluated in the case without knowledge of expected rewards. We also evaluate algorithms for the case without knowledge of context distribution. When the context distribution is unknown to the agent, we use the Empirical ALP (EALP) algorithm, that uses the empirical distribution (histogram) of context for making decisions, in the case with known expected rewards. Then, the UCB-based EALP is proposed for the case without knowledge of expected rewards.
+The results are averaged from 5,000 independent runs of the simulations.
+
+\subsection{Two-Context Systems}
+
+\begin{figure*}[thbp]
+\begin{center}
+    \begin{minipage}[b]{1.0\linewidth}
+        \begin{center}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_known_rho0p39}
+        \label{fig:twocont_regret_known_rho0p39}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_known_rho0p40}
+        \label{fig:twocont_regret_known_rho0p40}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_known_rho0p41}
+        \label{fig:twocont_regret_known_rho0p41}}
+        %\vspace{-0.45cm}
+        \caption{Comparison of algorithms for the two-context systems with perfect knowledge ($\pi_1 = 0.4, \pi_2 = 0.6$), (a) $\rho = 0.39$,
+        (b) $\rho = 0.4$,
+        (c) $\rho = 0.41$.}
+        \label{fig:twocont_known}
+        \end{center}
+    \end{minipage}
+\end{center}
+\vspace{-0.5cm}
+\end{figure*}
+
+We first consider a two-context scenario with $K = 3$ arms and Bernoulli rewards: the context distribution vector is $\boldsymbol{\pi} = [0.4, 0.6]$, the expected rewards are $\boldsymbol{u}_1 = 0.8 \times [1/3,2/3,1]$ for context 1, and $\boldsymbol{u}_2 = 0.4 \times [1/3,2/3,1]$  for context 2. The boundary is $q_1 = \pi_1 = 0.4$ and we study the cases with normalized budget $\rho = 0.39, 0.4$, and $0.41$, respectively.
+
+Figure~\ref{fig:twocont_known} shows the regret of different algorithms in the case with known expected rewards. In the non-boundary cases (i.e., $\rho = 0.39, 0.41$), the ALP algorithm achieves near optimal performance. Even without the knowledge of context distribution, the EALP algorithm performs much better than FLP. In the boundary case, i.e., $\rho = 0.4$, the regret of ALP increases with $T$ but is still lower than that of FLP. The EALP algorithm achieves higher regret than ALP and FLP due to the empirical distribution errors.
+
+
+\begin{figure*}[thbp]
+\begin{center}
+    \begin{minipage}[b]{1.0\linewidth}
+        \begin{center}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_unknown_rho0p39}
+        \label{fig:twocont_regret_unknown_rho0p39}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_unknown_rho0p40}
+        \label{fig:twocont_regret_unknown_rho0p40}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/twocont_regret_unknown_rho0p41}
+        \label{fig:twocont_regret_unknown_rho0p41}}
+        %\vspace{-0.45cm}
+        \caption{Comparison of algorithms for the two-context systems without perfect knowledge ($\pi_1 = 0.4, \pi_2 = 0.6$), (a) $\rho = 0.39$,
+        (b) $\rho = 0.4$,
+        (c) $\rho = 0.41$. }
+        \label{fig:twocont_unknown}
+        \end{center}
+    \end{minipage}
+\end{center}
+\vspace{-0.5cm}
+\end{figure*}
+
+Figure~\ref{fig:twocont_unknown} shows the regret of different algorithms in the case without knowledge of expected rewards. We can see that in the non-boundary cases, UCB-ALP and UCB-EALP achieves regret that is very close to UCB-PB and outperforms UCB-FLP. Interestingly, we can even see that UCB-ALP achieves slightly lower regret than UCB-PB in the case with $\rho = 0.41$. This is because under UCB-PB, the better context may be skipped and wasted if it does not have the highest UCB. In contrast, the UCB-ALP algorithm may allocate certain resource to the better context, even when it does not have the highest UCB. On the boundary case, the regrets of UCB-ALP  and UCB-EALP become larger than that of UCB-PB, but are still sublinear in $T$.
+
+
+
+
+
+\subsection{Multi-Context Systems}
+Next, we study a multi-context scenario with $J = 10$ contexts, $K = 5$ arms, and Bernoulli rewards. Specifically,  the context distribution vector is $\boldsymbol{\pi} = [0.025, 0.05, 0.075, 0.15, 0.2, 0.2, 0.15, 0.075,  0.05, 0.025]$. The expected reward of action $k$ under context $j$ is ${u}_{j,k} =\frac{jk}{JK}$. One boundary in this system is $q_5 = 0.5$. We study the cases with average budget $\rho = 0.49, 0.5$, and $0.51$, respectively. In this case, it is difficult to calculate the expected total reward obtained by the oracle solution. Thus, we calculate the regret by comparing with the upper bound, i.e., $\widehat{U}(T,B) = Tv(\rho)$.
+
+\begin{figure*}[thbp]
+\begin{center}
+    \begin{minipage}[b]{1.0\linewidth}
+        \begin{center}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_known_rho0p49}
+        \label{fig:multicont_regret_known_rho0p49}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_known_rho0p50}
+        \label{fig:multicont_regret_known_rho0p50}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_known_rho0p51}
+        \label{fig:multicont_regret_known_rho0p51}}
+        %\vspace{-0.45cm}
+        \caption{Comparison of algorithms for the multi-context systems with perfect knowledge ($Q_5 = 0.5$), (a) $\rho = 0.49$,
+        (b) $\rho = 0.5$,
+        (c) $\rho = 0.51$.}
+        \label{fig:multicont_known}
+        \end{center}
+    \end{minipage}
+\end{center}
+\vspace{-0.5cm}
+\end{figure*}
+
+Figure~\ref{fig:multicont_known} shows the regret of different algorithms in the case with known expected rewards.
+In the non-boundary cases, both the ALP and EALP algorithm  achieve similar performance as in the two-context case. The regret of EALP is even lower than FLP in the boundary case, since the ratio of contexts that are executed with correct probability is higher than that in the two-context systems.
+
+
+\begin{figure*}[thbp]
+\begin{center}
+    \begin{minipage}[b]{1.0\linewidth}
+        \begin{center}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_unknown_rho0p49}
+        \label{fig:multicont_regret_unknown_rho0p49}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_unknown_rho0p50}
+        \label{fig:multicont_regret_unknown_rho0p50}}
+        \subfigure[]{\includegraphics[angle = 0,width = 0.32\linewidth]{fig/multicont_regret_unknown_rho0p51}
+        \label{fig:multicont_regret_unknown_rho0p51}}
+        %\vspace{-0.45cm}
+        \caption{Comparison of algorithms for the multi-context systems without perfect knowledge ($Q_5 = 0.5$), (a) $\rho = 0.49$,
+        (b) $\rho = 0.5$,
+        (c) $\rho = 0.51$.}
+        \label{fig:multicont_unknown}
+        \end{center}
+    \end{minipage}
+\end{center}
+\vspace{-0.5cm}
+\end{figure*}
+Figure~\ref{fig:multicont_unknown} shows the regret of different algorithms in the case without  knowledge of expected rewards.
+We can see that all algorithms achieve sublinear regret, but the difference between the non-boundary cases and the boundary case is small. This is rooted in the fact that when the number of contexts and the number of actions are large, it requires more time to learn the expected rewards. Hence, the constant in the $\log T$ term is much larger than that in the $\sqrt{T}$ term, and the  $\log{T}$ term dominates the regret and the impact of the $\sqrt{T}$ term could be small. Exploring the structure of the reward function in contextual bandits, e.g., similarity \cite{Slivkins2014JMLR:ContMAB} and linearity \cite{Li2010WWW:LinUCB}, to reduce the exploration time is part of our future work.
+

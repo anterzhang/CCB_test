@@ -1,0 +1,135 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{nips15submit_e,times}
+%\usepackage{nips15,times}
+\usepackage{hyperref}
+\usepackage{url}
+%\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
+
+
+% My own packages
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+%\usepackage{bbm}
+\usepackage{dsfont}
+% For algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+\usepackage{subfigure}
+% For citations
+%\usepackage{natbib}
+\usepackage[english]{babel}  % load the hyphenation patterns for American English
+
+\hyphenation{theo-retical theo-retically}
+
+% Customized definition
+% define the operation argmin and argmax
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\renewcommand{\baselinestretch}{0.925}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\allowdisplaybreaks[2]
+%\hyphenpenalty=1
+\newtheorem{theorem}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corol}{Corollary}
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+
+\newcommand{\wu}[1]{\textcolor{red}{/*Wu: #1*/}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+%\newcommand{\blue}[1]{{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+
+\title{Algorithms with Logarithmic or Sublinear Regret for\\
+ Constrained Contextual Bandits}
+
+
+\author{
+Huasen Wu \\
+University of California at Davis\\
+\texttt{hswu@ucdavis.edu}
+\And
+R.~Srikant \\
+University of Illinois at Urbana-Champaign \\
+\texttt{rsrikant@illinois.edu}
+\And
+Xin Liu \\
+University of California at Davis\\
+\texttt{liu@cs.ucdavis.edu}
+\And
+Chong Jiang \\
+University of Illinois at Urbana-Champaign\\
+\texttt{jiang17@illinois.edu}
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\nipsfinalcopy % Uncomment for camera-ready version
+
+\begin{document}
+
+
+\maketitle
+\vspace{-0.5cm}
+\begin{abstract}
+We study contextual bandits with budget and time constraints, referred to as \emph{constrained contextual bandits}.
+The time and budget constraints significantly complicate the exploration and exploitation tradeoff because they introduce complex coupling among contexts over time.
+%Such coupling effects make it difficult to obtain oracle solutions that assume known statistics of bandits.
+To gain insight, we first study unit-cost systems with known context distribution. When the expected rewards are known,
+we develop an approximation of the oracle, referred to Adaptive-Linear-Programming (ALP), which achieves near-optimality and only requires the ordering of expected rewards. With these highly desirable features,  we  then combine ALP with the upper-confidence-bound (UCB) method in the general case where the expected rewards are unknown {\it a priori}. We show that the proposed UCB-ALP algorithm achieves logarithmic regret except for certain boundary cases.
+Further, we design algorithms and obtain similar regrets for  more general systems with unknown context distribution and heterogeneous costs.  To the best of our knowledge, this is the  first work that shows how to achieve logarithmic regret in constrained contextual bandits.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% body
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\input{intro}
+
+\input{sys_model}
+
+\input{oracle_solution}
+
+\input{ucb_dp}
+
+\input{extensions}
+
+%\input{sim_results}
+
+\input{conclusion}
+
+\input{ack}
+
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+%\nocite{langley00}
+
+\bibliography{OnlineOpt,mypublications_0802,math}
+\bibliographystyle{unsrt_abbrv}
+%\bibliographystyle{abbrv}
+%% appendix
+\input{appendix}
+
+%\input{example}
+\end{document}

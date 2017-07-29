@@ -1,0 +1,35 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{System Model}{}% 2
+\BOOKMARK [1][-]{section.3}{Approximations of the Oracle}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Upper Bound: Static Linear Programming}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Adaptive Linear Programming}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{UCB-ALP Algorithm for Constrained Contextual Bandits}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{UCB: Notations and Property}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{UCB-ALP Algorithm}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{Regret of UCB-ALP}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Bandits with Unknown Context Distribution}{}% 10
+\BOOKMARK [1][-]{section.6}{Bandits with Heterogeneous Costs}{}% 11
+\BOOKMARK [1][-]{section.7}{Conclusion}{}% 12
+\BOOKMARK [1][-]{appendix.A}{Proof of Lemma 1: Upper Bound}{}% 13
+\BOOKMARK [1][-]{appendix.B}{Proof of Theorem 1: Near Optimality of ALP}{}% 14
+\BOOKMARK [2][-]{subsection.B.1}{Proof of Lemma 2: Evolution of Remaining Budget}{appendix.B}% 15
+\BOOKMARK [2][-]{subsection.B.2}{Part 1: Non-Boundary Cases}{appendix.B}% 16
+\BOOKMARK [2][-]{subsection.B.3}{Part 2: Boundary Cases}{appendix.B}% 17
+\BOOKMARK [1][-]{appendix.C}{Proof of Theorem 2: Regret of UCB-ALP}{}% 18
+\BOOKMARK [2][-]{subsection.C.1}{Step 1: Partition the Regret}{appendix.C}% 19
+\BOOKMARK [2][-]{subsection.C.2}{Step 2: Bound Each Part of Regret}{appendix.C}% 20
+\BOOKMARK [3][-]{subsubsection.C.2.1}{Step 2.1: Bound of RUCB-ALP\(a\)\(T, B\)}{subsection.C.2}% 21
+\BOOKMARK [3][-]{subsubsection.C.2.2}{Step 2.2: Bound of RUCB-ALP\(c\)\(T, B\)}{subsection.C.2}% 22
+\BOOKMARK [1][-]{appendix.D}{Two-Context Systems with Unit-Cost}{}% 23
+\BOOKMARK [2][-]{subsection.D.1}{Oracle Algorithm: Procrastinate-for-the-Better-context}{appendix.D}% 24
+\BOOKMARK [2][-]{subsection.D.2}{UCB-PB: Logarithmic Regret Algorithm for Two-Context Bandits with Unit-Cost}{appendix.D}% 25
+\BOOKMARK [1][-]{appendix.E}{Constrained Contextual Bandits with Unknown Context Distribution}{}% 26
+\BOOKMARK [1][-]{appendix.F}{Constrained Contextual Bandits with Heterogeneous Costs}{}% 27
+\BOOKMARK [2][-]{subsection.F.1}{Approximation of the Oracle Algorithm}{appendix.F}% 28
+\BOOKMARK [3][-]{subsubsection.F.1.1}{Upper Bound}{subsection.F.1}% 29
+\BOOKMARK [3][-]{subsubsection.F.1.2}{ALP Algorithm}{subsection.F.1}% 30
+\BOOKMARK [2][-]{subsection.F.2}{-First ALP Algorithm}{appendix.F}% 31
+\BOOKMARK [2][-]{subsection.F.3}{Deciding \(T\) without Prior Information}{appendix.F}% 32
+\BOOKMARK [1][-]{appendix.G}{Numerical Experiments}{}% 33
+\BOOKMARK [2][-]{subsection.G.1}{Two-Context Systems}{appendix.G}% 34
+\BOOKMARK [2][-]{subsection.G.2}{Multi-Context Systems}{appendix.G}% 35

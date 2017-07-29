@@ -1,0 +1,498 @@
+
+\section{Confidence Lyapunov Optimization}
+
+
+In this section, we propose a Confidence Lyapunov Optimization (CLO) for constrained contextual bandits. We first discuss the oracle solutions with known system statistics, and the approximate solution when the context distribution is unknown. Then, we propose our CLO algorithm when the system statistics are unknown.
+
+\subsection{Oracle Solution: Static Linear Programming}
+When the system statistics, including $\pi_j$'s, $u_{j,k}$'s, and $c_{j,k}^{(i)}$'s, are known, the oracle solution can take a randomized policy and make the optimal decision by solving a static linear programming (SLP) problem, where the optimal decision only depends on the current context $X_t$. Specifically, let $p_{j,k}$ be the probability that an algorithm takes action $k$ under context $j$. Then, the optimal solution can be obtained by solving the following linear programming problem:
+\begin{align}
+\underset{p_{j,k}}{\text{max}}&~~  \sum_{j= 1}^J \sum_{k = 1}^K p_{j,k} \pi_j u_{j,k}\\
+\text{s.~t.} &~~ \sum_{j=1}^J \sum_{k = 1}^K p_{j,k} \pi_j c_{j,k}^{(i)} \leq b_i, ~~\forall i,  \\
+&~~ \sum_{k = 1}^K p_{j,k} \leq 1,~~\forall j.
+\end{align}
+Let $v^*(\bs{b})$ be the optimal solution of the above problem. Then  $U^*(T, \bs{b}) = T v^*(\bs{b})$ is the performance of the oracle solution when the time horizon is $T$. As shown in \cite{Wu2015NIPS:CCB}, if we consider the hard constraints as \cite{Badanidiyuru2014COLT,Wu2015NIPS:CCB}, then $U^*(T, \bs{b})$ provides an upper bound for the oracle solution.
+
+\subsection{Approximate Solution with Unknown Context Distribution}
+
+When $u_{j,k}$'s and $c^{(i)}_{j,k}$'s are known, but $\pi_j$'s are unknown, a Lyapunov optimization algorithm \cite{Neely2010Book:BP} can be applied and has been shown to be $\epsilon$-optimal.
+The key idea of this Lyapunov optimization algorithm is to estimate the Lagrangian multipliers of the SLP problem and make decisions based on these estimates.
+
+Specifically, when the statistics are known, consider the Lagrangian of the SLP problem,
+{\small 
+\begin{align}
+&\quad\mathcal{L}(\bs{p}, \bs{\gamma}) \nonumber \\
+&= V \sum_{j= 1}^J \sum_{k = 1}^K p_{j,k} \pi_j u_{j,k} + \sum_{i=1}^M \gamma_i \sum_{j=1}^J \big[\sum_{k = 1}^K p_{j,k} \pi_j c_{j,k}^{(i)}  - b_i\big] \nonumber \\
+&= \sum_{j=1}^J \bigg\{V \sum_{k = 1}^K p_{j,k} \pi_j u_{j,k}  + \sum_{i=1}^M \gamma_i \big[\sum_{k = 1}^K p_{j,k} \pi_j c_{j,k}^{(i)}  - b_i\big]    \bigg\}.
+\end{align}
+}Note that adding a positive parameter $V$ here will not change the optimal solution $\bs{p}$, but it will play an important role in balancing between the reward and constraints later when the system statistics is unknown.
+
+When the context distribution $\bs{\pi}$ is unknown, the Lyapunov optimization algorithm maintains virtual queues corresponding to each type of resource constraints, which will serve as the Lagrangian multipliers when making decision. Specifically, consider a virtual queue $Q_i(t)$ for each type of resource $i$, which evolves as follows:
+\begin{equation}
+Q_i(t + 1) = [Q_i(t) - b_i]^+ + Z_{i,t},
+\end{equation}
+where $[x]^+ = \max\{x, 0\}$.
+
+
+At slot $t$, the Lyapunov optimization algorithm chooses the decision based on $X_t = j$ and $Q_i(t)$'s:
+\begin{equation}
+(\mathcal{P}_{\rm LO})~~\underset{k\in \mathcal{A}}{\text{max}} ~~ V u_{j,k} + \sum_{i = 1}^M Q_i(t)[b_i - c_{j,k}^{(i)}] \nonumber
+\end{equation}
+The Lyapunov optimization algorithm is shown to achieve $\epsilon$-optimality \cite{Neely2010Book:BP}, i.e., $U_{\text{Lyp}}(T, \bs{b})\geq U^*(T, \bs{b})  - O(\frac{1}{V})$, and $\mathbb{E}[Q_i(T)] = O(V)$ represents the budget violation.
+
+\subsection{Confidence Lyapunov Optimization}
+When the system statistics are unknown, we propose a Confidence Lyapunov Optimization (CLO) algorithm, where we implement Lyapunov optimization algorithm within the confidence bounds of the reward $u_{j,k}$ and the cost $c_{j,k}^{(i)}$.
+
+Specifically, let $N_{j,k}(t-1)$ be the number of rounds that action $k$ has been taken under context $j$ until time-slot $t-1$, i.e.,
+$N_{j,k}(t-1) =  \sum_{\tau = 1}^{t-1}\mathbbm{1}(X_{\tau} = j, A_\tau = k)$. For $t > 0$ and $N_{j,k}(t-1) > 0$, the empirical value of the reward and cost are given as
+\begin{align}
+&\bar{u}_{j,k}(t) =  \frac{1}{N_{j,k}(t-1)}\sum_{\tau = 1}^{t - 1} Y_\tau \mathbbm{1}(X_{\tau} = j, A_\tau = k), \nonumber \\
+&\bar{c}_{j,k}^{(i)}(t) =  \frac{1}{N_{j,k}(t-1)}\sum_{\tau = 1}^{t - 1} Z_{i,\tau} \mathbbm{1}(X_\tau = j, A_\tau = k). \nonumber
+\end{align}
+Then, we define the confidence bounds of the expected reward as 
+$\check{u}_{j,k}(t) = \bar{u}_{j,k}(t) - \sqrt{\frac{\alpha\log t}{N_{j,k}(t-1)}}$ and $\hat{u}_{j,k}(t) = \bar{u}_{j,k}(t) + \sqrt{\frac{\alpha \log t}{N_{j,k}(t-1)}}$, 
+and the confidence bounds of the expected cost as $\check{c}_{j,k}^{(i)}(t) = \bar{c}_{j,k}^{(i)}(t) - \sqrt{\frac{\alpha \log t}{N_{j,k}(t-1)}}$ 
+and $\hat{c}_{j,k}^{(i)}(t) = \bar{c}_{j,k}^{(i)}(t) + \sqrt{\frac{\alpha \log t}{N_{j,k}(t-1)}}$, where $\alpha > 0.5$ is a constant.
+For $N_{j,k}(t-1) = 0$, we let $\check{u}_{j,k}(t) = 0$, $\hat{u}_{j,k}(t) = 1$, $\check{c}_{j,k}^{(i)}(t) = 0$, and $\hat{c}_{j,k}^{(i)}(t) = 1$.
+
+Using the Chernoff-Hoeffding bounds, we have the following lemma:
+\begin{lemma}
+For any $t > 0$,
+\begin{eqnarray}
+\mathbb{P}\{u_{j,k} \in [\check{u}_{j,k}(t), \hat{u}_{j,k}(t)] \} \geq 1 - \frac{2}{t^{2\alpha}}, \nonumber \\
+\mathbb{P}\{c^{(i)}_{j,k} \in [\check{c}^{(i)}_{j,k}(t), \hat{c}^{(i)}_{j,k}(t)] \} \geq 1 - \frac{2}{t^{2\alpha}}. \nonumber
+\end{eqnarray}
+\end{lemma}
+
+Now we present the CLO algorithm, as shown in Algorithm~\ref{alg:clo}. The idea of CLO is to solve the Lyapunov optimization problem $(\mathcal{P}_{\rm LO})$ 
+within the confidence bounds, i.e., with additional conditions $u_{j,k}(t) \in [\check{u}_{j,k}(t), \hat{u}_{j,k}(t)]$ and $c_{j,k}^{(i)}(t) \in [\check{c}_{j,k}^{(i)}(t), \hat{c}_{j,k}^{(i)}(t)]$.
+For constrained contextual bandits with linear reward and budget constraints, we can easily that we just need to replace $u_{j,k}$ 
+with its UCB $\hat{u}_{j,k}(t)$ and $c_{j,k}$ with its LCB $\check{c}_{j,k}(t)$, respectively, as described in Eq.~\eqref{eq:clo_decision}.
+\begin{algorithm}[htbp]
+\caption{Confidence Lyapunov Optimization (CLO)}
+\label{alg:clo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand\algorithmiccomment[1]{%
+{//{\it ~{#1}}}%
+}
+\begin{algorithmic}[1]
+\STATE{\algorithmicrequire ~$T$, $\bs{b}$, $V$;}
+\STATE{{\bfseries Init:} $N_{j,k}(0) \gets 0$; $\bar{u}_{j,k}(1) = 0$, $\bar{c}^{(i)}_{j,k}(1) = 0$; $Q_i(1)=0$;}
+\FOR{$t = 1$ {\bfseries to} $T$}
+\STATE{Observe context $X_t$};
+\STATE{Calculate UCB $\hat{u}_{X_t, k}(t)$ and LCB $\check{c}_{X_t, k}(t)$;}
+\STATE{Choose the action as follows
+\begin{eqnarray} \label{eq:clo_decision}
+A_t = \argmax_{k \in \mathcal{A}} V \hat{u}_{j,k}(t) - \sum_{i = 1}^M Q_i(t)\check{c}_{j,k}^{(i)}(t)
+\end{eqnarray}
+}
+\STATE{Receive reward $Y_t$ and costs $Z_{i,t}$'s,\\ and update the empirical reward and costs.}
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Regret Analysis}
+
+In this section, we study the regret of CLO. Although the intuition behind the CLO algorithm is natural, the analysis of its regret is challenging. The coupling effect in CLO significantly increases the analysis complexity compared to traditional Lyapunov optimization algorithm and the UCB algorithm for unconstrained bandits. Specifically, the values of $\hat{u}_{j,k}(t)$'s and $\check{c}_{j,k}(t)$'s will affect the the decision and then the evolution of $Q_i(t)$. Conversely, the values  of $Q_i(t)$'s affect the decision and determine which action to explore. Moreover, in principle, the value of $Q_i(t)$ is unbounded,  and thus certain tiny error of $\hat{u}_{j,k}(t)$ or $\check{c}_{j,k}(t)$ may be amplified significantly and cause a wrong decision. This is unlike the dual variables in \cite{Agrawal2015TR:LCB}, which are updated within a bounded set.
+We address these difficulties by studying the cumulative impact of estimation errors and the large deviation properties of virtual queues. We show that the CLO algorithm achieves $O(\sqrt{T \log T})$ regret.
+
+\begin{theorem} \label{thm:regret_bound_clo}
+Given $V = \sqrt{T}$,  the regret of CLO satisfies
+\begin{equation}
+R_{\rm CLO}(T) = O(\sqrt{T\log T}).
+\end{equation}
+\end{theorem}
+
+To bound the regret of CLO, we need to bound the number of error decisions. Under CLO, there are two sources for these errors, one is the estimation errors for $u_{j,k}$ and $c_{j,k}^{(i)}$, the other is the deviation of the virtual queues. We bound these two types of errors, respectively.
+
+When the rewards $u_{j,k}$'s and the costs $c_{j,k}$'s are unknown, the error decision is inevitable when the action $k$ has not been taken under context $j$ sufficiently.
+Given a constant $\delta > 0$, we define $F^{(\delta)}_{j,k}(T)$ as the number of time-slots that the \emph{executed while under-sampling} event occurs, i.e.,
+\begin{equation}
+F^{(\delta)}_{j,k}(T) = \sum_{t = 1}^{T} \mathbbm{1}(X_{t} = j, A_{t} = k, N_{j,k}(t-1) \leq \frac{\alpha\log T}{\delta^2}).
+\end{equation}
+
+According to the definition of $F^{(\delta)}_{j,k}(T)$, we can easily see that $F^{(\delta)}_{j,k}(T) \leq \frac{\alpha\log T}{\delta^2}$. Thus, consider all $j$ and $k$, we have
+\begin{lemma} \label{thm:prob_executed_undersampling}
+The sum of $F^{(\delta)}_{j,k}(T)$ is bounded as follows:
+\begin{equation}
+\sum_{j,k} F^{(\delta)}_{j,k}(T) =  \frac{\alpha JK \log T}{\delta^2}.
+\end{equation}
+\end{lemma}
+
+Based on Lemma~\ref{thm:prob_executed_undersampling} and according to the properties of confidence bounds, we can bound the deviation of the virtual queues as follows:
+\begin{lemma} \label{thm:queue_bound} Let $\delta = \frac{\min_i b_i} {4}$. 
+Under CLO,  we have
+\begin{equation}
+\mathbb{P}\{Q_i(t) \geq [(2\delta)^{-1} + 3/2] V + \kappa V|\mathcal{H}_1\} \leq \eta e^{-\kappa'  V^2}, ~\forall t,
+\end{equation}
+where $\eta$ is a constant.
+\end{lemma}
+To prove Lemma~\ref{thm:queue_bound}, we first analyze the Lyapunov drift of the virtual queues. 
+Define a new Lyapunov function $L_0(t) = \frac{1}{2}||\bs{Q}(t)||^2$, and its drift as $\Delta_0(t) = L_0(t + 1) - L_0(t) $. 
+We show that the Lyapunov function has a negative drift under certain conditions:\\
+\begin{lemma} \label{thm:L0_drift_bound}
+Let
+{\small
+\begin{equation}
+\mathcal{E}^{u,c}_{t} = \big\{u_{j,k} \in [\check{u}_{j,k}(t), \hat{u}_{j,k}(t)], c^{(i)}_{j,k} \in [\check{c}^{(i)}_{j,k}(t), \hat{c}^{(i)}_{j,k}(t)], \forall i,j,k\big\}. \nonumber
+\end{equation}
+}
+Then under CLO, in at least $T - \frac{\alpha JK \log T}{\delta^2}$ slots, we have
+\begin{equation}
+\mathbb{E}[\Delta_0(t) + \delta V; L_t > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2,  \mathcal{E}^{u,c}_t| \mathcal{H}_t] \leq 0
+\end{equation}
+where for a random variable $X$ and an event $\mathcal{E}$, 
+$\mathbb{E}[X; \mathcal{E}] \triangleq \mathbb{E}[X\mathbbm{1}(\mathcal{E})]$ and $\mathbbm{1}(\cdot)$ is the indicator function.
+\end{lemma}
+%Then,
+%$
+%\mathbb{P}(\mathcal{E}^{u,c}_{t}) \geq 1 - \frac{2(M+1)JK}{t^{2\alpha}}.
+%$
+\begin{proof}
+The drift of $L_0(t)$ under CLO satisfies
+\begin{eqnarray} \label{eq:L0_drift_bound}
+&& \mathbb{E}[\Delta_0(t) | \mathcal{H}_t] \nonumber \\
+&=& \frac{1}{2} \sum_{i = 1}^M \mathbb{E}\big[ \big([Q_i(t) - b_i]^+ + Z_{i,t}\big)^2 - Q^2_i(t)\big| \mathcal{H}_t\big] \nonumber \\
+&\leq & \sum_{i = 1}^M \mathbb{E}\big[Q_i(t)(Z_{i,t} - b_i) \big| \mathcal{H}_t\big].
+\end{eqnarray}
+Under CLO, we know that
+\begin{eqnarray}
+V \hat{u}_{X_t, A_t}(t) - \sum_{i = 1}^M \check{c}_{X_t, A_t}^{(i)}(t) Q_i(t)  \geq 0.
+\end{eqnarray}
+On the other hand, when $\mathcal{E}^{u,c}_{t}$ occurs, we have $u_{X_t, A_t} + 2 \delta_{X_t, A_t} (t) \geq \hat{u}_{X_t, A_t}(t)$,
+and $c^{(i)}_{X_t, A_t} - 2 \delta_{X_t, A_t} (t) \leq \check{c}_{X_t, A_t}^{(i)}(t)$.
+Thus,
+\begin{align}
+&\quad \mathbb{E}_{X_t \sim \mathcal{D}_X} [V u_{X_t, A_t} - \sum_{i = 1}^M {c}_{X_t, A_t}^{(i)} Q_i(t)  \nonumber \\
+& \quad ~~~~~~~~~~~~~~ + 2\delta _{X_t, A_t}(t)(V + \sum_{i = 1}^M Q_i(t)) |\mathcal{H}_t, \mathcal{E}^{u,c}_{t}] \nonumber \\
+&\geq  \mathbb{E}_{X_t \sim \mathcal{D}_X} [V \hat{u}_{X_t, A_t}(t) - \sum_{i = 1}^M \check{c}_{X_t, A_t}^{(i)}(t) Q_i(t)  |\mathcal{H}_t, \mathcal{E}^{u,c}_{t}]  \nonumber \\
+&\geq 0.
+\end{align}
+According to Lemma~\ref{thm:prob_executed_undersampling}, we know that in at least $T - \frac{\alpha JK \log T}{\delta^2}$  slots,
+we have $N_{X_t,A_t}(t-1) > \frac{\alpha \log T}{\delta^2}$ and thus $\delta _{X_t, A_t}(t) \leq \delta$.  Consequently,
+\begin{eqnarray}
+&& \mathbb{E}[\Delta_0(t) + \delta V; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2, \mathcal{E}^{u,c}_{t} | \mathcal{H}_t] \nonumber \\
+& \leq& \mathbb{E}_{X_t \sim \mathcal{D}_X} [V u_{X_t, A_t}; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2,  \mathcal{E}^{u,c}_{t} | \mathcal{H}_t]  \nonumber \\
+&&+ \delta (3V + 2\sum_{i = 1}^M Q_i(t)) - \sum_{i = 1}^M Q_i(t)b_i \nonumber \\
+&\leq & (1 + 3\delta) V + \sum_{i = 1}^M Q_i(t) (2 \delta - b_i).
+\end{eqnarray}
+When $L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2$, we have $\sum_{i = 1}^M Q_i(t) \geq \sqrt{2L_0(t)} \geq [(2\delta)^{-1} + 3/2]V$. Noting that $\delta = \frac{\min_i b_i} {4}$, we have
+\begin{eqnarray}
+&& \mathbb{E}[\Delta_0(t) + \delta V; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2,  \mathcal{E}^{u,c}_{t} | \mathcal{H}_t]  \nonumber \\
+&\leq& (1 + 3\delta) V - (1 + 3\delta)V \leq 0.
+\end{eqnarray}
+\end{proof}
+
+\begin{proof}(Lemma~\ref{thm:queue_bound}) We bound the probability by bounding the expectation of $L_0(t)$ and then using Markov's inequality.
+We show the following result by induction.  
+\begin{equation} \label{eq:L0_gen_func_bound}
+\mathbb{E}[e^{?? L_0(t)}|\mathcal{H}_1] \geq ??.
+\end{equation}
+We can easily verify that inequality~\eqref{eq:L0_gen_func_bound} holds for $t = 1$. For $t \geq 1$, we have
+\begin{eqnarray} 
+\mathbb{E}[e^{?? L_0(t+1)}|\mathcal{H}_1]  =  \mathbb{E}\big[\mathbb{E}[e^{?? L_0(t+1)}|\mathcal{H}_{t}]\big|\mathcal{H}_1\big].
+\end{eqnarray}
+Note that
+\begin{eqnarray}
+&&\mathbb{E}[e^{?? L_0(t+1)}|\mathcal{H}_{t}] \nonumber \\
+&=& \mathbb{E}[e^{?? L_0(t+1)}; L_0(t) \leq \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2|\mathcal{H}_{t}]  \nonumber \\
+&& + \mathbb{E}[e^{?? L_0(t+1)}; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2, \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber \\
+&& + \mathbb{E}[e^{?? L_0(t+1)}; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2, \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber
+\end{eqnarray}
+For the first term, from \eqref{eq:L0_drift_bound} and using $Z_{i,t} \leq 1$, we have
+\begin{eqnarray}
+&&\mathbb{E}[e^{?? L_0(t+1)}; L_0(t) \leq \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2|\mathcal{H}_{t}]  \nonumber \\
+&\leq & \mathbb{E}[e^{?? [L_0(t) + \sqrt{2M L_0(t)}]}; L_0(t) \leq \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2|\mathcal{H}_{t}]  \nonumber \\
+&\leq & e^{?? \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2 + ??[(2\delta)^{-1} + 3/2]V\sqrt{M}}
+\end{eqnarray}
+For the second term, we know from Lemma~\ref{thm:L0_drift_bound} that, for at least $T - \frac{\alpha JK \log T}{\delta^2}$ slots ?? \wu{If $\delta_{X_t, A_t} \leq \delta$}, we have
+\begin{eqnarray}
+&&\mathbb{E}[e^{?? L_0(t+1)}; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2, \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber \\
+&\leq& \nonumber
+\end{eqnarray}
+otherwise, ...\\
+For the third term, we have
+\begin{eqnarray}
+&& \mathbb{E}[e^{?? L_0(t+1)}; L_0(t) > \frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2, \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber \\
+&\leq & \mathbb{E}[e^{?? L_0(t+1)}; \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber \\
+&\leq & \mathbb{E}[e^{?? L_0(t) + ??\sqrt{2M L_0(t)}}; \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] 
+\end{eqnarray}
+Combining all the above three terms, we have
+\begin{eqnarray}
+&&\mathbb{E}[e^{?? L_0(t+1)}|\mathcal{H}_{t}] \nonumber \\
+&=& e^{??[(2\delta)^{-1} + 3/2]V\sqrt{M}} e^{??\frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2}  \nonumber \\
+&& + \rho \mathbb{E}[e^{?? L_0(t)} |\mathcal{H}_{t}] \nonumber \\
+&& + \mathbb{E}[e^{?? L_0(t) + ??\sqrt{2M L_0(t)}}; \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber
+\end{eqnarray}
+Thus,
+\begin{eqnarray}
+&&\mathbb{E}[e^{?? L_0(t+1)}|\mathcal{H}_1] \nonumber \\
+&=& e^{??[(2\delta)^{-1} + 3/2]V\sqrt{M}} e^{??\frac{[(2\delta)^{-1} + 3/2]^2}{2} V^2}  \nonumber \\
+&& + \rho \mathbb{E}[e^{?? L_0(t)} |\mathcal{H}_1] \nonumber \\
+&& + \sum_{\mathcal{H}_t}\mathbb{P}\{\mathcal{H}_t | \mathcal{H}_1\}\mathbb{E}[e^{?? L_0(t) + ??\sqrt{2M L_0(t)}}; \urcorner \mathcal{E}^{u,c}_t |\mathcal{H}_{t}] \nonumber
+\end{eqnarray}
+\end{proof}
+
+Now we bound the cumulative regret of the single-step objective function, which determine the evolution of the Lyapunov function and thus the total reward and costs.
+We note that the  traditional Lyapunov optimization algorithm maximize the following function in each time slot:
+\begin{equation}
+\Phi_t(j,k) = V u_{j,k} - \sum_{i = 1}^M Q_i(t) c^{(i)}_{j,k},
+\end{equation}
+while CLO maximize the following function based on the confidence bounds:
+\begin{equation}
+\hat{\Phi}_t(j,k) = V \hat{u}_{j,k} - \sum_{i = 1}^M Q_i(t) \check{c}^{(i)}_{j,k}.
+\end{equation}
+The following lemma state that under CLO, the cumulative regret for this single-step objective function is bounded by $O(V \sqrt{T \log T})$.
+\begin{lemma} \label{thm:sum_ucb_bound}
+Under CLO,
+\begin{equation}
+\sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ] \leq O(V \sqrt{T \log T})
+\end{equation}
+\end{lemma}
+
+\proof{
+\wu{Some constants depend on Lemma 3 and will be determined later.}
+
+For each $t$, if $X_t = j$, $A_t = k$, we have
+\begin{eqnarray}
+ &&\hat{\Phi}_t(j, k) - \Phi_t(j,k) \nonumber \\
+ &=& V[\hat{u}_{j,k}(t) - u_{j,k}] - \sum_{i = 1}^M Q_i(t)[\check{c}_{j,k}^{(i)}(t) - c_{j,k}^{(i)}].
+\end{eqnarray}
+Note that $Q_i(t) \leq ?V$, we have
+\begin{eqnarray}
+&&\sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ] \nonumber \\
+&\leq & V\sum_{t = 1}^T \mathbb{E}[\hat{u}_{X_t,A_t}(t) - u_{X_t,A_t}] \nonumber \\
+&&- ? V \sum_{i = 1}^M \sum_{t = 1}^T \mathbb{E}[\check{c}_{X_t,A_t}^{(i)}(t) - c_{X_t,A_t}^{(i)}] .
+\end{eqnarray}
+Similar to [Agrawal2014EC], we have
+\begin{eqnarray}
+\mathbb{E}\big[\sum_{t = 1}^T [\hat{u}_{X_t,A_t}(t) - u_{X_t,A_t}]\big] \leq O(\sqrt{JK T \log T}),
+\end{eqnarray}
+and
+\begin{eqnarray}
+-\mathbb{E}\big[\sum_{t = 1}^T[\check{c}_{X_t,A_t}^{(i)}(t) - c_{X_t,A_t}^{(i)}]\big] \leq O(\sqrt{JK T \log T}).
+\end{eqnarray}
+The conclusion then follows.
+}
+
+
+\proof{ (\textbf{Proof of Theorem~\ref{thm:regret_bound_clo})}.
+
+\textbf{Step 1:} Single-slot Lyapunov-drift
+\begin{eqnarray}
+\Delta_V(t) &=& L(t + 1) - L(t) - V Y_t \\
+&\leq & G - \{V u_{j,A_t} + \sum_{i = 1}^M Q_i(t) [b_i-  c_{j, A_t}^{(i)}] \} \nonumber \\
+&=&G - \sum_{i = 1}^M Q_i(t) b_i - \{V u_{j,A_t} - \sum_{i = 1}^M Q_i(t)  c_{j, A_t}^{(i)}\} \nonumber \\
+\end{eqnarray}
+where $G = ??$.
+
+
+
+We have
+\begin{eqnarray}
+\Delta_V(t)&\leq&G - \sum_{i = 1}^M Q_i(t) B_i/T - \{V u_{j,A_t} - \sum_{i = 1}^M Q_i(t)  c_{j, A_t}^{(i)}\} \nonumber \\
+&=&G - \sum_{i = 1}^M Q_i(t) B_i/T - \hat{\Phi}_t(j,A_t) \nonumber \\
+&&  + [ \hat{\Phi}_t(j,A_t) - \Phi_t(j,A_t) ]
+\end{eqnarray}
+
+Under CLO, for $\hat{\Phi}_t(j,A_t)$, we have ($p^*$ is the optimal solution for the fixed LP problem)
+\begin{eqnarray}
+&& \mathbb{E}_{X_t \sim \mathcal{D}_x}[\hat{\Phi}_t(X_t,A_t)|\bs{Q}(t)] \nonumber \\
+& \geq & \mathbb{E}_{X_t \sim \mathcal{D}_x, A_t \sim p^*}[\hat{\Phi}_t(X_t,A_t)|\bs{Q}(t)] \nonumber \\
+&\geq & \mathbb{E}_{X_t \sim \mathcal{D}_x, A_t \sim p^*}[\Phi_t(j,A_t)|\bs{Q}(t)] ~~\text{(with prob.~$1 - JK/t$)} \nonumber \\
+&\geq& \hat{v}(T, B) - \sum_{i = 1}^M (B_i/T - \epsilon_i) Q_i(t).
+\end{eqnarray}
+
+Thus, with probability $1 - JK/t$, we have
+\begin{eqnarray}
+\mathbb{E}[\Delta_V(t)] &=& \mathbb{E}[L(t + 1) - L(t) - V Y_t] \nonumber \\
+&\leq & G - \hat{v}(T, B) V - \sum_{i = 1}^M \epsilon_i  \mathbb{E}[Q_i(t)] \nonumber \\
+&& + \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ].
+\end{eqnarray}
+
+Taking the telescoping sum over $t = 1,  2, \ldots, T$ we have
+\begin{eqnarray}
+&&\mathbb{E}[L(T + 1)] - \mathbb{E}[L(1)] - V \mathbb{E}[\hat{U}_{\rm CLO}(T,B)] \nonumber \\
+&\leq & GT - TV \hat{v}(T, B) -\sum_{t = 1}^T \sum_{i = 1}^M \epsilon_i  \mathbb{E}[Q_i(t)]  \nonumber \\
+&& + \sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ].
+\end{eqnarray}
+Here we let $\hat{U}_{\rm CLO}(T,B)$ be the total reward under CLO from slot $1$ to  $T$. Note that this is not the real reward of CLO because the algorithm will terminate when one of the resource has been exhausted. We will bound the gap $hat{U}_{\rm CLO}(T,B) - {U}_{\rm CLO}(T,B) $ latter.
+Thus,
+\begin{align}
+&\quad \mathbb{E}[\hat{U}_{\rm CLO}(T,B)] \nonumber \\
+&\geq T \hat{v}(T, B) - \frac{GT}{V} + \frac{\mathbb{E}[L(T + 1)] - \mathbb{E}[L(1)] }{V} \nonumber \\
+& + \frac{\sum_{t = 1}^T \sum_{i = 1}^M \epsilon_i  \mathbb{E}[Q_i(t)]}{V} - \frac{\sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ]}{V} \nonumber \\
+& \geq  \hat{U}(T,B) - G\sqrt{T} - \frac{\sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ]}{V}.
+\end{align}
+
+From Lemma~\ref{thm:sum_ucb_bound}, we have $\sum_{t = 1}^T \mathbb{E}[ \hat{\Phi}_t(X_t,A_t) - \Phi_t(X_t,A_t) ] = V O(\sqrt{T\log T})$.
+%From Lemma~\ref{thm:clo_stop}, we have $\mathbb{E}[{U}_{\text{CLO}}(T,\bs{b})]  \geq \hat{U}^*(T,\bs{b}) - O(\sqrt{T})$.
+The conclusion then follows.
+}
+
+%\begin{theorem} \red{(Conjecture)}
+%Given any $\delta > 0$, \red{with probability 1}, we have  $\lim_{T \to \infty}\bar{U}_{\rm CLO}(T) \geq\lim_{T \to \infty} \bar{U}^*(T) - O(1/V + \delta)$, and $\lim_{T \to \infty}\bar{Z}_{\rm CLO}(T) \leq B_i$. \\
+%\wu{Or from the regret perspective, $O\big((\frac{1}{V} + \delta)T \big)$ regret; to achieve even lower regret, we may let $V$ increase as $t$, say $V_t = \sqrt{t}$, see discussions later.}
+%\end{theorem}
+%
+%\red{Note: Constants would be determined later.}
+%
+%\textbf{Outline of Analysis}
+%
+%%\textbf{Step 1: Bound the length of virtual queues}
+%%
+%%\begin{lemma}
+%%Under CLO, the length of virtual queues are bounded with probability 1.
+%%\end{lemma}
+%%\begin{proof}
+%%
+%%1) The ratio  $\hat{u}_{j,k}(t)/\check{c}_{j,k}^{(i)}(t)$ is bounded with high probability;
+%%
+%%2) Negative drift when $||\boldsymbol{Q}(t)|| > \zeta$.
+%%\end{proof}
+%
+%\textbf{Step 1: Number of ranking errors are bounded}
+%
+%\textbf{Definition of the ``Executed while Under-sampling'' event.} \wu{This is a magical trick, almost a logical concept :)}
+%Using the techniques in the UCRL paper \cite{Auer2007UCB4RL}. Define $F_{j,k}(t)$ as the number of rounds where action $k$ is taken under context $j$, when $T_{j,k}(t) \leq \xi \log t$, i.e.,
+%\begin{equation}
+%F_{j,k}(t) = \sum_{t' = 1}^{t} \mathbbm{1}(X_{t'} = j, A_{t'} = k, T_{j,k}(t') \leq \xi \log t).
+%\end{equation}
+%We can easily verify that:
+%\begin{lemma} \label{thm:prob_executed_undersampling}
+%For a given sufficiently large $T_1$, we have
+%\begin{equation}
+%\sum_{j,k} F_{j,k}(T_1) = O(\log T_1).
+%\end{equation}
+%\end{lemma}
+%\textbf{The above lemma indicates that:} In all other $T_1 - O(\log T_1)$ rounds, any action \textbf{taken} under a given context is greater than $\xi\log T_1$ (so the decision is relatively accurate as discussed next).
+%
+%
+%
+%\textbf{Step 2: Relatively accurate decision}
+%
+%We first show that the action taken by the CLO algorithm will be very close to the optimal action in each step.
+%
+%
+%Define $\Phi_t(j,k)$ as the ``index'' of action $k$ under context $j$ (calculated based on the {\it actual} reward and cost), i.e.,
+%\begin{equation}
+%\Phi_t(j,k) = V u_{j,k} - \sum_{i = 1}^N Q_i(t) c^{(i)}_{j,k}.
+%\end{equation}
+%
+%\red{Note: why shall we care about this index $\Phi_t(j,k)$? \\
+%It is related to the utility-based Lyapunov drift: if $X_t = j$ and we take action $k$, then
+%\begin{eqnarray}
+%\Delta_V(t) &=& L(t + 1) - L(t) - V U(t) \\
+%&\leq & B - \{V u_{j,k} + \sum_{i = 1}^N Q_i(t) [B_i -  c_{j, k}^{(i)}] \} \\
+%&\leq & B - \sum_{i = 1}^N Q_i(t)B_i - \Phi_t(j,k),
+%\end{eqnarray}
+%where $B$ is a constant. The BP algorithm try to take the action that maximizes  $\Phi_t(j,k)$ (minimizes $\Delta_V(t)$). To achieve near optimality, we want the action we take to approximately maximize $\Phi_t(j,k)$.}
+%
+%Let $\tilde{k}^*(t)$ be the action taken by UBLO, and $k^*(t)$ be the optimal action taken by the oracle BP algorithm.
+%Then, we have the following lemma.
+%\begin{lemma} \textbf{(Near-Optimal Action in Each Round)}
+%The index $\Phi_t(j,k)$ of the action under UBLO is close to that under the oracle BP with high probability. Specifically, for any context $j$, we have (\wu{May require a sufficiently large $t$})
+%\begin{align}
+%\mathbb{P}\bigg\{\Phi_t(j,\tilde{k}^*(t)) - \Phi_t(j,{k}^*(t)) \geq -\delta \big[V + \sum_{i = 1}^N Q_i(t)\big] \bigg\} \geq 1 - O(1/t).
+%\end{align}
+%\end{lemma}
+%\begin{proof}
+%\textbf{(Sketch)} \\
+%Step (a): Up to time $t$, according to Lemma~\ref{thm:prob_executed_undersampling}, the context-action pair $(j,\tilde{k}^*(t))$ will have been executed for at least $\xi \log T$ times, except for $O(\log T)$ rounds; \\
+%Step (b):  Using the properties of the confidence bounds and results in Step (a), we know that for $\tilde{j}^*(t)$, we have
+%\begin{align}
+%&\mathbb{P}\bigg\{\hat{u}_{j,\tilde{j}^*(t)}(t) \geq u_{j,k} + \delta\bigg\} \leq O(1/t),  \\
+%&\mathbb{P}\bigg\{\check{c}^{(i)}_{j,\tilde{j}^*(t)}(t) \leq c^{(i)}_{j,\tilde{j}^*(t)} - \delta \bigg\} \leq O(1/t).
+%\end{align}
+%For other actions, especially $k^*(t)$, we have(note that for the lower bound of UCB and upper bound of LCB, we don't need $T_{j,k}(t) \geq \xi \log t$)
+%\begin{align}
+%&\mathbb{P}\bigg\{\hat{u}_{j,k^*(t)}(t) \leq u_{j,k^*(t)} \bigg\} \leq O(1/t), \\
+%&\mathbb{P}\bigg\{\check{c}^{(i)}_{j,k^*(t)}(t) \geq c^{(i)}_{j,k^*(t)} \bigg\} \leq O(1/t).
+%\end{align}
+%Step (c): Since $\tilde{k}^*(t)$ is the optimal action under CLO, we have
+%\begin{equation} \label{eq:index_under_uclo}
+%V \hat{u}_{j,\tilde{k}^*(t)} - \sum_{i = 1}^N Q_i(t) \check{c}^{(i)}_{j,\tilde{k}^*(t)} \geq V \hat{u}_{j,{k}^*(t)} - \sum_{i = 1}^N Q_i(t) \check{c}^{(i)}_{j,{k}^*(t)}.
+%\end{equation}
+%Combining with Step (b), we have
+%\begin{eqnarray}
+%\mathbb{P}\big\{V \hat{u}_{j,\tilde{k}^*(t)} - \sum_{i = 1}^N Q_i(t) \check{c}^{(i)}_{j,\tilde{k}^*(t)} \leq \Phi_t(j,\tilde{k}^*(t)) + \delta \big[V + \sum_{i = 1}^N Q_i(t)\big] \big\} \geq 1 - O(1/t),
+%\end{eqnarray}
+%and
+%\begin{eqnarray}
+%\mathbb{P}\big\{V \hat{u}_{j,{k}^*(t)} - \sum_{i = 1}^N Q_i(t) \check{c}^{(i)}_{j,{k}^*(t)} \geq \Phi_t(j,{k}^*(t)) \big\} \geq 1 - O(1/t),
+%\end{eqnarray}
+%The conclusion then follows by combining the above three equations.
+%\end{proof}
+%Also using the fact that $\Phi_t(j,\tilde{k}^*(t)) \leq \Phi_t(j,{k}^*(t))$ due to the optimality of $k^*(t)$ under the oracle BP, we have $|\Phi_t(j,\tilde{k}^*(t)) - \Phi_t(j,{k}^*(t))| \leq \delta \big[V + \sum_{i = 1}^N Q_i(t)\big]$ with probability $1 - O(1/t)$.
+%
+%Then we can prove the theorem by using the same idea of the [WiOpt] and [Huang2015MobiHoc] papers. \wu{Note: one difference is that the probability $1 - O(1/t)$ depends on $t$, but since we only care about the expectation, and the sum of expectations, that should be okay.}
+%
+%\section{Discussions: How to Achieve Sublinear Regret?}
+%In all traditional BP papers, we only care about the average reward, and are happy when we can achieve the $\epsilon$-optimality.
+%
+%However, in the MAB context, the performance is usually the regret: $R_{\Gamma}(T) = \mathbb{E}[\sum_{t = 1}^{T} U^*(t) - U_{\Gamma}(t)]$. And we are pursuing sublinear regret. Using a fixed $V$ will only provide us a $O(\epsilon T) = O(T/V)$ regret.
+%
+%\subsection{\blue{Discussion 1: CLO with $V = \sqrt{T}$ (if $T$ is known)}}
+%
+%\red{If $T$ is given, will use $V = \sqrt{T}$ achieve $O(\sqrt{T})$ regret(Liu, Dec. 3)?}
+%
+%I guess it should be YES!!!
+%
+%BUT the analysis above cannot applied (Because it is difficult to make the constant term $\delta$ as small as $\sqrt{T}$; but in fact, $\delta \approx 1/\sqrt{t}$, summing over all $t$ will still guarantee an $O(\sqrt{T})$ regret - that's why I guess it should work).
+%
+%To make the analysis easier, we need to redesign the Confidence Set as the [Badanidiyuru2013FOFS, Agrawal2014EC] paper - with an $\sqrt{t}$ scale, rather than $\log t$ scale. This should be fine if our target is just to achieve an $O(\sqrt{T})$ regret, rather than $O(\log T)$ regret.
+%
+%Definition of UCB: for any number $\gamma$, let the confidence radius be
+%\begin{equation}
+%{\rm rad}(u,N) = \sqrt{\gamma/N} + \gamma/N.
+%\end{equation}
+%Then
+%\begin{equation}
+%\mathbb{P}\{|u_{j,k} - \bar{u}_{j,k}(t)| \leq {\rm rad}(\bar{u}_{j,k}(t), T_{j,k}(t)) \leq 3 {\rm rad}({u}_{j,k}, T_{j,k}(t))\} \geq 1 - e^{-\Omega(\gamma)}.
+%\end{equation}
+%By letting $\gamma = O(\log T)$, there will be a lot of things to do ... such as proving our $O(\sqrt{T})$ regret. \red{Need to read their papers again and provide an more detail analysis.}
+%
+%\subsection{\blue{Discussion 2: CBLP with Increasing $V$}}
+%
+%
+%An idea of improvement will be using a increasing $V$, say $V_t = \sqrt{t}$. This may provide us an $O(\sqrt{T})$ regret. \wu{One may think using a more quickly increasing $V_t$, but it will also results in a larger regret/overdraft on the budget constraints.}
+%
+%\textbf{BP with Increasing $V$.} To gain insights, we first consider the oracle BP (with known reward and cost) with $V_t$ (e.g., $\sqrt{t}$).
+%
+%Recall that the Lyapunov function is defined as:
+%\begin{equation}
+%L(t) = \frac{1}{2}||\bs{Q}(t)||^2.
+%\end{equation}
+%and the one-round utility-based conditional Lyapunov drift as follows:
+%\begin{equation}
+%\Delta_V(t)= \mathbb{E}\big\{L(t+1) - L(t) - V_tU(t)|\bs{Q}(t)  \big\}.
+%\end{equation}
+%
+%Then
+%\begin{eqnarray}
+%\Delta_V(t) \leq B + V_t U^* - \epsilon \sum_{i = 1}^N Q_i(t).
+%\end{eqnarray}
+%Taking expectation over $\bs{Q}(t)$,  we have
+%\begin{eqnarray}
+%\mathbb{E}[L(t+1)] - \mathbb{E}[L(t)] - V_t \mathbb{E}[U(t)] \leq B - U^*V_t - \epsilon \sum_{i = 1}^N \mathbb{E}[Q_i(t)],
+%\end{eqnarray}
+%for all $t \geq 1$.
+%Using the law of telescoping sums, we have
+%\begin{eqnarray}
+%\mathbb{E}[L(T+1)] - \mathbb{E}[L(0)] - \sum_{t = 1}^T V_t \mathbb{E}[U(t)] \leq BT - U^*\sum_{t = 1}^T V_t - \epsilon \sum_{t = 1}^T\sum_{i = 1}^N \mathbb{E}[Q_i(t)],
+%\end{eqnarray}
+%Thus,
+%\begin{eqnarray}
+%\sum_{t = 1}^T V_t \mathbb{E}[U(t)] \geq  U^*\sum_{t = 1}^T V_t   - BT  - \mathbb{E}[L(0)].
+%\end{eqnarray}
+%
+%\red{Question 1: Using the above equation, if the following relationship holds, then the regret of BP is $O(\sqrt{T})$.
+%\begin{equation}
+%\sum_{t = 1}^T V_t \mathbb{E}[U(t)]\approx \frac{1}{T} \sum_{t = 1}^T \mathbb{E}[U(t)] \sum_{t = 1}^T V_t.
+%\end{equation}
+%However, the above relationship is not generally true (consider the case $V_t = \sqrt{T}$, and $U(t) = \sqrt{t}$). Are there any conditions such that the above relationship holds? For example, if $\mathbb{E}[U(t)]$ is a constant, then this is definitely true. Are there any looser conditions?}
+%
+%\red{Question 2: How to show $Q_i(t) = O(V_t)$?} \blue{Done, using the traditional Lyapunov drift technique in [Hajek1982] should be enough.}
+%
+%\red{Question 3: Another challenge: how to analyze the performance when the reward or cost is unknown?} 

@@ -1,0 +1,66 @@
+\section{Introduction \red{(Outline)}} \label{sec:intro}
+
+\textbf{Contextual bandits}
+
+The contextual bandit problem \cite{Langford2007NIPS,Lu2010ICAIS:CMAB,Zhou2015CMAB:Survey} is an important extension of the classic multi-armed bandit (MAB) problem \cite{Auer2002ML:UCB}, where  the agent can observe a set of features, referred to as \emph{context}, before making a decision. %\wu{OR, Contextual bandits enhance the classic multi-armed bandit (MAB) problem with side-information, where ...}
+After the random arrival of a context, the agent chooses an action and receives a random reward with expectation depending on both the context and action.
+To maximize the total reward, {the agent needs to make a careful tradeoff between taking the best action based on the historical performance (exploitation) and discovering the potentially better alternative actions under a given context (exploration).}
+This model has attracted much attention as it fits the personalized service requirement in many applications such as clinical trials, online recommendation, and online hiring in crowdsourcing.
+% \cite{Li2010WWW:LinUCB,Slivkins2014JMLR:ContMAB,Agarwal2014ICML:CMAB}.
+Existing works try to reduce  the regret of contextual bandits by leveraging the structure of the context-reward models such as linearity \cite{Li2010WWW:LinUCB} or similarity \cite{Slivkins2014JMLR:ContMAB}, and more recent work \cite{Agarwal2014ICML:CMAB} focuses on computationally efficient algorithms with minimum regret. For Markovian context arrivals, algorithms such as UCRL \cite{Auer2007UCB4RL} for more general reinforcement learning problem can be used to achieve logarithmic regret.
+
+\textbf{Bandit with Budget Constraints}
+
+However, traditional contextual bandit models do not capture an important characteristic of real systems: in addition to time, there is usually a cost associated with the  resource consumed by each action and the total cost is limited by a budget in many applications. Taking crowdsourcing \cite{Badanidiyuru2012EC:OnlineProcurement} as an example, the budget constraint for a given set of tasks will limit the number of workers that an employer can hire. Another example is the clinical trials \cite{Lai2012SA}, where each treatment is usually costly and the budget of a trial is limited.
+Although budget constraints have been studied in non-contextual bandits where logarithmic or sublinear regret is achieved \cite{Tran2012AAAI:MAB_BF,Badanidiyuru2013FOCS,Jiang2013CDC,Slivkins2013TR,Qin&Liu2015IJCAI:TS,Combes&Srikant2015Sigmetrics,Flajolet&Patrick2015TR:BwK}, as we will see later, these results are inapplicable in the case with observable contexts.
+
+
+\textbf{Constrained contextual bandits}
+
+The RCB paper \cite{Badanidiyuru2014COLT}: show $O(\sqrt{T})$ regret is achievable; but restrict to a finite policy set, and the proposed algorithm is computationally inefficient;
+
+Our UCB-ALP paper \cite{Wu2015NIPS:CCB}: proposed a computationally efficient algorithm, achieve logarithmic regret; focus on single budget constraint, fixed cost.
+
+The two technical reports:
+
+ \cite{Agrawal2015TR:CB}: propose a computationally efficient algorithm; again, restrict to a finite policy set;
+
+\cite{Agrawal2015TR:LCB}: By combining the online learning algorithm and confidence bound techniques, \cite{Agrawal2015TR:LCB} proposes a computationally efficient algorithm for linear contextual bandits with global concave objective and convex budget constraints. They first solve the feasibility  problem and then convert the original constrained reward maximization problem by introducing an estimate of the optimal reward. This requires a lot of effort on estimating the optimal reward. Further, for the linear reward and constrained case, it can only deal with the case where $B = \Omega(T^{3/4})$, it is still an open problem when $B = \Theta(\sqrt{T})$.
+
+\textbf{Lyapunov Optimization (Backpressure/MaxWeight):}
+
+Lyapunov optimization is a method of using a Lyapunov function to optimally control a dynamical system. This method has been extensively studied in queueing networks \cite{??}.
+Earlier work focuses on the stability of queueing systems by minimizing the Lyapunov drift.
+Combination of Lyapunov drift and the sum of penalty leads to the drift-plus-penalty algorithm for joint network stability and long-term average penalty minimization \cite{}. The drift-plus-penalty procedure can also be used to compute solutions to linear programming and convex optimization \cite{}. Traditional Lyapunov optimization assume the knowledge of expected rewards and costs.
+
+%In fact, similar problems with known reward and cost but unknown context distribution has been exhaustively studied in networking community.  [Neely], [Huang], [Huang\&Liu2014Sigmetrics], proposes Lypapunov-type optimization algorithms, also referred to as Backpressure,  for maximizing the network utility subject to constraints such as queueing stability, and delay. The key idea of Backpressure is to naturally use queue length as the Lagrangian multipliers and then make decision based on the queue length and current states. Similar idea can be applied in more general constraints such as energy consumption by introducing virtual queues. The Backpressure algorithm typically focuses on average constraints and is shown to achieve near optimal performance.
+
+When the reward and cost as well as context distribution are unknown statistics, some papers [Neely], [Ouyang], [Huang2015MobiHoc] propose $\epsilon$-first, or epoch approach to achieve near optimal performance under average constraints. Unlike bandit literature, these papers does not provide analysis on the cumulative regret.
+
+\textbf{This work:}
+
+In this paper, we study contextual bandits with general budget constraints. We consider very general settings with unknown context distribution, multiple budget constraints, and random cost.
+We propose a learning-aided control algorithm, referred to as \emph{Confidence Lyapunov Optimization}, which combines UCB with Lyapunov optimization method. This algorithm is computationally efficient where in each round one just needs to  sort the indices of $K$ actions (following \cite{Wu2015NIPS:CCB} will need to solve an LP problem with $JK$ variables; The RCB paper \cite{Badanidiyuru2014COLT} is difficult to implement) and select the action with highest value.
+
+We would like to obtain theoretical bounds for the cumulative regret. We show that for $B = \Theta(T)$ \red{this may be weaker than \cite{Badanidiyuru2014COLT} and \cite{Agrawal2015TR:LCB}, where they just need $B = \Omega(\sqrt{T})$}, the proposed algorithm achieves $O(\sqrt{T\log{T}})$ regret \wu{A critical issue: the UCB/LCB may be correlated with the virtual queue; In literature: \cite{Ouyang&Shroff2010Allerton} and \cite{Agrawal2015TR:LCB} have similar issue but they don't appropriately address it; \cite{Neely2012TAC:MWLearning} tried to address this issue by independently sampling the historic observations and consider the delayed estimates.}.
+
+
+\red{Furthermore,  using the framework of Lyapunov optimization, the proposed algorithm can also be  extended to Markovian case (so is \cite{Agrawal2015TR:LCB} ). }
+
+Compared to \cite{Agrawal2015TR:LCB}, our proposed CLO algorithm directly use the actual evolution of budget constraint, and can converge much faster.
+
+%\red{TBD 2: increasing $V$ to achieve lower regret? e.g., $V_t = O(\sqrt{t})$? (If we use a fixed $V$, we may only achieve $O(T/V)$ regret; if we use $V_t = \sqrt{t}$, we may achieve $O(\sqrt{T})$ regret)}.
+
+%\red{The proposed algorithm can also be generalized to the case with global concave reward and convex constraints, or parameterized bandits such as linear contextual bandits.}
+
+%\textbf{Potential applications:}
+%
+%Any applications for RCB (dynamic pricing, online procurement, online ad).
+%
+%Some more specific one:
+%
+%Online-advertising
+%
+%Networking
+%
+%Clinical trial / e-health monitoring

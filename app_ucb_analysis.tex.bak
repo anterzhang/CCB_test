@@ -1,0 +1,365 @@
+
+%%%%%%%%%%
+\section{Proof of Theorem~\ref{thm:regret_ucb_alp}: Regret of UCB-ALP}
+%%%%%%%%%%
+We bound the regret of UCB-ALP by comparing its performance  with the benchmark $\widehat{U}(T,B)$. To obtain this upper bound, we first partition the regret according to the sources and then bound each part of the regret, respectively.
+
+Before presenting the proof, we first introduce a notation that will be widely used later. For contexts $j$ and $j'$, and an action $k$, let $\Delta_{j,k}^{(j')}$ be the difference between the expected reward for action $k$ under context $j$ and the highest expected reward under context $j'$, i.e., $\Delta_{j,k}^{(j')} = u_{j'}^* - u_{j,k}$.
+When $j' = j$, $\Delta_{j,k}^{(j)}$ is the difference of expected reward between the suboptimal action $k$ and the best action under context $j$.
+
+
+%%%%%%%%%%
+\subsection{Step 1: Partition the Regret}
+%%%%%%%%%%
+
+Note that the total reward of the oracle solution $U^*(T,B)  \leq \widehat{U}(T,B)$. Thus, we can bound the regret of UCB-ALP by comparing its total expected reward $U_{\rm UCB-ALP}(T,B)$ with $\widehat{U}(T,B)$, i.e.,
+\begin{eqnarray}
+&&R_{\rm {UCB-ALP}}(T, B) \nonumber \\
+&=& U^*(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber \\
+& \leq &\widehat{U}(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber\\
+&= & T v(\rho) - \sum_{j = 1}^J \sum_{k =1}^K u_{j,k} \mathbb{E}[C_{j,k}(T)].
+\end{eqnarray}
+The total expected reward of UCB-ALP can be further divided as
+\begin{eqnarray}
+&& U_{\rm UCB-ALP}(T,B) \nonumber \\
+& =&  \sum_{j = 1}^J u_j^* \mathbb{E}\big[\sum_{k=1}^K C_{j,k}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)] \nonumber \\
+& =&  \sum_{j = 1}^J u_j^*\mathbb{E}\big[C_{j}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+where $C_j(T) = \sum_{k=1}^K C_{j,k}(T)$ is the total number that actions have been taken under context $j$ up to round $T$.
+
+Consequently, the regret of UCB-ALP can be bounded as
+\begin{eqnarray}\label{eq:regret_ucb_alp__nonboundary_details}
+R_{\rm {UCB-ALP}}(T, B) \leq R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) + R_{\rm {UCB-ALP}}^{({\rm c})}(T, B),
+\end{eqnarray}
+where
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) = \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau  = 1}^T \mathbb{E}\bigg[v(\rho) -\sum_{j = 1}^J \hat{p}_j(b_{\tau}/\tau) \pi_j u_j^*\bigg]. \nonumber
+\end{eqnarray}
+
+Eq.~\eqref{eq:regret_ucb_alp__nonboundary_details} clearly shows that the regret of the UCB-ALP algorithm can be divided into two parts: the first part $R_{\rm {UCB-ALP}}^{({\rm a})}(T, B)$ is from taking  suboptimal actions under a given context; the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ is from the deviation of remaining budget $b_{\tau}$ and context ranking errors.
+
+%%%%%%%%%%
+\subsection{Step 2: Bound Each Part of Regret}
+%%%%%%%%%%
+
+\subsubsection{Step 2.1: Bound of $R_{\text{UCB-ALP}}^{\rm (a)}(T, B)$}
+For the regret from action ranking errors,
+we show in Lemma~\ref{thm:regret_withincontext} that $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) = O(\log T)$ using similar techniques for traditional UCB methods \cite{Golovin2009Lecture}.
+\begin{lemma}\label{thm:regret_withincontext}
+Under UCB-ALP, the regret due to the action ranking errors within context $j$ satisfies
+\begin{eqnarray} \label{eq:regret_ucb_alp_regret_withincontext}
+&& R_{\text{UCB-ALP}}^{\rm (a)}(T, B) \nonumber\\
+&\leq& \sum_{j=1}^J \sum_{k \neq k_j^*} \bigg[\big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big) \log T + 2 \Delta_{j,k}^{(j)}\bigg].
+\end{eqnarray}
+\end{lemma}
+\begin{proof}
+For $k \neq k_j^*$, let $\ell_{j,k}^{(j)} = \frac{2\log T}{(\Delta_{j, k}^{(j)})^2}$. According to Lemma~\ref{thm:context_action_pair_errorprob}, we have
+\begin{eqnarray}
+&& \mathbb{E}[C_{j,k}(T)] \nonumber \\
+&\leq& \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k, C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k | C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + \sum_{t = 1}^T  2t^{-1}. \nonumber
+\end{eqnarray}
+The conclusion then follows by the facts that $\sum_{t = 1}^T t^{-1} \leq 1 + \log T$ and $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) =  \sum_{j = 1}^J\sum_{k \neq k_j^*} \Delta_{j,k}^{(j)} \mathbb{E}[C_{j,k}(T)]$.
+\end{proof}
+
+\subsubsection{Step 2.2: Bound of $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$}
+Next, we show that the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = O(\log T)$.
+\textbf{We first present the proof for the non-boundary cases}, and discuss the boundary cases later.
+
+Note that we have separately considered the regret due to action ranking errors in  $R_{\text{UCB-ALP}}^{\rm (a)}(T, B)$ and we only need to consider the best action of each context for $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$. Thus, we define $v^*_{\rm UCB-ALP}(\tau, b_{\tau})$ as follows:
+\begin{equation}
+v^*_{\rm UCB-ALP}(\tau, b_{\tau})= \sum_{j = 1}^J \tilde{p}_j(b_{\tau}/\tau) \pi_j u_j^*.\nonumber
+\end{equation}
+Let $\Delta v_\tau$ be the single-round difference between  UCB-ALP and the upper bound, i.e.,
+\begin{eqnarray}
+\Delta v_\tau = v(\rho) -v^*_{\rm UCB-ALP}(\tau, b_{\tau}).\nonumber \
+\end{eqnarray}
+Then $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau = T}^1 \mathbb{E}[\Delta v_\tau]$. We study the expectation $\mathbb{E}[\Delta v_{\tau}]$ under all possible situations. For a random variable $X$ and event $\mathcal{E}$, let $\mathbb{E}[X,\mathcal{E}] = \mathbb{E}[X\mathds{1}(\mathcal{E})]$. Then, the expectation $\mathbb{E}[X] = \mathbb{E}[X,\mathcal{E}] + \mathbb{E}[X,\urcorner\mathcal{E}]$. Therefore,
+\begin{eqnarray} \label{eq:correct_rank_single_round_regret}
+\mathbb{E}[\Delta v_\tau]  =  \sum_{s = 0}^2\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)].
+\end{eqnarray}
+
+We first consider the case of $s = 0$ and convert the expectation value into other two cases. Considering all possible value of $b_\tau$, we have
+\begin{eqnarray} \label{eq:diff_case0}
+&& \mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)]\nonumber \\
+& = & \sum_{b = 0}^{B} \mathbb{E}[\Delta {v}_{\tau}| b_{\tau} = b,  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] \mathbb{P}\{b_{\tau} = b,  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)\}.
+\end{eqnarray}
+
+For the probability, we have
+\begin{align}\label{eq:diff_case0_prob}
+\mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)\}
+= \mathbb{P}\{b_{\tau} = b\} - \sum_{s= 1}^2 \mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}.
+\end{align}
+
+For the conditioned expectation, we note that  $\mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)$ provides a roughly correct context rank in the sense that if $b_{\tau}/\tau$ is close to $\rho$, then $v^*_{\rm UCB-ALP}(\tau, b_{\tau}) = v(b_\tau/\tau)$, where $v(b_\tau/\tau)$ is the single round value with the correct context rank.
+Specifically, letting $\delta = \frac{1}{2}\min\{\rho - q_{\tilde{j}(\rho)},q_{\tilde{j}(\rho)+1}- \rho\}$.
+If $b \in [\rho - \delta, \rho + \delta]$, then $v^*_{\rm UCB-ALP}(\tau, b) = v(b/\tau)$, and thus,
+\begin{eqnarray} \label{eq:diff_case0_exp}
+\mathbb{E}[\Delta {v}_{\tau}| b_{\tau} = b,  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] =  v(\rho) - v(b/\tau).
+\end{eqnarray}
+
+Combining Eqs.~\eqref{eq:diff_case0} $\sim$ \eqref{eq:diff_case0_exp} and using the facts that $v(\rho) \geq 0$ and $v^*_{\rm UCB-ALP}(\tau, b) \geq 0$, we have
+\begin{align}  \label{eq:correct_rank_regret}
+&\quad\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] \nonumber\\
+&\leq  v(\rho) -  \sum_{b = 0}^B v(b/\tau) \mathbb{P}\{b_{\tau} = b\} \nonumber \\
+&~ + \sum_{s= 1}^2\sum_{b = 0}^B v(b/\tau) \mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}\nonumber\\
+&~ + \sum_{b \notin [\rho - \delta, \rho + \delta]}v(b/\tau)\mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)\}.
+\end{align}
+Recall that under UCB-ALP, the remaining budget $b_{\tau}$ follows the hypergeometric distribution. Using the same method as the analysis of Eq.~\eqref{eq:virtual_and_alp}, we have
+\begin{eqnarray} \label{eq:correct_rank_regret_part1}
+v(\rho) -  \sum_{b = 0}^B v(b/\tau) \mathbb{P}\{b_{\tau} = b\}
+\leq (u_1^* - u_J^*) e^{-2\delta^2\tau}.
+\end{eqnarray}
+
+In addition,
+\begin{eqnarray} \label{eq:correct_rank_regret_part2}
+\sum_{b \notin [\rho - \delta, \rho + \delta]}v(b/\tau)\mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)\}
+\leq \bar{u}^* \sum_{b \notin [\rho - \delta, \rho + \delta]}\mathbb{P}\{b_{\tau} = b\}\leq 2\bar{u}^* e^{-2\delta^2 \tau},
+\end{eqnarray}
+where $\bar{u}^* = \sum_{j = 1}^J \pi_j u_j^*$ is the expected reward without budget constraint.
+
+Moreover,
+\begin{eqnarray} \label{eq:correct_rank_regret_part3}
+\sum_{b = 0}^B v(b/\tau) \mathbb{P}\{b_{\tau} = b, \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\} \leq  \bar{u}^*\mathbb{P}\{\mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\},
+\end{eqnarray}
+
+Substituting Eqs.~\eqref{eq:correct_rank_regret_part1} $\sim$ \eqref{eq:correct_rank_regret_part3} into Eq.~\eqref{eq:correct_rank_regret}, we have
+\begin{eqnarray}  \label{eq:correct_rank_regret_results}
+\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] \leq   [u_1^* - u_J^* +2\bar{u}^*] e^{-2\delta^2\tau} + \bar{u}^*\sum_{s=1}^2\mathbb{P}\{\mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}.
+\end{eqnarray}
+
+When the rank is wrong, i.e., $1\leq s \leq 2$, since $\Delta {v}_{\tau} \leq v(\rho)$ under any possible ranking results,  we have
+\begin{eqnarray}  \label{eq:error_rank_regret_results}
+\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)] \leq v(\rho) \mathbb{P}\{\mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}.
+\end{eqnarray}
+
+
+Substituting Eqs.~\eqref{eq:correct_rank_regret_results} and \eqref{eq:error_rank_regret_results} into Eq.~\eqref{eq:correct_rank_single_round_regret}, we have
+\begin{eqnarray}  %\label{eq:correct_rank_single_round_regret_results}
+\mathbb{E}[\Delta {v}_{\tau}] \leq  [u_1^* - u_J^* + 2\bar{u}^*] e^{-2\delta^2\tau}
+ + [\bar{u}^* + v(\rho)]\sum_{s=1}^2\mathbb{P}\{\mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}.\nonumber
+\end{eqnarray}
+
+Note that $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau = 1}^T \mathbb{E}[\Delta {v}_{\tau}]$. Thus
+\begin{eqnarray} \label{eq:regret_context_ranking_nonboundary}
+R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) \leq  \frac{[u_1^* - u_J^*+2\bar{u}^*] e^{-2\delta^2}}{1 - e^{-2\delta^2}}
++ [\bar{u}^* + v(\rho)]\sum_{s=1}^2\mathbb{E}[T^{(s)}],
+\end{eqnarray}
+where $T^{(s)} = \sum_{t = 1}^T \mathds{1}(\mathcal{E}_{{\rm rank}, s}(t))$ ($s = 1,2$) is the number of type-$s$ ranking errors.
+
+Next, we bound the expected number of context ranking errors. From Lemma~\ref{thm:context_action_pair_errorprob}, we know that to obtain the correct ordering of two context-action pairs with high probability, the agent needs to execute the suboptimal context-action pair for enough times. Unlike traditional MABs, however,  the context-action pair with the higher UCB in a round might not be executable, as the context of that round could be different. Fortunately, the following lemma will show that if the condition that causes the an context-action pair to be executed with a positive probability appears many times,  the  context-action pair will indeed be executed proportionally with high probability.
+
+\begin{lemma} \label{thm:context_action_pair_errorprob_wContext}
+Assume $\mathcal{E}_t$'s, $\hat{\mathcal{E}}_t$'s are events in round $t$ ($1\leq t \leq T$), satisfying $\mathbb{P}\{\mathcal{E}_t| \hat{\mathcal{E}}_t, \mathcal{H}_{1:t-1}\} = \mathbb{P}\{\mathcal{E}_t| \hat{\mathcal{E}}_t\} \geq p> 0$, where $\mathcal{H}_{1:t-1}$ is the filtration from 1 to $t-1$. Let $C(T) = \sum_{t=1}^T \mathds{1}(\mathcal{E}_t)$ and $\widehat{C}(T) = \sum_{t=1}^T \mathds{1}(\hat{\mathcal{E}}_t)$. Then,
+\begin{equation}
+\mathbb{P}\{C(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \} \leq e^{-2 \epsilon^2 N}. \nonumber
+\end{equation}
+\end{lemma}
+\begin{proof}
+One may think the proof of this lemma is trivial because  $\mathbb{P}\{C(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \} \leq \mathbb{P}\{C(T) \leq (p-\epsilon) N |\widehat{C}(T) \geq N \}$ and we can bound the right-hand-side using Chernoff bound. However, this is incorrect because although $\mathcal{E}_t$ is independent of the history given $\hat{\mathcal{E}}_t$, the event $\hat{\mathcal{E}}_{t+1}$ may depend on $\mathcal{E}(t)$.
+
+We prove this lemma using the coupling argument.
+Let $S_t = \mathds{1}(\mathcal{E}_t \cap \hat{\mathcal{E}}_t)$, and $C_S(T) = \sum_{t=1}^T S_t$. Then, we have
+\begin{equation}
+\mathbb{P}\{C(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \} \leq \mathbb{P}\{C_S(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \}.
+\end{equation}
+
+Now, we show $\mathbb{P}\{C_S(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \} \leq e^{-2 \epsilon^2 N}$  using the coupling argument.
+
+First, generate  $W_1, W_2, \ldots, W_T$  i.i.d. according to Bernoulli distribution with $\mathbb{P}\{W_t = 1\} = p$.
+
+Next, generate a sequences  $(V'_t, S'_t, 1\leq t \leq T)$ as follows:
+
+For each $t$, generate $V'_t$ according to Bernoulli distribution with $\mathbb{P}\{V'_t = 1\} = \mathbb{P}\{\hat{\mathcal{E}}_t = 1|\mathds{1}(\hat{\mathcal{E}}_{t'})= V'_{t'},\mathds{1}({\mathcal{E}}_{t'})= S'_{t'} ~1\leq t' \leq t-1\}$. Further, we  generate $S'_t$ conditioned on the value of $V'_t$ and $W_t$. Specifically, let $C_{V'}(t) = \sum_{t'= 1}^t V'_t$.
+
+\textbf{1)} If $V'_t = 1$, generate $S'_t$ conditioned on $W_{C_{V'}(t)}$: \\
+{\it \hspace{0.1in}a.} If $W_{C_{V'}(t)} = 1$, then $S'_t = 1$;\\
+{\it \hspace{0.1in}b.} If $W_{C_{V'}(t)} = 0$, then generate $S'_t$ according to Bernoulli distribution with
+\begin{equation}
+\mathbb{P}\{S'_t = 1 | W_{C_{V'}(t)} = 0\} = \frac{\mathbb{P}[Y_t = 1| X_t = 1]-p}{1-p}. \nonumber\\
+\end{equation}
+\textbf{2)} If $V'_t = 0$, let $S'_t = 0$.
+
+We can verify that $(V'_t, S'_t, 1\leq t \leq T)$ has the  same distribution as $(\mathds{1}(\hat{\mathcal{E}}_t), S_t, 1\leq t \leq T)$. Hence, $\mathbb{P}\{C_S(T) \leq (p-\epsilon) N, \widehat{C}(T) \geq N \} = \mathbb{P}\{\sum_{t=1}^T S'_t \leq (p-\epsilon)N, \sum_{t=1}^T V'_t \geq N\}$.
+
+On the other hand, from the generation of $S'_t$,  we have $\sum_{t=1}^T S'_t \geq \sum_{t=1}^{C_{V'}(T)} W_t$.
+Thus, the event $\{\sum_{t=1}^T S'_t \leq (p-\epsilon)N, \sum_{t=1}^T V'_t \geq N\}$ implies $\{\sum_{t=1}^N W_t \leq (p-\epsilon) N\}$, and
+\begin{equation}
+\mathbb{P}\{\sum_{t=1}^T S'_t \leq (p-\epsilon)N, \sum_{t=1}^T V'_t \geq N\}\leq \mathbb{P}\{\sum_{t=1}^N W_t \leq (p-\epsilon) N\} \leq e^{-2 \epsilon^2 N}.
+\end{equation}
+The conclusion of the lemma then follows.
+\end{proof}
+
+The following lemma bounds the expected number of context ranking errors.
+\begin{lemma}\label{thm:error_ranking}
+Given $\pi_j$'s, $u_{j,k}$'s and a fixed $\rho \in (0,1)$, $\rho  \neq q_j$ ($1 \leq j \leq J-1$), under the UCB-ALP algorithm, we have
+\begin{align}
+&\mathbb{E}[T^{(1)}] \leq \sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27\log T}{2g_{\tilde{j}(\rho)+1} [\Delta^{(j)}_{\tilde{j}(\rho)+1,k}]^2} + 2K\tilde{j}(\rho) \log T + O(1),\nonumber
+\end{align}
+\begin{align}
+&\mathbb{E}[T^{(2)}] \leq \sum_{j =\tilde{j}(\rho)+2}^{J}\sum_{k=1}^K\frac{27\log T}{2g_j [\Delta^{(\tilde{j}(\rho)+1)}_{j,k}]^2} + 2K[J - \tilde{j}(\rho)-1]\log T + O(1), \nonumber
+\end{align}
+where
+$
+g_j  =\min\big\{\pi_j, \frac{1}{2}(\rho - q_{\tilde{j}(\rho)}), \frac{1}{2}(q_{\tilde{j}(\rho)+1} -\rho)\big\}.
+$
+\end{lemma}
+
+\begin{proof}
+We only prove the conclusion for the case of $s = 1$ as the other case can be analyzed similarly.
+From Algorithm~\ref{alg:ucb_alp}, we can see that the evolution of the remaining budget also affects the execution of the UCB-ALP algorithm. Under the assumption of known context distribution, it can be verified that Lemma~\ref{thm:alp_to_hypergeo} holds under UCB-ALP, i.e., the remaining budget $b_{\tau}$ follows the hypergeometric distribution and has the properties described in Lemma~\ref{thm:alp_to_hypergeo}. We define an event $\mathcal{E}_{\rm budget, 0}(t)$ as follows,
+\begin{eqnarray}
+\mathcal{E}_{\rm budget, 0}(t)  = \{(\rho - \delta) \tau \leq b_{\tau} \leq (\rho + \delta) \tau\}, \nonumber
+\end{eqnarray}
+where $\delta$ is given by
+\begin{eqnarray}
+\delta = \frac{1}{2}\min\{\rho - q_{\tilde{j}(\rho)}, q_{\tilde{j}(\rho)+1} -\rho\}. \nonumber
+\end{eqnarray}
+According to Lemma~\ref{thm:alp_to_hypergeo}, we have
+\begin{eqnarray}
+\mathbb{P}\{\urcorner\mathcal{E}_{\rm budget, 0}(t)\}
+= \mathbb{P}\{ b_{\tau} <  (\rho -\delta) \tau\} + \mathbb{P}\{ b_{\tau} >  (\rho +\delta) \tau\} \leq 2e^{-2\delta^2 (T-t + 1)}. \nonumber
+\end{eqnarray}
+
+Back to the ranking event $\mathcal{E}_{{\rm rank}, 1}(t)$, we have
+\begin{eqnarray}
+\mathbb{P}(\mathcal{E}_{{\rm rank}, 1}(t))
+\leq  \mathbb{P}(\urcorner\mathcal{E}_{\rm budget, 0}(t))
++\mathbb{P}(\mathcal{E}_{{\rm rank}, 1}(t)\cap \mathcal{E}_{\rm budget, 0}(t)). \nonumber
+\end{eqnarray}
+Note that the event $\mathcal{E}_{{\rm rank}, 1}(t)$ can be divided as follow:
+\begin{eqnarray}
+\mathcal{E}_{{\rm rank}, 1}(t) \subseteq  \bigcup_{1\leq j \leq \tilde{j}(\rho), 1\leq k\leq K} \mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \nonumber
+\end{eqnarray}
+where for $1 \leq j \leq \tilde{j}(\rho)$ and $1 \leq k \leq K$,
+\begin{eqnarray}
+ \mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t) = \big\{\forall j' > \tilde{j}(\rho) +1,\hat{u}^*_{j'}(t) < \hat{u}^*_{\tilde{j}(\rho) +1}(t);
+\hat{u}^*_{j}(t) \leq \hat{u}^*_{\tilde{j}(\rho)+1}(t), k_j^*(t) = k\big\}.\nonumber
+\end{eqnarray}
+\begin{eqnarray}\label{eq:error1_partition}
+\mathbb{E}[T^{(1)}] &=& \sum_{t = 1}^T \mathbb{P}(\mathcal{E}_{{\rm rank}, 1}(t))\leq \frac{2e^{-2\delta^2}}{1 - e^{-2\delta^2}} + \sum_{j = 1}^{\tilde{j}(\rho)} \sum_{k= 1}^K\mathbb{E}[N^{(1)}_{j,k}(T)],\nonumber\\
+\end{eqnarray}
+where for $1 \leq j\leq \tilde{j}(\rho)$ and $1 \leq k \leq K$,
+\begin{eqnarray}
+N^{(1)}_{j,k}(t) = \sum_{t' =1}^t \mathds{1}(\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t'), \mathcal{E}_{\rm budget, 0}(t')). \nonumber
+\end{eqnarray}
+Let  $\hat{\ell}^{(j_1)}_{j_2,k} = \frac{2\log T}{g_{j_2} (1- \epsilon)\epsilon^2(u_{j_1}^* - u_{j_2,k})^2}$, where $g_{j_2} = \min\{\pi_{j_2}, \delta\}$ and $\epsilon \in (0,1)$.
+Similar to the analysis of UCB in \cite{Auer2002ML:UCB},  we have
+\begin{align}\label{eq:error1_bound_error_obervations}
+\mathbb{E}[N^{(1)}_{j,k}(T)] \leq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)-1,k} + \sum_{t = 1}^T \mathbb{P}\big\{\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t),  N^{(1)}_{j,k}(t-1) \geq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\big\}.
+\end{align}
+
+For each $t$ in the second term, we have
+\begin{align}
+&\quad\mathbb{P}\{\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t),N^{(1)}_{j,k}(t-1) \geq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\} \nonumber \\
+&\leq  \mathbb{P}\{\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t) |C_{\tilde{j}(\rho)+1,k}(t-1) \geq g_{\tilde{j}(\rho)+1}(1-\epsilon)\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\} \nonumber \\
+& \quad + \mathbb{P}\{C_{\tilde{j}(\rho)+1,k}(t-1) < g_{\tilde{j}(\rho)+1}(1-\epsilon)\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k},  N^{(1)}_{j,k}(t-1) \geq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\},~~\nonumber
+\end{align}
+where $C_{\tilde{j}(\rho)+1,k}(t) = \sum_{t'=1}^t \mathds{1}(X_{t'} = \tilde{j}(\rho)+1,A_{t'} = k)$ is the number that the context-action pair $(\tilde{j}(\rho)+1,k)$ has been executed up to round $t$.
+
+For the first term, we note that the event $\{\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t)\}$ implies that $\hat{u}_{j, k_{j}^*}(t) \leq \hat{u}_{\tilde{j}(\rho)+1,k}(t)$. Because ${u}_{j, k_{j}^*} > {u}_{\tilde{j}(\rho)+1,k}$ for all $j \leq \tilde{j}(\rho)$ and $k$, according to Lemma~\ref{thm:context_action_pair_errorprob}, we have
+\begin{align}\label{eq:error1_bound_ucb_rank}
+& \quad \mathbb{P}\{\mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t)|C_{\tilde{j}(\rho)+1,k}(t-1) \geq g_{\tilde{j}(\rho)+1}(1-\epsilon)\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\} \nonumber \\
+&\leq \mathbb{P}\{\hat{u}_{j, k_{j}^*}(t) \leq \hat{u}_{\tilde{j}(\rho)+1,k}(t) |C_{\tilde{j}(\rho)+1,k}(t-1) \geq g_{\tilde{j}(\rho)+1}(1-\epsilon)\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\} \nonumber \\
+&\leq 2t^{-1}.
+\end{align}
+
+For the second term, we note that since context $\tilde{j}(\rho)+1$ arrives with probability $\pi_{\tilde{j}(\rho)+1}$ independent of the observations, we have
+\begin{align}
+\mathbb{P}\big\{X_{t} = \tilde{j}(\rho)+1, A_{t} = k | \mathcal{E}^{(j,k)}_{{\rm rank}, 1}(t), \mathcal{E}_{\rm budget, 0}(t)\big\}
+ = \min\{\delta, \pi_{\tilde{j}(\rho)+1}\} = g_{\tilde{j}(\rho)+1}. \nonumber
+\end{align}
+Thus, according to Lemma~\ref{thm:context_action_pair_errorprob_wContext}, we have
+\begin{align}\label{eq:error1_bound_pulls}
+\mathbb{P}\{C_{\tilde{j}(\rho)+1,k}(t-1) < g_{\tilde{j}(\rho)+1}(1-\epsilon)\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k},  N^{(1)}_{j,k}(t-1) \geq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}\}  \leq e^{-2\epsilon^2 \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k}} \leq T^{-4}.
+\end{align}
+
+Substituting Eqs.~\eqref{eq:error1_bound_ucb_rank} and \eqref{eq:error1_bound_pulls} into Eq.~\eqref{eq:error1_bound_error_obervations}, we have
+\begin{eqnarray}\label{eq:error1_bound_error_obervations_result}
+\mathbb{E}[N^{(1)}_{j,k}(T)]\leq  \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k} + \sum_{t=1}^T (2 t^{-1} + T^{-4}) \leq \hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k} + 2\log T + 2 + T^{-3}.
+\end{eqnarray}
+Substituting Eq.~\eqref{eq:error1_bound_error_obervations_result} to  Eq.~\eqref{eq:error1_partition} and letting $\epsilon = 2/3$ in $\hat{\ell}^{(j)}_{\tilde{j}(\rho)-1,k}$, we have
+\begin{eqnarray}
+\mathbb{E}[T^{(1)}]
+&\leq& \frac{2e^{-2\delta^2}}{1 - e^{-2\delta^2}} + \sum_{j =1}^{\tilde{j}(\rho)}\sum_{k=1}^K\hat{\ell}^{(j)}_{\tilde{j}(\rho)+1,k} + 2K\tilde{j}(\rho)\log T + O(1) \nonumber \\
+&\leq&\sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27\log T}{2g_{\tilde{j}(\rho)+1} (\Delta^{(j)}_{\tilde{j}(\rho)+1,k})^2} + 2K\tilde{j}(\rho)\log T + O(1).
+\end{eqnarray}
+
+%The above analyses use the following two fundamental facts: one is that the event $\mathcal{E}_{{\rm rank}, 1}^{(j,k)}(t)\cap \mathcal{E}_{\rm budget, 0}(t)$ indicates a context ranking error, which will happen with small probability if the suboptimal context-action pair has been executed sufficiently many times; the other is that when $\mathcal{E}_{{\rm rank}, 1}^{j,k}(t)\cap \mathcal{E}_{\rm budget, 0}(t)$ occurs, the suboptimal context-action pair will be executed with a positive probability.
+%Using similar analyses  for the cases of $s = 2$ , we can show $\mathbb{E}[T^{(2)}] = O(\log T)$ with slight modifications.
+%Specifically, let $j^\sharp(t)$ the context with the largest UCB among all contexts worse than $\tilde{j}(\rho)+1$, i.e., $j^\sharp(t) = \argmax_{j > \tilde{j}(\rho)+1}u_j^*$. Then $\mathcal{E}_{{\rm rank}, 2}^{(j,k)}(t)\cap \mathcal{E}_{\rm budget, 0}(t)$ indicates that $\hat{u}_{j^\sharp(t), k_{j^\sharp(t)}^*(t)} \geq \hat{u}_{\tilde{j}(\rho)+1}^*$ and  the action $k_{j^\sharp(t)}^*(t)$ will be taken under context $j^\sharp(t)$ with a positive probability at least $g_{j^\sharp(t)}$.
+%The conclusion  then follows by consider all possible $j^\sharp(t)$'s and $k_{j^\sharp(t)}^*(t)$'s.
+\end{proof}
+
+Combining Lemma~\ref{thm:regret_withincontext}, Lemma~\ref{thm:error_ranking}, and Eq.~\eqref{eq:regret_context_ranking_nonboundary}, we have
+\begin{eqnarray}
+\limsup_{T\to \infty} \frac{R_{\rm{UCB-ALP}}(T, B)}{\log T} \leq \Theta^{\rm (a)} + \Theta^{\rm (c)}_{\rm nb}, \nonumber
+\end{eqnarray}
+where
+\begin{align}
+&\Theta^{\rm (a)} = \sum_{j=1}^J \sum_{k \neq k_j^*} \big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big),\nonumber\\
+&\Theta^{\rm (c)}_{\rm nb} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27}{2g_{\tilde{j}(\rho)+1} [\Delta^{(j)}_{\tilde{j}(\rho)+1,k}]^2} + \sum_{j =\tilde{j}(\rho)+2}^{J}\sum_{k=1}^K\frac{27}{2g_j [\Delta^{(\tilde{j}(\rho)+1)}_{j,k}]^2} + 2KJ \bigg\}.\nonumber
+\end{align}
+This completes the proof of Part 1 in Theorem~\ref{thm:regret_ucb_alp}.
+
+%%%%%%%%%%%
+%\subsection{Part~2: Regret of UCB-ALP for Boundary Cases}\label{app:proof_regret_ucb_alp_all}
+%%%%%%%%%%%
+\textbf{Next, we discuss the bound of $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ for the boundary cases}. The analysis is similar to  the non-boundary cases with slight modification on the threshold.
+
+We note that fundamentally, the context $\tilde{j}(\rho) + 1$ for $\rho \neq q_j$ and the context $\tilde{j}(\rho)$ for $\rho = q_j$ are both the minimum context with positive probability in the static LP problem.
+Thus, we can define the  context ranking events $\mathcal{E}_{\rm rank,s}(t)$ $(0 \leq s\leq 2)$ similar to  the analysis of Part~1, with $\tilde{j}(\rho) + 1$ replaced by $\tilde{j}(\rho)$.
+We can verify that Lemma~\ref{thm:error_ranking} can be extended to include the boundary cases:
+\begin{align}
+&\limsup_{T\to \infty}\frac{\mathbb{E}[T^{(1)}]}{\log T} \leq \sum_{j < \tilde{j}(\rho)}\sum_{k=1}^K\frac{27}{2g_{\tilde{j}(\rho)} [\Delta^{(j)}_{\tilde{j}(\rho),k}]^2} + {2K[\tilde{j}(\rho)-1] },\nonumber\\
+&\limsup_{T\to \infty}\frac{\mathbb{E}[T^{(2)}]}{\log T} \leq \sum_{j \geq \tilde{j}(\rho)+1}\sum_{k=1}^K\frac{27}{2g_j [\Delta^{(\tilde{j}(\rho))}_{j,k}]^2} + 2K[J - \tilde{j}(\rho)], \nonumber
+\end{align}
+where
+\begin{align}
+&\quad g_j  = \min\big\{\pi_j, \frac{1}{2}(\rho - q_{\tilde{j}(\rho)-1}), \frac{1}{2}(q_{\tilde{j}(\rho)+1} -\rho)\big\}.\nonumber
+\end{align}
+
+Then,
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = \sum_{\tau = 1}^T \mathbb{E}[\Delta {v}_{\tau}], \nonumber
+\end{eqnarray}
+where
+\begin{eqnarray}
+\mathbb{E}[\Delta v_\tau]  =  \sum_{s = 0}^2\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)]. \nonumber
+\end{eqnarray}
+For the case of $s = 0$,
+\begin{align}
+\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] = \sum_{b = 0}^B \mathbb{E}[\Delta {v}_{\tau}|b_{\tau} = b, \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)]\mathbb{P}\{b_\tau = b, \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)\}. \nonumber
+\end{align}
+When $b/\tau \in [\rho -\delta, \rho + \delta]$ and $\mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)$ occurs, we have $\Delta {v}_{\tau} \leq (u_1^*-u_J^*) |\rho - b/\tau|$. Moreover, $\Delta {v}_{\tau} \leq v(\rho)$ under any condition. Thus,
+\begin{align}
+&\quad\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, 0}(T - \tau + 1)] \nonumber \\
+&\leq u_1^* \mathbb{E}[|b_{\tau}/\tau - \rho|] + v(\rho) \sum_{b \notin [\rho -\delta, \rho + \delta]}\mathbb{P}\{b_\tau = b\}\nonumber \\
+& \leq u_1^* \sqrt{\frac{{\rm Var}(b_{\tau})}{\tau^2}} + 2v(\rho)e^{-2\delta^2\tau}. \nonumber
+\end{align}
+
+For the other cases of $s = 1,2$, we have
+\begin{eqnarray}
+\mathbb{E}[\Delta {v}_{\tau},  \mathcal{E}_{{\rm rank}, s}(T - \tau + 1)] \leq v(\rho) \mathbb{P}\{\mathcal{E}_{{\rm rank}, s}(T - \tau + 1)\}. \nonumber
+\end{eqnarray}
+
+Then we can bound $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ by summing over the entire horizon. The conclusion of Part 2 of Theorem~\ref{thm:regret_ucb_alp} then follows by adding the bound of $R_{\rm {UCB-ALP}}^{({\rm a})}(T, B)$ and $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$.
+
+%\subsection{Lower Bound of Regret}
+%Here we also show that the regret of any algorithm is lower bounded by $O(\log T)$ in non-boundary cases and thus UCB-ALP is order-optimal.
+%\begin{theorem}
+%Given $\pi_j$'s, $u_{j,k}$'s, and $\rho \neq q_j$, $1 \leq j \leq J-1$,  for any algorithm $\Gamma$, its regret is lower bounded as
+%\begin{eqnarray}
+%R_{\Gamma}(T) \geq .
+%\end{eqnarray}
+%\end{theorem}
+%\begin{proof}
+%We prove this theorem using the techniques in \cite{Lai1985AAM}.
+%\end{proof}
+%
+%For the boundary cases, it is still an open problem if one can achieve lower regret than $O(\sqrt{T})$. In these cases, one may use UCB-based DP algorithm to achieve lower regret. However, a rigorous analysis about its regret may be challenging because the upper bound $\widehat{U}(T,B)$ may be not a tight enough to show a regret lower than  $O(\sqrt{T})$ in boundary cases. 

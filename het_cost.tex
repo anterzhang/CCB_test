@@ -1,0 +1,26 @@
+\section{Extensions} \label{sec:exten}
+
+
+\subsection{Constrained Contextual Bandits with Unknown Context Distributions} \label{subsec:unknown_dist}
+
+
+
+\subsection{Constrained Contextual Bandits with Heterogeneous Costs} \label{subsec:het_cost}
+{In this section, we discuss how to use the insight from unit-cost systems for the design of algorithms in heterogeneous-cost systems where cost $c_{j,k}$ depends on $j$ and $k$.
+We only discuss the main results here due to space limitations. Details can be found in Appendix~\ref{app:het_cost} in the supplementary material.}
+
+{When the statistics of bandits are known to the agent, the ALP algorithm can be generalized to heterogeneous-cost systems. With heterogeneous costs, the quality of an action $k$ under a context $j$ is roughly captured by its \emph{normalized expected reward}, defined as $\eta_{j,k} = u_{j,k}/c_{j,k}$. However, the agent cannot only focus on the ``best'' action, i.e., $k_j^* = \argmax_{k \in \mathcal{A}} \eta_{j,k}$, for context $j$.
+This is because there may exist another action $k'$ such that $\eta_{j,k'} < \eta_{j,k_{j}^*}$, but $u_{j,k'} > u_{j,k_j^*}$ (and of course, $c_{j,k'} > c_{j, k_j^*}$). If the budget  allocated to context $j$ is sufficient, then the agent may take action $k'$ to maximize the expected reward. Therefore, the ALP algorithm in this case needs to decide the probability to take action $k$ under context $j$, by solving an LP problem with an additional constraint that only one action can be taken under each context.
+%Unlike unit-cost systems, the remaining budget $b_{\tau}$ does not follow any classic distribution in heterogeneous-cost systems. However, we can show that its expectation $\mathbb{E}[b_{\tau}] = \rho \tau$. Moreover, the concentration property still holds in this general case by the method of averaged bounded differences \cite{Dubhashi2009Concentration}.
+We can show that  ALP achieves $O(1)$ regret in non-boundary cases, and $O(\sqrt{T})$ regret in boundary cases.
+We note that the regret analysis of ALP in this case is much more difficult due to the additional constraint that couples all actions under each context. }
+
+{When the expected rewards are unknown, it is difficult in general to combine ALP with the UCB method since the ALP algorithm in this case not only requires the ordering of $\eta_{j,k}$'s, but also the ordering of $u_{j,k}$'s and the ratios $\frac{u_{j,k_1} - u_{j, k_2}}{c_{j,k_1} - c_{j, k_2}}$. As a special case, when all actions have the same cost under a given context, i.e., $c_{j,k} = c_j$ for all $k$ and $j$, the UCB-ALP can be extended  by defining the UCBs for the normalized expected rewards $\eta_{j,k}$ with appropriate scaling such that $Y_{k,t}/c_j \in [0,1]$ if $X_t = j$. However, it is still an open problem to design algorithms for general heterogeneous-cost systems.}
+
+%Therefore, we consider an LP problem $\mathcal{LP}'_{T,B}$, where the decision variable $p_{j,k}$ is the probability that action $k$ is taken under context $j$.
+%We construct an LP problem $\mathcal{LP}'_{T,B}$, which is similar to $\mathcal{LP}_{T,B}$ but take all actions into account under each context. Since the agent can only take at most one action under each context, additional constraints $\sum_{k = 1}^K p_{j,k} \leq 1$, $1 \leq j \leq J$, appear in $\mathcal{LP}'_{T,B}$. With these constraints, obtaining explicit representations for the solution of $\mathcal{LP}'_{T,B}$ is difficult. By analyzing the structure of the problem $\mathcal{LP}'_{T,B}$, we can eliminate certain actions under each contexts without affecting the optimal solution of $\mathcal{LP}'_{T,B}$. We define the set of remaining actions as the candidate set for each context and propose an algorithm for finding the candidate sets. Then, we obtain the explicit presentation of the solution, which also following a threshold structure,  by relaxing the probability constraints with a transformation. The ALP algorithm in this case uses the solution of $\mathcal{LP}'_{\tau,b}$ when the remaining time is $\tau$ and the remaining budget is $b$, and can be shown to achieve similar performance as unit-cost systems.
+
+
+
+
+

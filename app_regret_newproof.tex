@@ -1,0 +1,166 @@
+\newpage
+\begin{theorem}\label{thm:regret_ucb_alp_new}
+Given $\pi_j$'s, $u_{j,k}$'s and a fixed $\rho \in [0,1]$, the regret of UCB-ALP satisfies:\\
+1) (Non-boundary cases) if $\rho \neq q_j$, $1 \leq j \leq J-1$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(JK\log T\big)$.\\
+%\begin{eqnarray}
+%\limsup_{T\to \infty} \frac{R_{\rm{UCB-ALP}}(T, B)}{\log T} \leq \Theta^{\rm (c)}_{\rm nb} + \Theta^{\rm (a)}, \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (c)}_{\rm nb} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)}\sum_{k=1}^K\frac{27}{2g_{\tilde{j}(\rho)+1} [\Delta^{(j)}_{\tilde{j}(\rho)+1,k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+2}^{J}\sum_{k=1}^K\frac{27}{2g_j [\Delta^{(\tilde{j}(\rho)+1)}_{j,k}]^2} + KJ \bigg\}$,
+%$\Theta^{\rm (a)} = \sum_{j=1}^J \sum_{k \neq k_j^*} \big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big)$
+%with $\bar{u}^* = \sum_{j = 1}^J \pi_j u_j^*$, and $v(\rho)$ defined in \eqref{eq:LP_single_step_value}.\\
+2) (Boundary cases) if $\rho = q_j$ for some $j \in \{ 1,2, \ldots, J-1\}$, then the regret of UCB-ALP is $R_{\rm{UCB-ALP}}(T, B) = O\big(\sqrt{T} + JK\log T \big)$.
+%\begin{eqnarray}
+%R_{\text{UCB-ALP}}(T, B) \leq \Theta^{\rm (o)} \sqrt{T}  + [\Theta^{\rm (c)}_{\rm b} + \Theta^{\rm (a)}]\log T + O(1), \nonumber
+%\end{eqnarray}
+%where $\Theta^{\rm (o)} =  2(u_1^* - u_J^*) \sqrt{\rho (1-\rho)}$,
+%%$\Theta^{\rm (a)}$ is defined as in Theorem~\ref{thm:regret_ucb_alp_nonboundary},
+%\begin{align}
+%\Theta^{\rm (c)}_{\rm b} = [\bar{u}^* + v(\rho)]\bigg\{\sum_{j = 1}^{\tilde{j}(\rho)-1}\sum_{k=1}^K\frac{27}{2g'_{\tilde{j}(\rho)} [\Delta^{(j)}_{\tilde{j}(\rho),k}]^2}
+%+ \sum_{j =\tilde{j}(\rho)+1}^{J}\sum_{k=1}^K\frac{27}{2g'_j [\Delta^{(\tilde{j}(\rho))}_{j,k}]^2} + KJ \bigg\},
+%\end{align}
+%and $g'_j = \min\big\{\pi_j, \frac{1}{2}(\rho - q_{\tilde{j}(\rho)-1}), \frac{1}{2}(q_{\tilde{j}(\rho)+1} -\rho)\big\}$.
+\end{theorem}
+
+
+\begin{proof}
+We bound the regret of UCB-ALP by comparing its performance  with the benchmark $\widehat{U}(T,B)$. To obtain this upper bound, we first partition the regret according to the sources and then bound the each part of regret, respectively.
+
+Before presenting the proof, we first introduce a notation that will be widely used later. For contexts $j$ and $j'$, and an action $k$, let $\Delta_{j,k}^{(j')}$ be the difference between the expected reward for action $k$ under context $j$ and the highest expected reward under context $j'$, i.e., $\Delta_{j,k}^{(j')} = u_{j'}^* - u_{j,k}$.
+When $j' = j$, $\Delta_{j,k}^{(j)}$ is the difference of expected reward between the suboptimal action $k$ and the best action under context $j$.
+
+
+%%%%%%%%%%
+\subsection{Step 1: Partition the Regret}
+%%%%%%%%%%
+
+Note that the total reward of the oracle solution $U^*(T,B)  \leq \widehat{U}(T,B)$. Thus, we can bound the regret of UCB-ALP by comparing its total expected reward $U_{\rm UCB-ALP}(T,B)$ with $\widehat{U}(T,B)$, i.e.,
+\begin{eqnarray}
+&&R_{\rm {UCB-ALP}}(T, B) \nonumber \\
+&=& U^*(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber \\
+& \leq &\widehat{U}(T,B) - U_{\rm UCB-ALP}(T,B) \nonumber\\
+&= & T v(\rho) - \sum_{j = 1}^J \sum_{k =1}^K u_{j,k} \mathbb{E}[C_{j,k}(T)].
+\end{eqnarray}
+The total expected reward of UCB-ALP can be further divided as
+\begin{eqnarray}
+&& U_{\rm UCB-ALP}(T,B) \nonumber \\
+& =&  \sum_{j = 1}^J u_j^* \mathbb{E}\big[\sum_{k=1}^K C_{j,k}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)] \nonumber \\
+& =&  \sum_{j = 1}^J u_j^*\mathbb{E}\big[C_{j}(T)\big] - \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+where $C_j(T) = \sum_{k=1}^K C_{j,k}(T)$ is the total number that actions have been taken under context $j$ up to round $T$.
+
+Consequently, the regret of UCB-ALP can be bounded as
+\begin{eqnarray}\label{eq:regret_ucb_alp__nonboundary_details}
+R_{\rm {UCB-ALP}}(T, B) \leq R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) + R_{\rm {UCB-ALP}}^{({\rm c})}(T, B),
+\end{eqnarray}
+where
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm a})}(T, B) = \sum_{j=1}^J \sum_{k=1}^K \Delta_{j,k}^{(j)}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+R_{\rm {UCB-ALP}}^{({\rm c})}(T, B) = T v(\rho) - \sum_{j  = 1}^J u_j^*\mathbb{E}[C_j(T)]. \nonumber
+\end{eqnarray}
+
+Eq.~\eqref{eq:regret_ucb_alp__nonboundary_details} clearly shows that the regret of the UCB-ALP algorithm can be divided into two parts: the first part $R_{\rm {UCB-ALP}}^{({\rm a})}(T, B)$ is from taking  suboptimal actions under a given context; the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ is from the deviation of remaining budget $b_{\tau}$ and context ranking errors.
+
+%%%%%%%%%%
+\subsection{Step 2: Bound Each Part of Regret}
+%%%%%%%%%%
+
+\subsubsection{Step 2.1: Bound of $R_{\text{UCB-ALP}}^{\rm (a)}(T, B)$.}
+For the regret from action ranking errors,
+we show in Lemma~\ref{thm:regret_withincontext} that $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) = O(\log T)$ using similar techniques for traditional UCB methods \cite{Golovin2009Lecture}.
+\begin{lemma}\label{thm:regret_withincontext}
+Under UCB-ALP, the regret due to the action ranking errors within context $j$ satisfies
+\begin{eqnarray} \label{eq:regret_ucb_alp_regret_withincontext}
+R_{\text{UCB-PB}}^{\rm (a)}(T, B) \leq \sum_{j=1}^J \sum_{k \neq k_j^*} \bigg[\big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big) \log T + 2 \Delta_{j,k}^{(j)}\bigg].
+\end{eqnarray}
+\end{lemma}
+\begin{proof}
+For $k \neq k_j^*$, let $\ell_{j,k}^{(j)} = \frac{2\log T}{(\Delta_{j, k}^{(j)})^2}$. According to Lemma~\ref{thm:context_action_pair_errorprob}, we have
+\begin{eqnarray}
+&& \mathbb{E}[C_{j,k}(T)] \nonumber \\
+&\leq& \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k, C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, A_t = k | C_{j,k}(t-1) \geq \ell_{j,k}^{(j)}\} \nonumber \\
+&\leq & \ell_{j,k}^{(j)} + 2\sum_{t = 1}^Tt^{-1}. \nonumber
+\end{eqnarray}
+The conclusion then follows by the facts that $\sum_{t = 1}^T t^{-1} \leq 1 + \log T$ and $R_{\text{UCB-ALP}}^{\rm (a)}(T, B) =  \sum_{j = 1}^J\sum_{k \neq k_j^*} \Delta_{j,k}^{(j)} \mathbb{E}[C_{j,k}(T)]$.
+\end{proof}
+
+\subsubsection{Step 2.2: Bound of $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$.}
+Next, we show that the second part $R_{\rm {UCB-ALP}}^{({\rm c})}(T, B)$ is also in the order of $O(\log T)$.
+We mainly focus on the proof for the non-boundary cases, and discuss the boundary cases later.
+
+From Algorithm~\ref{alg:ucb_alp}, we can see that the evolution of the remaining budget also affects the execution of the UCB-ALP algorithm. Under the assumption of known context distribution, it can be verified that Lemma~\ref{thm:alp_to_hypergeo} holds under UCB-ALP, i.e., the remaining budget $b_{\tau}$ follows the hypergeometric distribution and has the properties described in Lemma~\ref{thm:alp_to_hypergeo}. We define an event $\mathcal{E}_{\rm budget, 0}(t)$ as follows,
+\begin{eqnarray}
+\mathcal{E}_{\rm budget, 0}(t)  = \{(\rho - \delta) \tau \leq b_{\tau} \leq (\rho + \delta) \tau\}, \nonumber
+\end{eqnarray}
+where $\delta$ is given by
+\begin{eqnarray}
+\delta = \frac{1}{2}\min\{\rho - q_{\tilde{j}(\rho)}, q_{\tilde{j}(\rho)+1} -\rho\}. \nonumber
+\end{eqnarray}
+According to Lemma~\ref{thm:alp_to_hypergeo}, we have
+\begin{eqnarray}
+\mathbb{P}\{\urcorner\mathcal{E}_{\rm budget, 0}(t)\}
+= \mathbb{P}\{ b_{\tau} <  (\rho -\delta) \tau\} + \mathbb{P}\{ b_{\tau} >  (\rho +\delta) \tau\} \leq 2e^{-2\delta^2 (T-t + 1)}. \nonumber
+\end{eqnarray}
+
+Now we analyze $\mathbb{E}[C_j(T)]$ under UCB-ALP. We first show the upper bound on $\mathbb{E}[C_j(T)]$ for $j \geq \tilde{j}(\rho) + 1$. Then, using the fact of $\sum_{j = 1}^J C_j(T) = B$, we can obtain the lower bound on $\mathbb{E}[C_j(T)]$ for $j \leq \tilde{j}(\rho) + 1$ and the upper bound of $R_{\text{UCB-ALP}}^{\rm (c)}(T, B)$.
+
+For $j > \tilde{j}(\rho) + 1$ and $1 \leq k \leq K$, let $\ell_{j,k}^{(\tilde{j}(\rho)+1)} = \frac{2 \log T}{[\Delta_{j,k}^{(\tilde{j}(\rho)+1)}]^2}$. We know that if $(\rho - \delta) \tau \leq b_{\tau} \leq (\rho + \delta) \tau$, context $j$ can only be played when there exists a $j' \leq \tilde{j}(\rho)+1$ such that $\hat{u}_j(t) \geq \hat{u}_{j'}(t)$. Then, with a slight modification to the analysis of Lemma~\ref{thm:regret_withincontext}, we have
+\begin{eqnarray}
+\mathbb{E}[C_{j,k}(T)] &\leq& \ell_{j,k}^{(\tilde{j}(\rho)+1)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, \exists wrong-rank, C_{j,k}(t-1) \geq \ell_{j,k}^{(\tilde{j}(\rho)+1)}, \mathcal{E}_{\rm budget, 0}(t)\} + \sum_{t = 1}^T \mathbb{P}\{\urcorner\mathcal{E}_{\rm budget, 0}(t)\} \nonumber \\
+&\leq&\ell_{j,k}^{(\tilde{j}(\rho)+1)} + 2(1 + \log T) + \frac{2e^{-2\delta^2}}{1 - e^{-2\delta^2}}, \nonumber
+\end{eqnarray}
+implying that
+\begin{eqnarray} \label{eq:ub_supoptimal_context}
+\mathbb{E}[C_j(T)] \leq \sum_{k=1}^K \ell_{j,k}^{(\tilde{j}(\rho)+1)} + 2K\big(1 + \log T + \frac{2e^{-2\delta^2}}{1 - e^{-2\delta^2}}\big).
+\end{eqnarray}
+
+
+For $j = \tilde{j}(\rho) + 1$, we have
+\begin{eqnarray}
+\mathbb{E}[C_{j,k}(T)] &\leq& \ell_{\tilde{j}(\rho)+1,k}^{(j)} + \sum_{t = 1}^T \mathbb{P}\{X_t = j, \exists wrong-rank, C_{j,k}(t-1) \geq \ell_{j,k}^{(\tilde{j}(\rho)+1)}, \mathcal{E}_{\rm budget, 0}(t)\} \nonumber \\
+&& + \sum_{t = 1}^T \mathbb{P}\{X_t = j, no wrong-rank, C_{j,k}(t-1) \geq \ell_{j,k}^{(\tilde{j}(\rho)+1)}, \mathcal{E}_{\rm budget, 0}(t)\} + \sum_{t = 1}^T \mathbb{P}\{\urcorner\mathcal{E}_{\rm budget, 0}(t)\} \nonumber \\
+&\leq&\ell_{\tilde{j}(\rho)+1,k}^{(j)} + 2(1 + \log T)  + \frac{2e^{-2\delta^2}}{1 - e^{-2\delta^2}}, \nonumber
+\end{eqnarray}
+
+
+
+
+
+\end{proof} 
+
+\section{General UCB-ALP}
+
+How to show its logarithmic regret?
+
+Analyze the scenarios where a certain context-action pair can be pulled:
+
+1) $\hat{u}_{j,k}/c_{j,k}$ is large;
+
+2) $(\hat{u}_{j,k_1} - \hat{u}_{j,k_2})/(c_{j, k_1} - c_{j, k_2})$ is larger, then $\hat{u}_{j,k_1}$ will be pulled. Moreover, it will be greater than 0 with high probability $O(1/T)$ if $(j,k_1)$ has been pulled for sufficient times.
+\begin{lemma} \label{thm:hetcost_ucb_rank}
+1) If $u_{j_1,k_1}/c_{j_1,k_1} <  u_{j_2,k_2}/c_{j_2,k_2}$, then $\mathbb{P}\{\hat{u}_{j_1,k_1}(t)/c_{j_1,k_1} \geq   \hat{u}_{j_2,k_2}(t)/c_{j_2,k_2}| C_{j_1, k_1}(t-1) \geq ?? \} \leq t^{-1}$.
+
+2) For contexts $j_1$, $j_2$, and actions $k_{11}$, $k_{12}$, $k_{21}$, and $k_{22}$, if $u_{j_1,k_{11}} > u_{j_1,k_{12}}$, $u_{j_2,k_{21}} > u_{j_2,k_{22}}$, and $\frac{u_{j_1,k_{11}} - u_{j_1,k_{12}}}{c_{j_1,k_{11}} - c_{j_1,k_{12}}} <  \frac{u_{j_2,k_{21}} - u_{j_2,k_{22}}}{c_{j_2,k_{21}} - c_{j_2,k_{22}}}$, then
+\begin{equation}
+\mathbb{P}\big\{ \frac{u_{j_1,k_{11}}(t) - u_{j_1,k_{12}}(t)}{c_{j_1,k_{11}} - c_{j_1,k_{12}}} \geq  \frac{u_{j_2,k_{21}}(t) - u_{j_2,k_{22}}(t)}{c_{j_2,k_{21}} - c_{j_2,k_{22}}} \big| C_{j_1, k_{11}}(t-1) \geq \red{TBD} ?? , C_{j_2, k_{22}}(t-1) \geq  \red{TBD}\big\} \leq \frac{1}{t}.
+\end{equation}
+\end{lemma}
+
+\textbf{The maxim of ``Optimism in the Face of Uncertainty''}: being optimistic within the confidence range; if one context-action should not be pulled that much, it will be finally identified (as soon as it has been pulled sufficiently)!
+
+\textbf{The key idea of proof:} a context-action pair $(j,k)$ could only be pulled when it has large UCB. If it has been pulled for enough times, its UCB will be relatively accurate and will not be over pulled.
+
+According to Lemma~\ref{thm:hetcost_ucb_rank}, we know that there exists a positive number $\delta_u$ such that if $|\hat{u}_{j,k}(t) - u_{j,k}| \leq \delta_u$, then the UCB-ALP will provide a correct rank (and thus \blue{a plausible solution}). 
+
+Furthermore, we only need to consider the cases where there will actually result in regret and only consider  the context-action pairs with positive probability.
+Let $\hat{C}_{j,k}(t)$ be the number of slots where $\hat{p}_{j,k}(t') > \delta_p > 0$, but $|\hat{u}_{j,k}(t') - u_{j,k}| \geq \delta_u$ up to $t$, i.e.,
+\begin{equation}
+\hat{C}_{j,k}(t) = \sum_{t' = 1}^{t}\mathbbm{1}(\hat{p}_{j,k}(t') > \delta_p, |\hat{u}_{j,k}(t') - u_{j,k}| \geq \delta_u).
+\end{equation}
+Then we can bound $\hat{C}_{j,k}(t)$ as $\hat{C}_{j,k}(t)  = O(\log T)$. 
+
+Note that a suboptimal solution will be implemented only when there exists a context-action pair $(j,k)$ such that $\hat{p}_{j,k}(t') > \delta_p > 0$ and $|\hat{u}_{j,k}(t') - u_{j,k}| \geq \delta_u$. Summarize over all context-actions pairs, we know that the total regret will be bounded as $O(\log T)$. 

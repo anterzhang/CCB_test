@@ -1,0 +1,113 @@
+%\documentclass{article} % For LaTeX2e
+%\usepackage{nips15submit_e,times}
+\documentclass[wcp]{jmlr}
+
+\usepackage{hyperref}
+\usepackage{url}
+%\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
+
+
+% My own packages
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+%\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{dsfont}
+% For algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% For figures
+\usepackage{graphicx} % more modern
+%\usepackage{epsfig} % less modern
+%\usepackage{subfigure}
+% For citations
+%\usepackage{natbib}
+\usepackage[english]{babel}  % load the hyphenation patterns for American English
+
+\jmlrvolume{60}
+\jmlryear{2016}
+\jmlrworkshop{ACML 2016}
+
+% Customized definition
+% define the operation argmin and argmax
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%\renewcommand{\baselinestretch}{0.925}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\allowdisplaybreaks[2]
+%\hyphenpenalty=1
+%\newtheorem{theorem}{Theorem}
+\newtheorem{prop}{Proposition}
+%\newtheorem{lemma}{Lemma}
+\newtheorem{corol}{Corollary}
+\newtheorem{assumption}{Assumption}
+
+
+\newcommand{\wu}[1]{\textcolor{red}{/*Wu: #1*/}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+%\newcommand{\blue}[1]{{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+
+\title[Confidence-Bounds-Based Lyapunov Optimization]{Confidence-Bounds-Based Lyapunov Optimization for Constrained Contextual Bandits}
+
+
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+%\nipsfinalcopy % Uncomment for camera-ready version
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+Confidence Set based Lyapunov Optimization.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% body
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\input{intro}
+
+\input{sys_model}
+
+\input{algorithm}
+
+\input{sim_results}
+
+\input{conclusion}
+
+
+
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+%\nocite{langley00}
+
+\bibliography{OnlineOpt,mypublications_0802,math}
+\bibliographystyle{unsrt_abbrv}
+%\bibliographystyle{abbrv}
+%% appendix
+%\input{appendix}
+
+%\input{example}
+\end{document}

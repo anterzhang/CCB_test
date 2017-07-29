@@ -1,0 +1,212 @@
+\section{Constrained Contextual Bandits with Unknown Context Distribution} \label{app:unknown_dist}
+In this section, we relax the assumption of known context distribution and study unit-cost systems with unknown context distribution. Since the arrival of contexts is independent of the actions taken by the agent.
+a natural idea is to implement the ALP or UCB-ALP algorithm based on the empirical distribution as follows:
+
+\textbf{EALP and UCB-EALP Algorithms:} the agent maintains  the empirical distribution of the contexts, denoted by $\hat{\boldsymbol{\pi}}_t = (\hat{\pi}_{1,t}, \hat{\pi}_{2,t}, \ldots, \hat{\pi}_{J,t})$, where $\hat{\pi}_{j,t} = \frac{1}{t}\sum_{t' = 1}^t \mathds{1}(X_{t'} = j)$. In each round, the agent executes the ALP (when the expected rewards are known) or UCB-ALP (when the expected rewards are unknown) algorithms with the context distribution $\boldsymbol{\pi}$ in $\mathcal{LP}_{\tau, b}$ replaced by $\hat{\boldsymbol{\pi}}_t$. These algorithms are referred to as Empirical ALP (EALP) and UCB-EALP, respectively.
+
+As we can see from the numerical simulations in Appendix~\ref{sec:sim_results}, the above EALP and UCB-EALP algorithms have similar performance as ALP and UCB-ALP, respectively. However, the regret analysis for these algorithms is challenging because the empirical distribution introduces complex temporal dependency since the empirical distribution depends on the context arrivals in all the past rounds, which makes it difficult to analyze the evolution of the remaining budget. Thus, we focus on the non-boundary cases and consider truncated version of EALP and UCB-EALP. Specifically, we study algorithms that stop updating the empirical distribution from the $T_1$-th (will be defined later) round and use the fixed estimate $\hat{\boldsymbol{\pi}}_{T_1}$ for the remaining rounds, which are  referred to as EALP2 (as shown in Algorithm~\ref{alg:ealp2}) and UCB-EALP2, respectively. We focus on the EALP2 algorithm for the case where the expected rewards are known, while the properties of UCB-EALP2 can be obtained by similar techniques in the analysis of UCB-ALP combined with the properties of EALP2.
+\begin{algorithm}[htbp]
+\caption{EALP2}
+\label{alg:ealp2}
+\begin{algorithmic}
+\STATE {\bfseries Input:} Time horizon $T$, budget $B$, learning stage length $T_1$, and expected rewards $u_j^*$'s;
+
+\STATE {\bfseries Init:} $\tau = T$; $b = B$; $\hat{\pi}_{j,0} = 0$, $\forall j$;
+
+\FOR{$t = 1$ {\bfseries to} $T$}
+\IF{$t \leq T_1$}
+\STATE{$\hat{\pi}_{j,t} \gets \frac{(t-1)\hat{\pi}_{j,t-1} + \mathds{1}(X_t = j)}{t}$, $\forall j$;}
+\ENDIF
+\IF{$b > 0$}
+\STATE{Obtain the probabilities $p_j(b/\tau)$'s by solving $\mathcal{LP}_{\tau,b}$ with $\boldsymbol{\pi}$ replaced by $\hat{\boldsymbol{\pi}}_t$.}
+\STATE{Take action $k_{X_t}^*$ with probability $p_{X_t}(b/\tau)$.}
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+Now we show that for a sufficiently large $T$ and an appropriate chosen $T_1$, the EALP2 algorithm achieves similar performance as ALP in the non-boundary cases. Let $\delta = \min\{q_{\tilde{j}(\rho) + 1} - \rho, \rho - q_{\tilde{j}(\rho)}\}$ be the gap between $\rho$ and the boundaries. The following theorem shows that EALP2 achieves $O(1)$ regret with appropriately chosen $T$ and $T_1$.
+\begin{theorem} \label{thm:ealp2_regret}
+Given a fixed $\rho \in (0,1)$, $\rho \neq q_j$, $j = 1,2,\ldots, J-1$. If $T_1 = 16 J^2\log^3 T/\delta^2$ and $T$ satisfies $\log^3 T/T \leq \delta^3/(64J^2)$, then the regret of EALP2 satisfies $R_{\rm EALP2}(T,B) = O(1)$.
+\end{theorem}
+
+Note that here we assume $\delta$ is known for the simplicity of presentation. When considering practical scenarios where $\delta$ is unknown, we can obtain a lower confidence bound of $\delta$ as follows. At round $t$, let $\hat{q}_{j,t} = \sum_{j'=1}^j \hat{\pi}_{j,t}$ be the empirical estimate of the cumulative probability. Further, let $\tilde{j}'_t(\rho) = \max \{j: \hat{q}_{j,t} \leq \rho\}$ be the threshold under the empirical estimate. Let $\hat{\delta}_{t} = \min\{\hat{q}_{\tilde{j}'_t(\rho) + 1} - \rho, \rho - \hat{q}_{\tilde{j}'_t(\rho)}\}$ and $\check{\delta}_{t} = \frac{1}{2}\hat{\delta}_{t}$. Then $\check{\delta}_{t}$ is a lower confidence bound of $\delta$ with $\mathbb{P}\{\delta \geq  \check{\delta}_{t}\} \geq 1 - e^{-2 \check{\delta}_{t}^2 t}$. We choose $T_1$ which is the smallest $t$ such that $e^{-2 \check{\delta}_{t}^2 t} \leq \frac{1}{T^2}$ and $t \geq 16 J^2\log^3 T/\check{\delta}_{t}^2$. Then the following analysis holds, while the regret due to the event that $\delta \geq  \check{\delta}_{t}$ will be $O(1)$. Moreover, such a $t$ will appear with high probability after $64 J^2\log^3 T/\delta^2$ rounds for the non-boundary cases, and not appear with high probability for the boundary cases.
+
+Similar to the non-boundary cases in Theorem~\ref{thm:alp_regret}, the key idea of proving Theorem~\ref{thm:ealp2_regret} is to show that under EALP2, the average remaining budget $b_\tau/\tau$ will not cross the boundaries with high probability. To achieve this, we examine the expectation of $b_\tau/\tau$ and its concentration properties under EALP2.
+
+\textbf{Step 1: Estimation error of $\hat{\boldsymbol{\pi}}_{T_1}$.} Let $\alpha = \delta/(4J\log T)$. According to Hoeffding-Chernoff bound, we have
+\begin{eqnarray}
+\mathbb{P}\{|\hat{\pi}_{j,T_1} - {\pi}_j| \leq \alpha, \forall j\} \geq 1 - \frac{2J}{T^2}.
+\end{eqnarray}
+
+\textbf{Step 2: Bound on the expectation of $b_{\tau}/\tau$.}
+\begin{lemma} \label{thm:bounded_exp}
+Assume $|\hat{\pi}_{j,T_1} - \pi_j| \leq \alpha$ for all $j$. Then, for all $T_1 \leq t \leq T$, the expectation of the average remaining budget satisfies
+\begin{eqnarray}
+|\mathbb{E}[b_{\tau}/\tau] - \rho| \leq \frac{\delta}{2},
+\end{eqnarray}
+where $\tau = T- t + 1$.
+\end{lemma}
+\begin{proof}
+First, we note that the average remaining budget $b_{\tau}/\tau$ is close to the initial value $\rho$ at round $T_1$, because we can verify that for all $t \leq T_1$,
+\begin{eqnarray} \label{eq:empi_dist_error}
+\rho - \frac{\delta}{4}\leq \frac{B - T_1}{T-T_1+1} \leq \frac{b_{\tau}}{\tau} \leq \frac{B}{T-T_1+1} \leq \rho + \frac{\delta}{4}.
+\end{eqnarray}
+
+Now we show by mathematical induction that, if $|\hat{\pi}_{j,T_1} - \pi_j| \leq \alpha$ for all $j$, then $|\mathbb{E}[b_{\tau}/\tau] - \rho| \leq J\alpha\sum_{\tau' = T-T_1 + 1}^\tau\frac{1}{\tau'} + \frac{\delta}{4}$ for $\tau \leq T - T_1 + 1$ (i.e., $t \geq T_1$).
+
+Specifically, for $t = T_1$, we have $\big|\mathbb{E}[\frac{b_{T-T_1 + 1}}{T-T_1+1}] - \rho\big|  \leq \frac{\delta}{4}$ according to Eq.~\eqref{eq:empi_dist_error}. For any given $t \geq T_1$, we have $\tau = T- t + 1$, and
+\begin{eqnarray}
+&&\mathbb{E}[b_{\tau - 1}|b_{\tau} = b] \nonumber \\
+ &=& b - \bigg(\frac{b/\tau - \sum_{j\leq \tilde{j}(b/\tau)}\hat{\pi}_{j, T_1}}{\hat{\pi}_{\tilde{j}(b/\tau)+1, T_1}} \pi_{\tilde{j}(b/\tau)+1} + \sum_{j\leq \tilde{j}(b/\tau)} \pi_j\bigg) \nonumber \\
+&=& b- b/\tau + \frac{b/\tau - \sum_{j\leq \tilde{j}(b/\tau)}\hat{\pi}_{j, T_1}}{\hat{\pi}_{\tilde{j}(b/\tau)+1, T_1}} (\hat{\pi}_{\tilde{j}(b/\tau)+1, T_1} - \pi_{\tilde{j}(b/\tau)+1}) +  \sum_{j\leq \tilde{j}(b/\tau)} (\hat{\pi}_{j,T_1} - \pi_j).\nonumber
+\end{eqnarray}
+Note that $0 < \frac{b/\tau - \sum_{j\leq \tilde{j}(b/\tau)}\hat{\pi}_{j, T_1}}{\hat{\pi}_{\tilde{j}(b/\tau)+1, T_1}} < 1$. Thus, $\big|\mathbb{E}[b_{\tau - 1}|b_{\tau} = b] - \frac{b(\tau-1)}{\tau}\big| \leq J\alpha$, implying that $\big|\mathbb{E}[\frac{b_{\tau - 1}}{\tau-1}|b_{\tau} = b] - \frac{b}{\tau}\big| \leq \frac{J\alpha}{\tau-1}$.
+If $\big|\mathbb{E}[b_{\tau}/\tau] - \rho| \leq J\alpha\sum_{\tau' = T-T_1 + 1}^\tau\frac{1}{\tau'} + \frac{\delta}{4}$ for $2 \leq \tau \leq T - T_1 + 1$, then $\big|\mathbb{E}[b_{\tau-1}/(\tau-1)] - \rho| \leq J\alpha\sum_{\tau' = T-T_1 + 1}^\tau\frac{1}{\tau'} + \frac{J\alpha}{\tau-1} +   \frac{\delta}{4}$.
+
+The conclusion of Lemma~\ref{thm:bounded_exp} then follows because $|\mathbb{E}[b_{\tau}/\tau] - \rho| \leq J\alpha\sum_{\tau' = T-T_1 + 1}^\tau\frac{1}{\tau'} + \frac{\delta}{4} \leq J\alpha \log T + \frac{\delta}{4} \leq \frac{\delta}{2}$.
+\end{proof}
+
+\textbf{Step 3: Concentration of $b_{\tau}/\tau$.} The next lemma shows the concentration of the average remaining budget $b_\tau/\tau$.
+\begin{lemma} \label{thm:concentration_aver_remain_budget}
+Assume $|\hat{\pi}_{j,T_1} - \pi_j| \leq \alpha$ for all $j$. The average remaining budget $b_\tau/\tau$ in round $t = T- \tau + 1$ satisfies
+\begin{eqnarray}\label{eq:concentration_aver_remain_budget}
+\mathbb{P}\big\{|\frac{b_\tau}{\tau} - \mathbb{E}[\frac{b_\tau}{\tau}]| \geq \delta/4\big\} \leq 2\exp\big(-\frac{\delta^2\tau}{32}\big).
+\end{eqnarray}
+\end{lemma}
+
+To show the concentration of $b_{\tau}/\tau$, we first use the coupling argument to show the following lemma and then use the method of averaged bounded differences \cite{Dubhashi2009Concentration}.
+\begin{lemma} \label{thm:bounded_diff}
+Assume $|\hat{\pi}_{j,T_1} - \pi_j| \leq \alpha$ for all $j$. The remaining budget $b_\tau$ in round $t = T- \tau + 1$ satisfies
+\begin{eqnarray}
+\big|\mathbb{E}[b_\tau | \boldsymbol{Z}_{t'-1}, Z_{t'} =1] - \mathbb{E}[b_{\tau}|\boldsymbol{Z}_{t'-1}, Z_{t'} = 0]\big| \leq 2\big(\frac{\tau}{T- t'}\big)^{1-\sigma}, ~~T_1 \leq t' < t.
+\end{eqnarray}
+where $\boldsymbol{Z}_{t'-1} = (Z_1, Z_2, \ldots, Z_{t'-1})$ and $\sigma = 1- \min_j \frac{\pi_j}{\pi_j + \alpha}$.
+\end{lemma}
+\begin{proof}
+We bound the difference by constructing a coupling $\mathcal{M}$ of the two conditional distributions $(\cdot|\boldsymbol{Z}_{t'-1}, Z_{t'} =1)$ and $(\cdot|\boldsymbol{Z}_{t'-1}, Z_{t'} =0)$. Let $\zeta_{t'+1}, \zeta_{t'+2}, \ldots, \zeta_{T-\tau}$ and $\zeta'_{t'+1}, \zeta'_{t'+2}, \ldots, \zeta'_{T-\tau}$ be the pair of random variables in the coupling $\mathcal{M}$. We construct the coupling as follows:
+
+\textbf{Coupling:} We generate the value of $\zeta_{t''}$'s and $\zeta'_{t''}$'s sequentially. For each $t'' > t'$, let $\tilde{b}_{T-t''+1} = B - 1-\sum_{s = 1}^{t'-1}Z_{s} - \sum_{s = t'+1}^{t''-1}\zeta_{s}$ and $\tilde{b}'_{T-t''+1} = B -\sum_{s = 1}^{t'-1}Z_{s} - \sum_{s = t'+1}^{t''-1}\zeta'_{s}$ be the remaining budgets in round $t''$ corresponding to the pair of random variables. For $\zeta_{t''}$, We pick its value randomly with distribution $\mathbb{P}\{\zeta_{t''} = 1\} = h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)$ and $\mathbb{P}\{\zeta_{t''} = 0\} = 1-h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)$, where $h(\rho)$ is the probability that one unit of budget will be consumed under EALP2 when the average remaining budget is $\rho$, i.e.,
+\begin{eqnarray} \label{eq:pull_prob_est}
+h(\rho) = \frac{\rho - \sum_{j' \leq \tilde{j}(\rho)}\hat{\pi}_{j,T_1}}{\hat{\pi}_{\tilde{j}(\rho)+1, T_1}}\pi_{\tilde{j}(\rho)+1} + \sum_{j' \leq \tilde{j}(\rho)}\pi_j.
+\end{eqnarray}
+For $\zeta'_{t''}$, we generate its value conditioned on $\zeta_{t''}$. If $\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1}$, then $\zeta'_{t''} = \zeta_{t''}$. If $\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1} + 1$, then
+\begin{eqnarray}
+&&\mathbb{P}\big\{\zeta'_{t''} = \zeta_{t''}|\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1}\big\} = 1, \nonumber\\
+&&\mathbb{P}\big\{\zeta'_{t''} = 1|\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1}+1, \zeta_{t''} = 1\big\} = 1, \nonumber \\
+&&\mathbb{P}\big\{\zeta'_{t''} = 1|\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1}+1, \zeta_{t''} = 0\big\} = \frac{h\big(\frac{\tilde{b}'_{T-t''+1}}{T-t''+1}\big) - h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)}{1- h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)}.\nonumber
+\end{eqnarray}
+Note that according to the above construction, $\tilde{b}'_{T-t''+1}- \tilde{b}_{T-t''+1}$ could only be 0 or 1. We can verify that the marginals satisfy
+\begin{eqnarray}
+(\zeta_{t''}, t'' > t')\sim (Z_{t''}, t'' > t'|\boldsymbol{Z}_{t'-1}, Z_{t'} =1), \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+(\zeta'_{t''}, t'' > t')\sim (Z_{t''}, t'' > t'|\boldsymbol{Z}_{t'-1}, Z_{t'} =0). \nonumber
+\end{eqnarray}
+
+From the construction of the coupling, we know that $\tilde{b}'_{\tau}- \tilde{b}_{\tau} = 1$ if and only if $\zeta_{t''} = \zeta'_{t''}$ for all $t' <t''  \leq T-\tau$. Thus,
+\begin{eqnarray}\label{eq:bounded_diff_prod}
+&&\big|\mathbb{E}[b_\tau | \boldsymbol{Z}_{t'-1}, Z_{t'} =1] - \mathbb{E}[b_{\tau}|\boldsymbol{Z}_{t'-1}, Z_{t'} = 0]\big| \nonumber\\
+&=& \mathbb{P}\big\{\zeta_{t''} = \zeta'_{t''},  t' <t''  \leq T-\tau\big\} \nonumber\\
+&=& \prod_{t'' = t'+1}^{T-\tau}\mathbb{P}\big\{\zeta_{t''} = \zeta'_{t''}|\zeta_{s} = \zeta'_{s},  t' < s  \leq t''-1\big\}.
+\end{eqnarray}
+
+We show that each term in Eq.~\eqref{eq:bounded_diff_prod} can be bounded as follows.
+\begin{lemma} \label{thm:bounded_diff_single_term}
+The coupling $\mathcal{M}$ satisfies
+\begin{eqnarray}
+\mathbb{P}\big\{\zeta_{t''} = \zeta'_{t''}|\zeta_{s} = \zeta'_{s},  t' < s  \leq t''-1\big\} \leq 1 - \frac{1-\sigma}{T-t''+1}, \nonumber
+\end{eqnarray}
+where $\sigma = 1-\min_j \frac{\pi_j}{\pi_j + \alpha}$.
+\end{lemma}
+\begin{proof}
+Conditioned on $\zeta_{s} = \zeta'_{s},  t' < s  \leq t''-1$, we have $\tilde{b}'_{T-t''+1} = \tilde{b}_{T-t''+1} + 1$, and $\zeta_{t''} \neq \zeta'_{t''}$ i.f.f. $\zeta'_{t''} = 0$ and $\zeta_{t''} = 1$. Thus,
+\begin{align}
+\mathbb{P}\big\{\zeta_{t''} = \zeta'_{t''}|\zeta_{s} = \zeta'_{s},  t' < s  \leq t''-1\big\}
+&=1- \frac{h\big(\frac{\tilde{b}'_{T-t''+1}}{T-t''+1}\big) - h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)}{1- h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)}\bigg[1 - h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big)\bigg] \nonumber\\
+&= 1- \bigg[h\big(\frac{\tilde{b}'_{T-t''+1}}{T-t''+1}\big) - h\big(\frac{\tilde{b}_{T-t''+1}}{T-t''+1}\big) \bigg].
+\end{align}
+To prove Lemma~\ref{thm:bounded_diff_single_term}, it suffices to show that for any $b$ and $\tau$ satisfying $b \leq \tau -1$, we have $h\big(\frac{b+1}{\tau}\big) - h\big(\frac{b}{\tau}\big) \geq \gamma/\tau$, where $\gamma = \min_j \frac{\pi_j}{\pi_j + \alpha}$.
+
+Specifically, from the definition of $h(\cdot)$ in Eq.~\eqref{eq:pull_prob_est}, we know that if $\tilde{j}\big(\frac{b+1}{\tau}\big) = \tilde{j}\big(\frac{b}{\tau}\big)$, we have $h\big(\frac{b+1}{\tau}\big) - h\big(\frac{b}{\tau}\big) = \frac{\pi_{\tilde{j}(\frac{b}{\tau})}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau}), T_1}}\cdot \frac{1}{\tau} \geq \gamma/\tau$.
+
+%If $\tilde{j}\big(\frac{b+1}{\tau}\big) \neq \tilde{j}\big(\frac{b}{\tau}\big)$, \wu{since we only focus on large enough $\tau$,} we have $\tilde{j}\big(\frac{b+1}{\tau}\big) = \tilde{j}\big(\frac{b}{\tau}\big) + 1$. This implies that $\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1} < \hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}$ and $\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1} > \hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}$. Therefore,
+%\begin{align}
+%&\quad h\big(\frac{b+1}{\tau}\big) - h\big(\frac{b}{\tau}\big) \nonumber\\
+%&= \pi_{\tilde{j}(\frac{b}{\tau}) + 1} + \frac{\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})+1} \hat{\pi}_{j,T_1}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+2,T_1}}\pi_{\tilde{j}(\frac{b}{\tau})+2} - \frac{\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}}\pi_{\tilde{j}(\frac{b}{\tau})+1}\nonumber\\
+%&= \frac{\pi_{\tilde{j}(\frac{b}{\tau})+1}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}}\bigg[\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1} - \big(\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1}\big) \bigg]+
+%\frac{\pi_{\tilde{j}(\frac{b}{\tau})+2}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+2,T_1}}\bigg[\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})+1} \hat{\pi}_{j,T_1}\bigg]
+%\end{align}
+
+
+If $\tilde{j}\big(\frac{b+1}{\tau}\big)  > \tilde{j}\big(\frac{b}{\tau}\big)$,  we have  $\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1} < \hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}$ and $\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b+1}{\tau})} \hat{\pi}_{j,T_1} > 0$. Therefore,
+\begin{align}
+&\quad h\big(\frac{b+1}{\tau}\big) - h\big(\frac{b}{\tau}\big) \nonumber\\
+&= \sum_{j = \tilde{j}(\frac{b}{\tau}) + 1}^{\tilde{j}(\frac{b+1}{\tau})}\pi_{j} + \frac{\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b+1}{\tau})} \hat{\pi}_{j,T_1}}{\hat{\pi}_{\tilde{j}(\frac{b+1}{\tau})+1,T_1}}\pi_{\tilde{j}(\frac{b+1}{\tau})+1} - \frac{\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}}\pi_{\tilde{j}(\frac{b}{\tau})+1}\nonumber\\
+&= \sum_{j = \tilde{j}(\frac{b}{\tau})+2}^{\tilde{j}(\frac{b+1}{\tau})}\pi_{j} +\frac{\pi_{\tilde{j}(\frac{b}{\tau})+1}}{\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1}}\bigg[\hat{\pi}_{\tilde{j}(\frac{b}{\tau})+1,T_1} - \big(\frac{b}{\tau} - \sum_{j\leq \tilde{j}(\frac{b}{\tau})} \hat{\pi}_{j,T_1}\big) \bigg]+
+\frac{\pi_{\tilde{j}(\frac{b+1}{\tau})+1}}{\hat{\pi}_{\tilde{j}(\frac{b+1}{\tau})+1,T_1}}\bigg[\frac{b+1}{\tau} - \sum_{j\leq \tilde{j}(\frac{b+1}{\tau})} \hat{\pi}_{j,T_1}\bigg]\nonumber\\
+&\geq \sum_{j = \tilde{j}(\frac{b}{\tau})+2}^{\tilde{j}(\frac{b+1}{\tau})}\frac{\pi_j}{\hat{\pi}_{j,T_1}}\hat{\pi}_{j,T_1} + \gamma \bigg(\frac{1}{\tau} -  \sum_{j = \tilde{j}(\frac{b}{\tau})+2}^{\tilde{j}(\frac{b+1}{\tau})}\hat{\pi}_{j,T_1}\bigg) \geq \gamma/\tau.
+\end{align}
+\end{proof}
+Using Lemma~\ref{thm:bounded_diff_single_term}, we have
+\begin{eqnarray}%\label{eq:bounded_diff_prod1}
+\big|\mathbb{E}[b_\tau | \boldsymbol{Z}_{t'-1}, Z_{t'} =1] - \mathbb{E}[b_{\tau}|\boldsymbol{Z}_{t'-1}, Z_{t'} = 0]\big| &\leq& \prod_{t'' = t'+1}^{T-\tau}\big(1 - \frac{1-\sigma}{T-t''+1}\big) \nonumber\\
+&\overset{(\rm a)}{=}&\frac{\tau + \sigma}{T-t'}\prod_{s = 1}^{T-t'-\tau-1}\big(1+\frac{\sigma}{\tau+s} \big)\nonumber\\
+&\overset{(\rm b)}{\leq}&\frac{\tau + \sigma}{T-t'}\big(\frac{T-t'-1}{\tau} \big)^{\sigma} \nonumber \\
+&\leq &2\big(\frac{\tau}{T-t'}\big)^{1-\sigma}. \nonumber
+\end{eqnarray}
+Equality (a) is obtained by merging the numerator of each term with the denominator of the next term. Inequality (b) is true because $\sigma < 1$, and
+\begin{eqnarray}%\label{eq:bounded_diff_prod1}
+\log \prod_{s = 1}^{T-t'-\tau-1}\big(1+\frac{\sigma}{\tau+s} \big) = \sum_{s = 1}^{T-t'-\tau-1}\log \big(1+\frac{\sigma}{\tau+s} \big) \leq\sum_{s = 1}^{T-t'-\tau-1}\frac{\sigma}{\tau+s}  \leq \sigma \log\big(\frac{T-t'-1}{\tau} \big). \nonumber
+\end{eqnarray}
+\end{proof}
+To use the method of averaged bounded differences  \cite{Dubhashi2009Concentration}, we note that
+\begin{eqnarray}
+\sum_{t' = T_1}^{T-\tau}\bigg[2\big(\frac{\tau}{T- t'}\big)^{1-\sigma}\bigg]^2 \leq 4\tau^{2-2\alpha}\cdot\big[\frac{1}{\tau^{1-2\sigma}} - \frac{1}{(T-T_1+1)^{1-2\sigma}}\big]\leq 4\tau.
+\end{eqnarray}
+
+Then, according to  Corollary~5.1 in \cite{Dubhashi2009Concentration} and Lemma~\ref{thm:bounded_diff}, we have
+\begin{eqnarray}%\label{eq:bounded_diff_prod1}
+\mathbb{P}\big\{|b_\tau - \mathbb{E}[b_\tau]| \geq \delta\tau/4\big\} \leq 2\exp\big(-\frac{2(\delta\tau/4)^2}{4\tau}\big)= 2\exp\big(-\frac{\delta^2\tau}{32}\big). \nonumber
+\end{eqnarray}
+implying Eq.~\eqref{eq:concentration_aver_remain_budget} in Lemma~\ref{thm:concentration_aver_remain_budget}.
+
+\textbf{Step 4: Upper bound of $R_{\rm EALP2}(T,B)$.} Now we bound the regret $R_{\rm EALP2}(T,B)$ using the results obtained in the previous steps.  We analyze the event of ``boundary-crossing'' in round $t$, denoted as $\mathcal{E}_{{\rm cross},t}$, which is the event that $\tilde{j}(b_\tau/\tau) \neq \tilde{j}(\rho)$. The event of ``boundary-crossing'' may happen when the estimates of empirical distribution is inaccurate or the average remaining budget $b_\tau/\tau$ deviates far from $\rho$. We study the probability of $\mathcal{E}_{{\rm cross},t}$ for $t \leq T_1$ and $t > T_1$, respectively.
+
+For $t \leq T_1$, the average remaining budget satisfies $\rho - \delta/4 \leq b_\tau/\tau \leq \rho + \delta/4$, as discussed in Step~2. The event  $\mathcal{E}_{{\rm cross},t}$ may occur only when there is some $j$ such that $|\hat{\pi}_{j,t} - \pi_j| \geq \delta/(4J)$. Thus,
+\begin{equation}
+\mathbb{P}\{\mathcal{E}_{{\rm cross},t}\} \leq \mathbb{P}\{\exists j,  |\hat{\pi}_{j,t} - \pi_j| \geq \delta/(4J)\}\leq 2J\exp(-\delta^2t/8J^2), ~~t \leq T_1.
+\end{equation}
+
+For $t > T_1$, if the empirical distribution $|\hat{\pi}_{j,T_1} - \pi_j| \leq \alpha$ ($< \delta/(4J)$ for sufficiently large $T$) for all $j$, then the average remaining budget satisfies $\mathbb{P}\big\{|\frac{b_\tau}{\tau} - \mathbb{E}[\frac{b_\tau}{\tau}]| \geq 3\delta/4\big\} \leq 2\exp\big(-\frac{\delta^2\tau}{32}\big)$ due to Lemma~\ref{thm:bounded_exp} and Lemma~\ref{thm:concentration_aver_remain_budget}. Thus,
+\begin{eqnarray}
+\mathbb{P}\{\mathcal{E}_{{\rm cross},t}\} &\leq& \mathbb{P}\{\exists j,  |\hat{\pi}_{j,T_1} - \pi_j| \geq \alpha\} + \mathbb{P}\big\{|\frac{b_\tau}{\tau} - \mathbb{E}[\frac{b_\tau}{\tau}]| \geq 3\delta/4|\forall j,  |\hat{\pi}_{j,T_1} - \pi_j| \geq \alpha\big\}\nonumber\\
+&\leq& \frac{2J}{T^2} + 2\exp\big(-\frac{\delta^2\tau}{32}\big), ~~t > T_1.
+\end{eqnarray}
+
+Now we bound the expectation of $C_j(T)$, i.e., the number of executions under context $j$.
+
+For $j \leq \tilde{j}(\rho)$,
+\begin{eqnarray}
+\mathbb{E}[C_j(T)]& =& \mathbb{E}\bigg[\sum_{t=1}^T \mathds{1}(X_t=j, A_t=k_j^*)\bigg] \nonumber\\
+&\geq& \sum_{t=1}^T \mathbb{P}\{X_t=j, A_t=k_j^*|\urcorner\mathcal{E}_{{\rm cross},t}\} \mathbb{P}\{\urcorner\mathcal{E}_{{\rm cross},t}\} \nonumber \\
+&= & \sum_{t=1}^T\pi_j\big(1- \mathbb{P}\{\mathcal{E}_{{\rm cross},t}\}\big)\nonumber\\
+&\geq& \pi_j T - \sum_{t=1}^{T_1}2J\exp(-\delta^2t/8J^2) - \sum_{t=T_1+1}^{T}\big[\frac{2J}{T^2} + 2\exp\big(-\frac{\delta^2\tau}{32}\big)\big] = \pi_j T + O(1), \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+\mathbb{E}[C_j(T)]\leq \pi_j T, \nonumber
+\end{eqnarray}
+Similarly, for $j > \tilde{j}(\rho)+1$, we have
+\begin{eqnarray}
+\mathbb{E}[C_j(T)] \leq \sum_{t=1}^T \mathbb{P}\{X_t=j, A_t=k_j^*|\mathcal{E}_{{\rm cross},t}\} \mathbb{P}\{\mathcal{E}_{{\rm cross},t}\} = O(1). \nonumber\\
+\end{eqnarray}
+For $j = \tilde{j}(\rho)+1$, we have
+\begin{eqnarray}
+\mathbb{E}[C_j(T)] = \mathbb{E}[B-b_0] - \sum_{j \neq \tilde{j}(\rho)+1}\mathbb{E}[C_j(t)] \geq B-T\sum_{j \leq \tilde{j}(\rho)}\pi_j -O(1) = \big(\rho - \sum_{j \leq \tilde{j}(\rho)}\pi_j\big)T - O(1). \nonumber
+\end{eqnarray}
+We complete the proof of Theorem~\ref{thm:ealp2_regret} by summing over all contexts:
+\begin{eqnarray}
+U_{\rm EALP2}(T,B) = \sum_{j=1}^J\mu_j^*\mathbb{E}[C_j(T)]\geq T\tilde{v}(\rho) - O(1) = \widehat{U}(T,B) - O(1). \nonumber
+\end{eqnarray} 

@@ -1,0 +1,23 @@
+
+\section{Constrained Contextual Bandits} \label{sys_model}
+
+We consider a contextual bandit problem with multiple budget constraints.  
+At each time-slot $t$, a context $X_t \in \mathcal{X}$ arrives, independently following the identical distribution.
+For simplicity, we consider discrete and finite contexts, where $\mathcal{X} = \{1,2, \ldots, J\}$ and $\mathbb{P}\{X_t = j\} = \pi_j$.  
+Upon observing the context, the agent takes an action $A_t \in \mathcal{A} = \{0\} \cup \{1, 2, \ldots, K\}$, where ``0'' represents a \emph{dummy} action that the agent skips the context. 
+When taking an action $k \in \{1, 2, \ldots, K\}$, the agent will receive a reward $Y_t$ and consume $Z_{i,t}$ amount of type-$i$ resource, where $1\leq i \leq M$ and $M$ is the number of types of resource. 
+We consider finite reward and cost, and thus we can normalize the reward and cost such as $Y_t \in [0,1]$ and $Z_{i,t} \in [0,1]$ for all $t$ and $i$. Conditioned on the context and the taken action, the expected reward is given by $\mathbb{E}[Y_t | X_t = j, A_t = k] = u_{j,k}$ and the expected cost of type-$i$ resource is $\mathbb{E}[Z_{i,t}|X_t = j, A_t = k] = c_{j,k}^{(i)}$.
+Note that the system statistics, $\pi_j$'s, $u_{j,k}$'s, and $c_{j,k}^{(i)}$'s are unknown to the agent. 
+
+A constrained contextual bandit algorithm $\Gamma$ decides which action to take given the historic observations and the current states, i.e.,  $A_t = \Gamma(\mathcal{H}_{t}, X_t)$, where the filtration $\mathcal{H}_{t} = \{(X_\tau, A_\tau, Y_{\tau}, Z_{i,\tau}): 1 \leq \tau \leq t - 1 \}$ represents the history before $t$.  The objective of $\Gamma$ is to maximize the expected total reward subject to the budget constraints, i.e.,
+\begin{align}
+\underset{\Gamma}{\text{max}} &~~ U_{\Gamma}(T, \bs{b}) =\sum_{t = 1}^T \mathbb{E}[Y_t],\\
+\text{s.~t.} &~~ \sum_{t = 1}^T \mathbb{E}[Z_{i,t}] \leq b_i T, 1 \leq i \leq M,
+\end{align}
+where the expectation operation is taken over the realization of contexts, actions, rewards and costs; and $b_i T$ is the budget associated with each type $i$ of resource. We first consider soft budget constraints, and discuss the hard constraint later (Section~\ref{??}).
+
+Let $U^*(T, \bs{b})$ be expected total reward achieved by the oracle, i.e., the optimal algorithm with known system statistics. The regret of an algorithm $\Gamma$ is defined as the gap between its performance and the oracle, i.e.,
+\begin{eqnarray}
+R_{\Gamma}(T, \bs{b}) = U^*(T, \bs{b}) - U_{\Gamma}(T, \bs{b}).
+\end{eqnarray}
+

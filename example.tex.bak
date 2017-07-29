@@ -1,0 +1,210 @@
+\newpage
+
+\section*{Contextual Bandits with Budget Constraints}
+
+
+\subsection*{Model:}
+
+Consider a simple 1-dimensional (linear) contextual bandit, with two arms, \blue{linear reward and constraint}.
+
+Time index: $t$
+
+Arms: $A_t \in \mathcal{A} = \{1, 2\}$.
+
+Contexts: \\
+Static context for Arm 1, i.e., $X_{1,t} = 1$ for all $t$. \\
+Random context for Arm 2, $\mathbb{P}\{X_{2,t} = 1\} = \pi_1$, $\mathbb{P}\{X_{2,t} = 2\} = \pi_2$. \\
+Contexts can be observed by the agent at the beginning of each round.
+
+Reward: $Y_{k,t}$, $k \in \mathcal{A}$, random variable with expectation $\mathbb{E}[Y_{k,t}|X^{\rm (r)}_{k,t} = x] = r_k x$, where $r_k$ is the weight for the reward.
+
+Cost: $Z_{k,t}$, we assume \blue{unit-cost} for all arms under any context, i.e. $Z_{k,t} = 1$ for all $k$ and $t$.
+
+\textbf{Objective:}
+
+Maximize the expected total reward subject to the budget constraint $B$.
+\begin{eqnarray}
+&&\max ~~U(T,B) = \frac{1}{T}\mathbb{E}\big[\sum_{t=1}^{T} Y_{A_t,t}] \nonumber \\
+&&\text{s.t.}~~~~~~\frac{1}{T}\sum_{t=1}^T Z_{A_t,t} \leq \frac{B}{T}.\nonumber
+\end{eqnarray}
+
+\subsection*{\blue{Discussions}}
+
+\blue{To make it even simpler, we assume all statistics are known, i.e., the weight $r_k$ and the distribution $\pi_j$'s are known (the regret should be larger when the statistics are unknown.}
+
+Parameters:
+
+\blue{Context distribution of Arm 2:} $\pi_1 = 0.2$, $\pi_2 = 0.8$.
+
+\blue{Reward weights:} $r_1$ = 1.5, $r_2 = 1$
+
+Budget: $B = 0.5T$.
+
+\textbf{1. Directly using Alg.~1 in the EC'14 paper:}
+
+We will solve a LP problem based on the (sample) context in the current round, without considering the context distribution.  Specifically, when $X_{1,t} = x_1$ and $X_{2,t} = x_2$,
+\begin{eqnarray}
+&&\max_{q_1,q_2} ~~u(x_1,x_2) = q_1 \cdot r_1 x_1 + q_2 \cdot r_2 x_2  \nonumber \\
+&&\text{s.t.}~~~ q_1 \cdot 1 + q_2  \cdot 1 \leq \frac{B}{T} = 0.5,\nonumber
+\end{eqnarray}
+where $q_k$, $k = 1,2$, is the probability of pulling Arm $k$.
+
+1) If $X_{1,t} = 1$ and $X_{2,t} = 1$ (happens with probability 0.2), then the optimal solution is $(q_1, q_2) = (0.5,0)$, and $u(1,1) = 0.5 \times r_1 X_{1,t} = 0.5 \times 1.5 = 0.75$.
+
+2) If $X_{1,t} = 1$ and $X_{2,t} = 2$ (happens with probability 0.2), then the optimal solution is $(q_1,q_2) = (0, 0.5)$, and $u(1,2) = 0.5 \times r_2 X_{2,t} = 0.5\times 2 = 1$.
+
+Thus, the reward of Alg.~1 in EC'14 is roughly
+\begin{equation}
+U_{\text{EC'14}}(T,B) = [\pi_1 u(1,1) + \pi_2 u(1,2)]T = (0.2 \times 0.75 + 0.8 \times 1)T = 0.95T. \nonumber
+\end{equation}
+
+\textbf{2. Using the Fixed-LP or Adaptive-LP in our draft} (\url{http://arxiv.org/abs/1504.06937}), we will reserve the budget for the better context. Specifically, we will solve the following LP problem:
+\begin{eqnarray}
+&&\max_{\boldsymbol{q}} ~~u(\boldsymbol{q}) = \sum_{j=1}^2 \pi_j (q_{j,1} \cdot r_1 + q_{j,2} \cdot jr_2)  \nonumber \\
+&&\text{s.t.}~~~  \sum_{j=1}^2 \pi_j (q_{j,1} + q_{j,1}) \leq \frac{B}{T} = 0.5,\nonumber
+\end{eqnarray}
+where $\boldsymbol{q} = (q_{1,1},q_{1,2}, q_{2,1},q_{2,2})$, and $q_{j,k}$ is the probability of pulling Arm $k$ under context $(X_{1,t},X_{2,t}) = (1,j)$.
+
+
+Then, the optimal solution is $(q_{1,1},q_{1,2}, q_{2,1},q_{2,2}) = (0,0,0, 0.625)$. Namely, we will pull Arm 2 with probability 0.625, if $X^{\rm (r)}_{2,t} = 2$, which provides expected reward $2 \times 0.625 = 1.25$ (happens with probability 0.8); but not pull any arms when $X^{\rm (r)}_{1,t} = 1$ and $X^{\rm (r)}_{2,t} = 1$.
+
+Overall, the average budget is $0.625 \times 0.8 T= 0.5 T= B$, and the expected reward is $1.25 \times 0.8 T = 1.0T > 0.95T$.
+
+Thus, the regret of Alg.~1 in EC'14 will be roughly $0.05T = O(T)$, which is not sublinear.
+
+\blue{Do I miss anything?}
+
+\red{\textbf{3. Adjust the model to make it to be a static context.}} A reviewer of a conference suggest us to compare with the EC'14 paper by treating each policy (``Context-action'' mapping) as an arm.
+
+A policy $\Gamma$ is a mapping from the context $X_{2,t}$ (note that $X_{1,t}$ is fixed) to an arm $k$: $\Gamma: \mathcal{X}_2 \mapsto \mathcal{A}\cup\{0\}$, where 0 is a \emph{dummy} action representing skipping the context.
+
+Treating $\Gamma$ as an ``arm'', and we know that for each ``arm'' there will be a static feature vector.
+
+Specifically, let $\boldsymbol{\gamma} = (\gamma_{1, 0}, \gamma_{1,1}, \gamma_{1,2}, \gamma_{2,0}, \gamma_{2,1}, \gamma_{2,2})^{\rm T}$, where $\gamma_{j,k} = 1$ if Arm $k$ is pulled under context $(1,j)$, and $\gamma_{j,k} = 0$, otherwise, and $\sum_{k=0}^2\gamma_{j,k} = 1$.
+Then $\boldsymbol{\gamma}$ is the feature vector, i.e., the (static) context.
+
+For each arm, the weight vector for the reward will be $w^{(r)} = (\pi_1 r_0, \pi_1 r_1, \pi_1 r_2, \pi_2 r_0, \pi_2 r_1, 2\pi_2 r_2)$, ($r_0 = 0$) (which corresponds to the expected reward of executing  a context-arm pair).
+
+Similarly, the weight for the cost will be $w^{(c)} = (0\pi_1 , \pi_1, \pi_1, 0\pi_2, \pi_2, \pi_2)$.
+
+The number of ``arms'' will be $(\# of arms +1)^{\# of contexts}$, though the dimensionality of the context vector is $(\# of arms +1) \times \# of contexts$.
+
+Then we can use the algorithm in the EC'14 paper.
+
+\blue{Do you think this is an adequate modification? Will it be a fair comparison? If not, could you give us some suggestion for the comparison?}
+
+
+\newpage
+
+Let $\mathcal{E}_{t}$ and $\hat{\mathcal{E}}_{t}$ be two events in time $t$. The event $\mathcal{E}_{t}$ occurs with positive probability conditioned on $\hat{\mathcal{E}}_{t}$, i.e., $\mathbb{P}\{\mathcal{E}_{t}|\hat{\mathcal{E}}_{t}, \mathcal{H}_{t-1}\} = \mathbb{P}\{\mathcal{E}_{t}|\hat{\mathcal{E}}_{t}\} \geq p > 0$, where $\mathcal{H}_{t-1}$ is the history before $t-1$ (so that it is independent of the history conditioned on $\hat{\mathcal{E}}_{t}$.
+
+Random variables $C(T)$ and $\hat{C}(T)$ are the number of these two events up to time $T$, i.e., $C(T) = \sum_{t = 1}^T \mathbbm{1}(\mathcal{E}_{t})$ and $\hat{C}(T) = \sum_{t = 1}^T \mathbbm{1}(\hat{\mathcal{E}}_{t})$, where $\mathbbm{1}(\cdot)$ is the indicator function.
+
+Then we have the following lemma:
+
+\textbf{Lemma:} $\mathbb{P}\{C(T) < pN - \epsilon N, \hat{C}(T) \geq N\} \leq \exp(-2\epsilon^2 N)$.
+
+\begin{proof}
+
+
+Let $\boldsymbol{X}_{1:t} = (\mathbbm{1}(\hat{\mathcal{E}}_{1}), \mathbbm{1}(\hat{\mathcal{E}}_{2}), \ldots, \mathbbm{1}(\hat{\mathcal{E}}_{t})$. $\boldsymbol{X}_{1:T} = \boldsymbol{x} \in {\Omega}$
+
+We consider all realizations of $\boldsymbol{X}_{1:T}$. Thus,
+\begin{eqnarray}
+\mathbb{P}\{C(T) < pN - \epsilon N, \hat{C}(T) \geq N\} = \sum_{\boldsymbol{x}: \sum_{t=1}^T x_t \geq N} \mathbb{P}\{C(T) + W_T < (1-\epsilon)pN, \boldsymbol{X}_{1:T} = \boldsymbol{x}\}.
+\end{eqnarray}
+
+Now we examine each  $\boldsymbol{x}$ satisfying $\sum_{t=1}^T x_t \geq N$, and study the probability from time $T$ to time $1$.
+
+If $x_T = \mathbbm{1}(\hat{\mathcal{E}}_T) = 1$, we introduce an auxiliary variable $W_T$, such that $\mathbb{P}\{W_T = 1\} = p$ and $\mathbb{P}\{W_T = 0\} = 1-p$.  Thus,
+\begin{eqnarray}
+&&\mathbb{P}\{C(T) < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}\} \nonumber\\
+&= & \mathbb{P}\{C(T)  < pN - \epsilon N, \boldsymbol{X}_{1:T-1} = \boldsymbol{x}_{1:T-1}|X_T = x_T \} \mathbb{P}\{X_T = x_T\}\nonumber \\
+&\overset{(a)}{\leq} & \mathbb{P}\{C(T-1) + W_T  < pN - \epsilon N, \boldsymbol{X}_{1:T-1} = \boldsymbol{x}_{1:T-1}|X_T = x_T \} \mathbb{P}\{X_T = x_T\} \nonumber\\
+& = &\mathbb{P}\{C(T-1) + W_T  < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}_{1:T} \}
+\end{eqnarray}
+
+\blue{The inequality (a) is probably true, but I am not sure  how to justify (since $\mathcal{E}_t$ may have some dependency on $\hat{\mathcal{E}}_{t+1}$)}
+
+Similarly, if $x_T = \mathbbm{1}(\hat{\mathcal{E}}_T) = 0$, we have
+\begin{eqnarray}
+&&\mathbb{P}\{C(T) < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}\} \nonumber\\
+& \leq &\mathbb{P}\{C(T-1)  < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}_{1:T}\}
+\end{eqnarray}
+
+Using the similar method from $T-1$ to 1, we have
+\begin{eqnarray}
+&&\mathbb{P}\{C(T) < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}\} \nonumber\\
+& \leq &\mathbb{P}\{\sum_{t: x_t = 1} W_t  < pN - \epsilon N, \boldsymbol{X}_{1:T} = \boldsymbol{x}_{1:T}\} \nonumber \\
+&\overset{W_t~does~not~depend~on~X_t}{  =}&\mathbb{P}\{\sum_{t: x_t = 1} W_t  < pN - \epsilon N\}\mathbb{P}\{\boldsymbol{X}_{1:T} = \boldsymbol{x}_{1:T}\}\nonumber \\
+&\leq& \mathbb{P}\{\boldsymbol{X}_{1:T} = \boldsymbol{x}_{1:T}\} \exp(-2\epsilon^2 N)
+\end{eqnarray}
+
+\end{proof}
+
+\textbf{I Tried on using Azuma-Hoeffding's inequality for Martingale:}
+
+Let $R_t = \mathbbm{1}(\hat{E}_t)(p - \mathbbm{1}(E_t))$, i.e.,
+\begin{equation}
+R_t = \begin{cases}
+0,&\text{if $\urcorner \hat{E}_t$}\\
+p-1, &\text{if $\hat{E}_t \cap E_t$}\\
+p,&\text{if $\hat{E}_t \cap \urcorner E_t$}
+\end{cases}
+\end{equation}
+
+We can verify that $\mathbb{E}[R_t|H_{t-1}] \leq 0$. Let $S_T = \sum_{t = 1}^T R_t$. Then $S_T$ is a supermartingale.
+
+From the definition of $R_t$, we have $|S_{T+1} - S_T| \leq = \alpha \max\{p, 1-p\}$.
+
+Moreover, $R_t = \mathbbm{1}(\hat{E}_t)(p - \mathbbm{1}(E_t)) \geq p \mathbbm{1}(\hat{E}_t) - \mathbbm{1}(E_t)$. Thus, $S_T \geq p \hat{C}(T) - C(T)$, and
+
+\begin{eqnarray}
+\mathbb{P}\{C(T) < pN - \epsilon N, \hat{C}(T) \geq N\} \leq  \mathbb{P}\{S_T \geq pN - (pN - \epsilon N)\} = \mathbb{P}\{S_T \geq \epsilon N\} \leq e^{-2\epsilon^2 N^2/(T a^2)} \leq e^{-2\epsilon^2 N^2/T}.
+\end{eqnarray}
+
+\blue{Discussions: This result is too weak for me - We expect the denominator scales with $N$, not $T$. \\
+I think this is possible. I have ignore the information of $\hat{C}(T) \geq N$ (In fact, we are interested in $\mathbb{P}\{\mathbbm{1}(\hat{C}(T) \geq N)S_T \geq pN - (pN - \epsilon N)\}$. Is there any way to incorporate this fact?}
+
+\blue{In fact, we are analyzing the deviation property of a two-dimensional random vector, where its two components are dependent.}
+
+%\begin{figure*}[thbp]
+%\begin{center}
+%    \begin{minipage}[b]{1.0\linewidth}
+%        \begin{center}
+%        \subfigure[]{\includegraphics[angle = 0,width = 0.8\linewidth]{fig/two_dim_deviation}}
+%        %\vspace{-0.45cm}
+%        \caption{Deviation of two-dimensionality vector.}
+%        \label{fig:multicont_unknown}
+%        \end{center}
+%    \end{minipage}
+%\end{center}
+%\vspace{-0.5cm}
+%\end{figure*}
+
+\textbf{The following example shows the method I used is wrong:}
+
+Assume $P(Y_i = 1 | X_i = 1) = p$, for $i = 1,2$; $P(X_2 = 0 | Y_1 = 1) = 1$.\\
+
+Then we cannot say $P(Y_1 + Y_2 \leq (p-\epsilon), X_1 = 1, X_2 = 0) \leq P(W_1 \leq (p-\epsilon), X_1 = 1, X_2 = 0)$.
+
+Because following the method: for $i = 2$, we can replace $Y_2 = 0$, then\\
+         $P(Y_1 + Y_2 \leq (p-\epsilon), X_1 = 1, X_2 = 0) \leq P(Y_1 \leq (p-\epsilon), X_1 = 1, X_2 = 0)$.\\
+However, when considering $i = 1$,\\
+         $P(Y_1 = 0, X_2 = 0|X_1 = 1) = 1-p$, and $P(Y_1 = 1, X_2 = 0|X_1 = 1) = p$;\\
+         if we replace $Y_1$ with the auxiliary variable $W_1$, which is independent with $X_2$, then\\
+         $P(W_1 = 0, X_2 = 0|X_1 = 1) = (1-p) P(X_2 = 0 |X_1 = 1) \leq P(Y_1 = 0, X_2 = 0|X_1 = 1)$
+
+\textbf{However, I still think that the Lemma is correct.}
+
+The fact that $\sum_{i = 1}^T X_i \geq N$ is part of the event, but not in the condition.
+Even if $P(\sum_{i = 1}^T Y_i \leq (p-\epsilon)N | \sum_{i = 1}^T X_i \geq N)$ is large,\\
+we may still have a small $P(\sum_{i = 1}^T Y_i \leq (p-\epsilon)N ,  \sum_{i = 1}^T X_i \geq N)$ if  $P(\sum_{i = 1}^T X_i \geq N)$ is very small.
+
+Consider the example you proposed, $P(Y_i = 1 | X_i = 1) = p = 0.5$, $P(X_{i+1} = 0|Y_i = 1) = 1$. $T = 100$, $N = 70$. 
+The probability $P(\sum_{i=1}^T Y_i \leq 0.5N - \epsilon N, \sum_{i=1}^T X_{i} \geq N)$ should not be very large, even $\sum_{i=1}^T X_{i} \geq N$, or equivalently, $\sum_{i=1}^T \mathbbm{1}(X_{i} = 0) \leq T - N$, will imply that $\sum_{i=1}^T Y_i \leq T-N = 0.3N$. This is because the event $\sum_{i=1}^T \mathbbm{1}(X_{i} = 0) \leq T - N$ will not happen with high probability under our assumptions. 
+
+
+\newpage
+
+\textbf{Lemma:} $X_t, Y_t$ are random variables over $\{0,1\}$, satisfying $\mathbb{P}[Y_t = 1| X_t = 1] \geq p$. Let $C_X(T) = \sum_{t=1}^T X_t$ and $C_Y(T) = \sum_{t=1}^T Y_t$. Then, $\mathbb{P}\{C_Y(T) \leq (p-\epsilon) N, C_X(T) \geq N \} \leq \exp(-2 \epsilon^2 N)$.

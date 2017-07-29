@@ -1,0 +1,40 @@
+%%%%%%%%%%
+\section{Proof of Corollary 1: Oracle algorithm for Two-Context Systems}\label{app:proof_opt_two_context}
+%%%%%%%%%%
+It is obvious that $j_{\rm th}(\tau, b) = 1$  for $b\geq \tau$ and we only need to show that $j_{\rm th}(\tau, b) = 2$ for $b < \tau$.
+To show $j_{\rm th}(\tau, b) = 2$, it suffices to show that the optimal threshold for $b = \tau -1$ is $j_{\rm th}(\tau, b) = 2$,
+which can be proved by induction as follows.
+
+When $\tau = 2$, $b = 1$, it is optimal to take the best action when $X_{T-\tau + 1} = 2$, and the value function is
+\begin{eqnarray}
+V_2(1) = \pi_2 u_2^* + \pi_1(\pi_1 u_1^* + \pi_2 u_2^*).
+\end{eqnarray}
+
+Assume that $j_{\rm th}(b', \tau') = 2$ is true for all $2 \leq \tau' \leq \tau$ and $b' = \tau' - 1$.
+Then the value function can be calculated in a recursive manner as follows:
+\begin{eqnarray}
+&& V_{\tau-1}(b-1) \nonumber \\
+&=&  \pi_2[u_2^* + V_{\tau-2}(b-2)] + \pi_1 (b-1)(\pi_1 u_1^* + \pi_2 u_2^*),\nonumber\\
+&& V_{\tau-2}(b-2) \nonumber \\
+&=&  \pi_2[u_2^* + V_{\tau-3}(b-3)] + \pi_1 (b-2)(\pi_1 u_1^* + \pi_2 u_2^*),\nonumber\\
+&&\ldots \ldots \nonumber\\
+&&V_2(1)  \pi_2 u_2^* + \pi_1(\pi_1 u_1^* + \pi_2 u_2^*),\nonumber
+\end{eqnarray}
+implying that
+\begin{eqnarray}
+&&V_{\tau-1}(b-1) \nonumber \\
+&=&  \frac{\pi_2 u_2^*(1 - \pi_2^{b-1}) + (\pi_1 u_1^* + \pi_2 u_2^*)(b-1 -b\pi_2 + \pi_2^b)}{1 - \pi_2}. \nonumber
+\end{eqnarray}
+On the other hand, since $b = \tau -1$,
+\begin{eqnarray}
+V_{\tau-1}(b) = b(\pi_1 u_1^* + \pi_2 u_2^*).
+\end{eqnarray}
+Thus,
+\begin{eqnarray}
+&&{V_{\tau-1}(b) - V_{\tau-1}(b-1)} \nonumber \\
+&=&  b(\pi_1 u_1^* + \pi_2 u_2^*) \nonumber \\
+&&- \frac{\pi_2 u_2^*(1 - \pi_2^{b-1})   + (\pi_1 u_1^* + \pi_2 u_2^*)(b-1 -b\pi_2 + \pi_2^b)}{1 - \pi_2}\nonumber \\
+&= &{ u_1^* + \pi_2^b(u_2^* - u_1^*) > u_1^*.}
+\end{eqnarray}
+Consequently, the optimal threshold  is $j_{\rm th}(\tau, b) = 2$ for all $\tau$ and $b = \tau -1$. According to Theorem~\ref{thm:opt_threshold_struct} and the definition of threshold, we know that $j_{\rm th}(\tau, b) = 2$  for all  cases with
+$b < \tau$.

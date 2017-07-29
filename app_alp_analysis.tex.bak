@@ -1,0 +1,127 @@
+%%%%%%%%%%
+\section{Proof of Theorem~\ref{thm:alp_regret}: Near Optimality of ALP}\label{app:proof_alp_regret}
+%%%%%%%%%%
+
+\subsection{Proof of Lemma~\ref{thm:alp_to_hypergeo}: Evolution of Remaining Budget}
+
+The evolution of the remaining budget $b_\tau$ is critical  for evaluating the expected total reward under ALP. We prove Lemma~\ref{thm:alp_to_hypergeo} by casting ALP to a sampling problem without replacement.
+
+From the implementation of ALP, we can verify that when the remaining time is $\tau$ and remaining budget is $b_{\tau} = b$,
+the system consumes one unit of budget with probability $b/\tau$, and consumes nothing with probability $1-b/\tau$.
+Thus, when focusing on the remaining budget,
+we can view the ALP algorithm as a sampling problem without replacement as follows.
+
+\textbf{Mapping ALP to Sampling without Replacement:} Consider $T$ balls in an urn,
+including $B$ black balls and $T-B$ white balls. Running ALP is equivalent to randomly drawing a ball without replacement.
+Taking an action $A_t > 0$ is equivalent to drawing  a black ball and taking the dummy action $A_t = 0$ is equivalent to drawing a white ball.
+The event that $b_{\tau} = b$ is equivalent to the event that the agent draws $T- \tau$ balls, and the number of drawn black balls is $B-b$.
+
+Based on the above mapping and using its symmetric property, we know that $b_\tau$ follows the hypergeometric distribution \cite{Dubhashi2009Concentration} and complete the proof of Lemma~\ref{thm:alp_to_hypergeo}.
+
+\subsection{Part 1: Non-Boundary Cases}\label{app:proof_alp_regret_non_boundary}
+According to Lemma~\ref{thm:upper_bound}, $\widehat{U}(T,B)$ is an upper bound on the total expected reward. Thus,
+\begin{eqnarray} \label{eq:alp_regret}
+U^*(T,B) - U_{\rm ALP}(T,B)
+\leq  \widehat{U}(T,B) - U_{\rm ALP}(T,B) =  \sum_{\tau = 1}^T \big\{{v}(\rho)-\mathbb{E}[{v}(b_\tau/\tau)]\big\}.
+\end{eqnarray}
+To evaluate the gap between the single-round values, we define an auxiliary function $\tilde{v}(b/\tau)$ for a given $\rho$ as follows:
+\begin{eqnarray}\label{eq:approx_single_round_alp}
+\tilde{v}(b/\tau) = \sum_{j = 1}^{\tilde{j}(\rho) }\pi_j u_j^*
+ +\pi_{\tilde{j}(\rho) + 1} \tilde{p}_{\tilde{j}(\rho) + 1}(b/\tau) u_{\tilde{j}(\rho) + 1}^*,
+\end{eqnarray}
+where
+\begin{eqnarray}
+\tilde{p}_{\tilde{j}(\rho) + 1}(b/\tau) = \frac{b/\tau - \sum_{j = 1}^{\tilde{j}(\rho)} \pi_j} {\pi_{\tilde{j}(\rho) +1}}. \nonumber
+\end{eqnarray}
+This auxiliary function bridges the gap of single-round values, $v(\rho)$ and $\mathbb{E}[v(b_\tau/\tau)]$, as follows:
+
+First, we note that $\tilde{v}(b/\tau)$ uses the same threshold $\tilde{j}(\rho)$ as in $v(\rho)$.
+The only difference between $\tilde{v}(b/\tau)$ and $v(\rho)$ is that $\tilde{v}(b/\tau)$ uses the instantaneous
+average budget $b/\tau$ instead of the fixed average budget $\rho$. Considering all possible $b$'s and according to Lemma~\ref{thm:alp_to_hypergeo},
+we have
+\begin{eqnarray}\label{eq:virtual_and_upperbound}
+{v}(\rho) - \mathbb{E}[{\tilde{v}}(b_{\tau}/\tau)] = \big\{\rho - \mathbb{E}[b_{\tau}/\tau]\big\}u_{\tilde{j}(\rho) + 1}^* = 0.
+\end{eqnarray}
+
+Second, compared with $v(b/\tau)$, the difference of the auxiliary function $\tilde{v}(b/\tau)$ comes
+from the event of $\tilde{j}(b/\tau) \neq \tilde{j}(\rho)$, which only occurs when $b/\tau < q_{\tilde{j}(\rho)}$
+or $b/\tau > q_{\tilde{j}(\rho)+1}$.
+Because $\rho \neq q_j$, $1 \leq j \leq J-1$,  there exists a positive number $\delta = \min\{\rho -q_{\tilde{j}(\rho)}, q_{\tilde{j}(\rho)+1} - \rho\}$
+%\footnote{For example, $\delta = \min\{q_{\tilde{j}(\rho)-1} - \rho, \rho -q_{\tilde{j}(\rho)}\}$ if $3 \leq \tilde{j}(\rho) \leq J$,
+%$\delta = \rho - q_{\tilde{j}(\rho)}$ if $\tilde{j}(\rho) = 2$,
+% $\delta = q_{\tilde{j}(\rho)-1} - \rho$ if $\tilde{j}(\rho) = J + 1$.}
+ such that  for all $\rho - \delta \leq \rho' < \rho + \delta$, the threshold under $\rho'$ is the same as that under $\rho$, i.e.,
+$
+\tilde{j}(\rho') = \tilde{j}(\rho). \nonumber
+$
+Therefore, for all $b$ satisfying $\rho - \delta \leq b/\tau \leq \rho + \delta$,
+$v(b/\tau) = \tilde{v}(b/\tau)$.
+%\footnote{For $b/\tau = \min\{1, \rho + \delta\}$, the threshold may change but then the randomization value will zero.}.
+
+If $b/\tau < \rho - \delta$, then
+\begin{eqnarray} \label{eq:single_step_gap_left}
+&&\tilde{v}(b/\tau) -  v(b/\tau) \nonumber \\
+&=&  \bigg[ \sum_{j = \tilde{j}(b/\tau)  +1 }^{\tilde{j}(\rho)} \pi_j u_j^*
++ \big(\frac{b}{\tau} - q_{ \tilde{j}(\rho)}\big) u_{\tilde{j}(\rho) + 1}^*  \bigg]  - \big(\frac{b}{\tau} - q_{ \tilde{j}(b/\tau)}\big) u_{\tilde{j}(b/\tau)  +1}^* \nonumber \\
+&\leq &  \bigg[ u_1^* \sum_{j = \tilde{j}(b/\tau)  +1 }^{\tilde{j}(\rho)} \pi_j
++ \big(\frac{b}{\tau} - q_{ \tilde{j}(\rho)}\big) u_{\tilde{j}(\rho) + 1}^*  \bigg]  - \big(\frac{b}{\tau} - q_{ \tilde{j}(b/\tau)   }\big) u_{\tilde{j}(\rho) + 1}^* \nonumber \\
+&\leq& (u_1^* - u_{\tilde{j}(\rho) + 1}^*)\sum_{j = \tilde{j}(b/\tau)  +1 }^{\tilde{j}(\rho)} \pi_j     \nonumber \\
+&\leq & q_{\tilde{j}(\rho)}(u_1^* -  u_J^*).
+\end{eqnarray}
+
+Similarly, if $b/\tau > \rho + \delta$, then
+\begin{eqnarray} \label{eq:single_step_gap_right}
+&& \tilde{v}(b/\tau) -  v(b/\tau) \nonumber \\
+ &=&
+\big(\frac{b}{\tau} - q_{ \tilde{j}(\rho)}\big) u_{\tilde{j}(\rho) +1}^* - \bigg[ \sum_{j = \tilde{j}(\rho)+1}^{\tilde{j}(b/\tau)} \pi_j u_j^* + \big(\frac{b}{\tau} - q_{ \tilde{j}(b/\tau) }\big) u_{\tilde{j}(b/\tau)+1}^*  \bigg] \nonumber \\
+&\leq& (1 - q_{\tilde{j}(\rho)}) (u_1^* - u_J^*).
+\end{eqnarray}
+
+Summing all the above three cases ($\rho - \delta \leq b/\tau \leq \rho + \delta$, $b/\tau < \rho - \delta$, and $b/\tau > \rho + \delta$) and using Eq.~\eqref{eq:virtual_and_upperbound}, we have
+\begin{eqnarray} \label{eq:virtual_and_alp}
+&&v(\rho) - \mathbb{E}[v(b_\tau/\tau)] \nonumber\\
+&=& v(\rho)- \mathbb{E}[\tilde{v}(b_\tau/\tau)] + \mathbb{E}[\tilde{v}(b_\tau/\tau) - v(b_\tau/\tau)]  \nonumber\\
+& =&  \sum_{ b < \tau(\rho - \delta)~{\rm or}~b >\tau(\rho + \delta)} \mathbb{P}(b_\tau = b)[\tilde{v}(b/\tau) -v(b/\tau)] \nonumber\\
+&\leq & q_{\tilde{j}(\rho)}(u_1^* - u_J^*) \mathbb{P}\{b_{\tau} < \tau(\rho - \delta)\} \nonumber \\
+&&+ (1-q_{\tilde{j}(\rho)}) (u_1^* - u_J^*) \mathbb{P}\{b_{\tau} > \tau(\rho + \delta)\}     \nonumber \\
+&\leq & (u_1^* - u_J^*) e^{-2\delta^2\tau}.
+\end{eqnarray}
+
+Part 1 of Theorem~\ref{thm:alp_regret} then follows by substituting Eq.~\eqref{eq:virtual_and_alp} into Eq.~\eqref{eq:alp_regret}.
+
+
+\subsection{Part~2: Boundary Cases}\label{app:proof_alp_regret_all}
+The proof of Part~2 of Theorem~\ref{thm:alp_regret} is similar to that of Part~1,
+except for the case of $\rho - \delta \leq b/\tau <\rho$. Specifically, when  $\rho = q_{\tilde{j}(\rho)}$, let $\delta = \min\{\rho - q_{\tilde{j}(\rho)-1}, q_{\tilde{j}(\rho)+1} - \rho\}$.   From the proof of Part 1,
+we know that
+ \begin{eqnarray}
+v(\rho)- \mathbb{E}[\tilde{v}(b_\tau/\tau)] = 0.
+\end{eqnarray}
+
+In addition, if $\rho \leq b/\tau \leq \rho + \delta$, then $\tilde{j}(b/\tau) =  \tilde{j}(\rho)$ and $\tilde{v}(\rho) = \tilde{v}(b_\tau/\tau)$.
+
+If $\rho - \delta \leq b/\tau <\rho$, we have $\tilde{j}(b/\tau) = \tilde{j}(\rho) - 1$, and
+\begin{eqnarray}
+&&\tilde{v}(b/\tau) - v(b/\tau) \nonumber \\
+& = & \pi_{\tilde{j}(\rho)} u^*_{\tilde{j}(\rho)} + (\frac{b}{\tau} - q_{\tilde{j}(\rho)})u^*_{\tilde{j}(\rho)+ 1}  - (\frac{b}{\tau} - q_{\tilde{j}(b/\tau)})u^*_{\tilde{j}(b/\tau) + 1} \nonumber \\
+& = & (\pi_{\tilde{j}(\rho)} + q_{\tilde{j}(\rho) - 1} - \frac{b}{\tau})u^*_{\tilde{j}(\rho)} + (\frac{b}{\tau} - q_{\tilde{j}(\rho)})u^*_{\tilde{j}(\rho)+ 1} \nonumber \\
+& = & (\rho - \frac{b}{\tau})u^*_{\tilde{j}(\rho)} + (\frac{b}{\tau} - \rho)u^*_{\tilde{j}(\rho)+ 1} \nonumber \\
+&\leq & \big|\frac{b}{\tau} - \rho\big|(u_1^* - u^*_J).
+\end{eqnarray}
+
+Moreover, we still have \eqref{eq:single_step_gap_left} if  $b/\tau < \rho - \delta$, and \eqref{eq:single_step_gap_right} if $b/\tau > \rho + \delta$.
+
+Compared with the proof of Part~1, we know that the only difference relies on the case of $\rho - \delta \leq b/\tau <\rho$. Thus, summing all the above cases and using the results in the analysis of Part~1, we have
+\begin{eqnarray}
+\mathbb{E}[\tilde{v}(b_\tau/\tau) - v(b_{\tau}/\tau)] \leq (u_1^* - u_J^*)\big\{\mathbb{E}[|b_{\tau}/\tau - \rho|] + e^{-2\delta^2\tau}\big\} \leq  (u_1^* - u_J^*)\big[\sqrt{\frac{{\rm Var}(b_{\tau})}{\tau^2}} + e^{-2\delta^2\tau}\big] . \nonumber
+\end{eqnarray}
+Consequently,
+\begin{eqnarray}
+ U^*(T,B) -  U_{\rm ALP}(T,B) &\leq & \widehat{U}(T,B) -  U_{\rm ALP}(T,B) \nonumber \\
+&=&  \sum_{\tau = 1}^T \big\{v(\rho)-\mathbb{E}[v(b_\tau/\tau)]\} \nonumber \\
+&=& \sum_{\tau = 1}^T \big\{v(\rho)- \mathbb{E}[\tilde{v}(b_\tau/\tau)] \big\} + \sum_{\tau = 1}^T  \mathbb{E}[ \tilde{v}(b_\tau/\tau) - v(b_{\tau}/\tau) ]  \nonumber\\
+&\leq& (u_1^* - u_J^*)\sum_{\tau = 1}^T\big[\sqrt{\frac{{\rm Var}(b_{\tau})}{\tau^2}} + e^{-2\delta^2\tau}\big] \nonumber\\
+& = &(u_1^* - u_J^*)\sum_{\tau = 1}^T\big[\sqrt{\frac{(T-\tau)\rho(1-\rho)}{(T-1)\tau}}+ e^{-2\delta^2\tau}\big]  \nonumber\\
+& \leq &(u_1^* - u_J^*) \sqrt{\rho(1-\rho)} \sum_{\tau = 1}^T\sqrt{\frac{1}{\tau}}  + \frac{u_1^* - u_J^*}{1-  e^{-2\delta^2}}\nonumber\\
+&\leq &2\sqrt{\rho(1-\rho)} (u_1^* - u_J^*) \sqrt{T} + \frac{u_1^* - u_J^*}{1- e^{-2\delta^2}}. \nonumber
+\end{eqnarray}

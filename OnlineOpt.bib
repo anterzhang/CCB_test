@@ -1,0 +1,2214 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Func:     References for Online Optimization
+% Author:   Watson
+% Create Date: June 30, 2014
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@string {sigcomm = {ACM SIGCOMM}}
+@string {mobicom = {ACM MobiCom}}
+@string {mobihoc = {ACM MobiHoc}}
+@string {infocom = {IEEE INFOCOM}}
+@string {aaai = {AAAI Conference on Artificial Intelligence}}
+@string {colt = {Conference on Learning Theory (COLT)}}
+@string {icml = {International Conference on Machine Learning (ICML)}}
+@string {nips = {Advances in Neural Information Processing Systems (NIPS)}}
+@string {icc = {IEEE International Conference on Communications (ICC)}}
+@string {globecom = {IEEE Global Communications Conference (GLOBECOM)}}
+@string {wcnc = {IEEE Wireless Communications and Networking Conference (WCNC)}}
+@string {vtcfall = {IEEE Vehicular Technology Conference (VTC Fall)}}
+@string {vtcspring = {IEEE Vehicular Technology Conference (VTC Spring)}}
+
+
+
+@string {proieee = {Proc. of the IEEE}}
+@string {transcomm = {IEEE Trans. on Communications}}
+@string {transit = {IEEE Trans. on Information Theory}}
+@string {jsac = {IEEE Journal on Selected Areas in Communications (JSAC)}}
+@string {ton = {IEEE/ACM Trans. on Networking}}
+@string {tac = {IEEE Trans. on Automatic Control}}
+
+%--------------------------------------------------
+%  Applications
+%--------------------------------------------------
+% Portfolio management
+@inproceedings{Shen2015IJCAI:OrthBandit,
+  title={Portfolio choices with orthogonal bandit learning},
+  author={Shen, Weiwei and Wang, Jun and Jiang, Yu-Gang and Zha, Hongyuan},
+  booktitle={Proceedings of the 24th International Conference on Artificial Intelligence},
+  pages={974--980},
+  year={2015},
+  organization={AAAI Press}
+}
+
+% Clinical trial
+
+@article{Press2009NACt,
+  title={Bandit solutions provide unified ethical models for randomized clinical trials and comparative effectiveness research},
+  author={Press, William H},
+  journal={Proceedings of the National Academy of Sciences},
+  volume={106},
+  number={52},
+  pages={22387--22392},
+  year={2009},
+  publisher={National Acad Sciences}
+}
+
+@article{Lai1987adaptive,
+  title={Adaptive treatment allocation and the multi-armed bandit problem},
+  author={Lai, Tze Leung},
+  journal={The Annals of Statistics},
+  pages={1091--1114},
+  year={1987},
+  publisher={JSTOR}
+}
+
+@article{Lai2013CCT,
+  title={Group sequential designs for developing and testing biomarker-guided personalized therapies in comparative effectiveness research},
+  author={Lai, Tze Leung and Liao, Olivia Yueh-Wen and Kim, Dong Woo},
+  journal={Contemporary Clinical Trials},
+  volume={36},
+  number={2},
+  pages={651--663},
+  year={2013},
+  publisher={Elsevier}
+}
+
+@article{Lai2012SA,
+  title={Efficient adaptive randomization and stopping rules in multi-arm clinical trials for testing a new treatment},
+  author={Lai, Tze Leung and Liao, Olivia Yueh-Wen},
+  journal={Sequential Analysis},
+  volume={31},
+  number={4},
+  pages={441--457},
+  year={2012},
+  publisher={Taylor \& Francis}
+}
+
+@article{Kuleshov2014MAB,
+  title={Algorithms for multi-armed bandit problems},
+  author={Kuleshov, Volodymyr and Precup, Doina},
+  journal={arXiv preprint arXiv:1402.6028},
+  year={2014}
+}
+
+% MCS selection
+@inproceedings{Combes2014Infocom,
+  title={Optimal rate sampling in 802.11 systems},
+  author={Combes, Richard and Proutiere, Alexandre and Yun, Donggyu and Ok, Jungseul and Yi, Yung},
+  booktitle=infocom,
+  pages={2760--2767},
+  year={2014},
+}
+
+@inproceedings{Combes2014ICML:unimodalMAB,
+  title={Unimodal bandits: Regret lower bounds and optimal algorithms},
+  author={Combes, Richard and Proutiere, Alexandre},
+  booktitle={International Conference on Machine Learning},
+  year={2014}
+}
+
+% Online experiments
+
+% Crowdsourcing
+
+%--------------------------------------------------
+%  Multi-Armed Bandit
+%--------------------------------------------------
+% Survey
+@article{Bubeck2012Survey,
+  title={Regret Analysis of Stochastic and Nonstochastic Multi-armed Bandit Problems},
+  author={Bubeck, S{\'e}bastien and Cesa-Bianchi, Nicolo},
+  journal={Machine Learning},
+  volume={5},
+  number={1},
+  pages={1--122},
+  year={2012}
+}
+
+@article{Zhou2015CMAB:Survey,
+  title={A Survey on Contextual Multi-armed Bandits},
+  author={Zhou, Li},
+  journal={arXiv preprint arXiv:1508.03326},
+  year={2015}
+}
+
+% classic MAB
+@article{Thompson1933FirstMAB,
+  title={On the likelihood that one unknown probability exceeds another in view of the evidence of two samples},
+  author={Thompson, William R},
+  journal={Biometrika},
+  pages={285--294},
+  year={1933},
+  publisher={JSTOR}
+}
+
+@article{Robbins1952FirstRandomMAB,
+  title={Some aspects of the sequential design of experiments},
+  author={Robbins, Herbert},
+  journal={Bulletin of the American Mathematical Society},
+  volume={58},
+  number={5},
+  pages={527--535},
+  year={1952},
+  publisher={American Mathematical Society}
+}
+
+
+@article{Lai1985AAM,
+  title={Asymptotically Efficient Adaptive Allocation Rules},
+  author={Lai, Tze Leung and Robbins, Herbert},
+  journal={Advances in Applied Mathematics},
+  volume={6},
+  number={1},
+  pages={4--22},
+  year={1985}
+}
+
+@article{Auer2002ML:UCB,
+  title={Finite-time analysis of the multiarmed bandit problem},
+  author={Auer, Peter and Cesa-Bianchi, Nicolo and Fischer, Paul},
+  journal={Machine learning},
+  volume={47},
+  number={2-3},
+  pages={235--256},
+  year={2002}
+}
+
+@article{Auer2003JMLR:UCB,
+  title={Using confidence bounds for exploitation-exploration trade-offs},
+  author={Auer, Peter},
+  journal={The Journal of Machine Learning Research},
+  volume={3},
+  pages={397--422},
+  year={2003},
+  publisher={JMLR. org}
+}
+
+@inproceedings{Garivierkl2011COLT:KL-UCB,
+  title={The {KL-UCB} Algorithm for Bounded Stochastic Bandits and Beyond},
+  author={Garivier, Aur{\'e}lien and Capp{\'e}, Olivier},
+  booktitle=colt,
+  pages={359--376},
+  year={2011},
+  abstract={}
+}
+
+@misc{Golovin2009Lecture,
+  title={Dealing with Partial Feedback},
+  author={Golovin, Daniel and Krause, Andreas},
+  booktitle={University Lecture},
+  year={2009},
+  url={\url{http://courses.cms.caltech.edu/cs253/slides/cs253-07-ucb1.pdf}}
+}
+
+% Thompson Sampling
+@inproceedings{Chapelle2011NIPS:TS,
+  title={An empirical evaluation of {Thompson Sampling}},
+  author={Chapelle, Olivier and Li, Lihong},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={2249--2257},
+  year={2011}
+}
+
+@inproceedings{Agrawal2012COLT:TS,
+  title={Analysis of {Thompson Sampling} for the Multi-armed Bandit Problem},
+  author={Agrawal, Shipra and Goyal, Navin},
+  booktitle=colt,
+  year={2012}
+}
+
+@inproceedings{Agrawal2013AISTATS:TS2,
+  title={Further Optimal Regret Bounds for {Thompson Sampling}},
+  author={Agrawal, Shipra and Goyal, Navin},
+  booktitle={Proceedings of International Conference on Artificial Intelligence and Statistics},
+  pages={99--107},
+  year={2013}
+}
+
+
+@inproceedings{Russo2014NIPS:IDS,
+  title={Learning to optimize via information-directed sampling},
+  author={Russo, Dan and Van Roy, Benjamin},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1583--1591},
+  year={2014}
+}
+
+@article{Russo2014TR:TS,
+  title={An information-theoretic analysis of {Thompson Sampling}},
+  author={Russo, Daniel and Van Roy, Benjamin},
+  journal={arXiv preprint arXiv:1403.5341},
+  year={2014}
+}
+
+@article{Russo2014MOR:TS,
+  title={Learning to optimize via posterior sampling},
+  author={Russo, Daniel and Van Roy, Benjamin},
+  journal={Mathematics of Operations Research},
+  volume={39},
+  number={4},
+  pages={1221--1243},
+  year={2014},
+  publisher={INFORMS}
+}
+
+@inproceedings{Gopalan2014ICML:TS,
+  title={Thompson sampling for complex online problems},
+  author={Gopalan, Aditya and Mannor, Shie and Mansour, Yishay},
+  booktitle=icml,
+  pages={100--108},
+  year={2014}
+}
+
+@inproceedings{Kawale2015NIPS:TS,
+  title={Efficient {Thompson Sampling} for Online￼ Matrix-Factorization Recommendation},
+  author={Kawale, Jaya and Bui, Hung H and Kveton, Branislav and Tran-Thanh, Long and Chawla, Sanjay},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1297--1305},
+  year={2015}
+}
+
+@inproceedings{Gopalan2015COLT:TSMDP,
+  title={Thompson Sampling for Learning Parameterized {Markov} Decision Processes},
+  author={Gopalan, Aditya and Mannor, Shie},
+  booktitle={Proceedings of Conference on Learning Theory},
+  pages={861--898},
+  year={2015}
+}
+
+@inproceedings{Komiyama2015ICML:MP_TS,
+  title={Optimal regret analysis of {Thompson Sampling} in stochastic multi-armed bandit problem with multiple plays},
+  author={Komiyama, Junpei and Honda, Junya and Nakagawa, Hiroshi},
+  booktitle=icml,
+  pages={},
+  year={2015}
+}
+
+% Information-driven sampling for bandits
+@inproceedings{Russo2014NIPS:IDS,
+  title={Learning to optimize via information-directed sampling},
+  author={Russo, Dan and Van Roy, Benjamin},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1583--1591},
+  year={2014}
+}
+
+
+% contextual bandit
+
+@article{Tekin2015JSTSP:RELEAF,
+  title={{RELEAF:} An algorithm for learning and exploiting relevance},
+  author={Tekin, Cem and van der Schaar, Mihaela},
+  journal={IEEE Journal of Selected Topics in Signal Processing},
+  year={to appear},
+  publisher={IEEE},
+  absract={}
+}
+
+@misc{Sakulkar&Bhaskar2016TR:SCB,
+  title={Stochastic Contextual Bandits with Known Reward Functions},
+  author={Sakulkar, Pranav  and  Krishnamachari, Bhaskar},
+  year={2016},
+  url={\url{https://arxiv.org/pdf/1605.00176v1.pdf}}
+}
+
+@inproceedings{Langford2007NIPS,
+  title={The epoch-greedy algorithm for contextual multi-armed bandits},
+  author={Langford, John and Zhang, Tong},
+  booktitle=nips,
+  pages={817--824},
+  year={2007}
+}
+@inproceedings{Slivkins2011COLT,
+  title={Contextual Bandits with Similarity Information},
+  author={Slivkins, Aleksandrs},
+  booktitle=colt,
+  pages={679--701},
+  year={2011}
+}
+
+@article{Slivkins2014JMLR:ContMAB,
+  title={Contextual bandits with similarity information},
+  author={Slivkins, Aleksandrs},
+  journal={The Journal of Machine Learning Research},
+  volume={15},
+  number={1},
+  pages={2533--2568},
+  year={2014},
+  publisher={JMLR. org}
+}
+
+
+@inproceedings{Li2010WWW:LinUCB,
+  title={A contextual-bandit approach to personalized news article recommendation},
+  author={Li, Lihong and Chu, Wei and Langford, John and Schapire, Robert E},
+  booktitle={ACM International Conference on World Wide Web (WWW)},
+  pages={661--670},
+  year={2010},
+}
+
+@inproceedings{Chu2011AISTAT,
+  title={Contextual bandits with linear payoff functions},
+  author={Chu, Wei and Li, Lihong and Reyzin, Lev and Schapire, Robert E},
+  booktitle={International Conference on Artificial Intelligence and Statistics},
+  pages={208--214},
+  year={2011}
+}
+
+@inproceedings{Ho2014EC:AdptContract,
+  title={Adaptive contract design for crowdsourcing markets: bandit algorithms for repeated principal-agent problems},
+  author={Ho, Chien-Ju and Slivkins, Aleksandrs and Vaughan, Jennifer Wortman},
+  booktitle={ACM Conference on Economics and Computation},
+  pages={359--376},
+  year={2014},
+  organization={ACM}
+}
+
+@inproceedings{Agrawal2014EC,
+  title={Bandits with concave rewards and convex knapsacks},
+  author={Agrawal, Shipra and Devanur, Nikhil R},
+  booktitle={ACM Conference on Economics and Computation},
+  pages={989--1006},
+  year={2014},
+  organization={ACM}
+}
+
+@inproceedings{Hassan2014UIC,
+  title={A Multi-armed Bandit Approach to Online Spatial Task Assignment},
+  author={ul Hassan, Umair and Curry, Edward},
+  booktitle={IEEE International Conference on Ubiquitous Intelligence and Computing},
+  year={2014},
+  organization={IEEE}
+}
+
+@inproceedings{Tang2013CIKM,
+  title={Automatic ad format selection via contextual bandits},
+  author={Tang, Liang and Rosales, Romer and Singh, Ajit and Agarwal, Deepak},
+  booktitle={ACM International Conference on Information \& Knowledge Management},
+  pages={1587--1594},
+  year={2013},
+  organization={ACM}
+}
+
+@inproceedings{Lu2010ICAIS:CMAB,
+  title={Contextual multi-armed bandits},
+  author={Lu, Tyler and P{\'a}l, D{\'a}vid and P{\'a}l, Martin},
+  booktitle={International Conference on Artificial Intelligence and Statistics},
+  pages={485--492},
+  year={2010}
+}
+
+@inproceedings{Dudik2011UAI,
+  title={Efficient Optimal Learning for Contextual Bandits},
+  author={Dudik, Miroslav and Hsu, Daniel and Kale, Satyen and Karampatziakis, Nikos and Langford, John and Reyzin, Lev and Zhang, Tong},
+  booktitle={Conference on Uncertainty in Artificial Intelligence},
+  year={2011}
+}
+
+@inproceedings{Agarwal2014ICML:CMAB,
+  title={Taming the Monster: A Fast and Simple Algorithm for Contextual Bandits},
+  author={Agarwal, Alekh and Hsu, Daniel and Kale, Satyen and Langford, John and Li, Lihong and Schapire, Robert E},
+  booktitle=icml,
+  year={2014}
+}
+
+% Explore the sparsity
+@article{Tekin2015IJSTSP:RELEAF,
+  title={{RELEAF:} An algorithm for learning and exploiting relevance},
+  author={Tekin, Cem and van der Schaar, Mihaela},
+  year={2015},
+  journal={IEEE Journal of Selected Topics in Signal Processing},
+  volume={9},
+  noumber={4},
+  publisher={IEEE}
+}
+
+@inproceedings{Yue2012ICML:Hierarchical,
+  title={Hierarchical Exploration for Accelerating Contextual Bandits},
+  author={Yue, Yisong and Hong, Sue Ann and Guestrin, Carlos},
+  booktitle=icml,
+  year={2012}
+}
+
+@inproceedings{Carpentier2012AISTAT:CSBandit,
+  title={Bandit Theory meets Compressed Sensing for high dimensional Stochastic Linear Bandit},
+  author={Carpentier, Alexandra and Munos, R{\'e}mi},
+  booktitle={International Conference on Artificial Intelligence and Statistics},
+  pages={190--198},
+  year={2012}
+}
+
+@inproceedings{Abbasi2012AISTAT:SparseBandit,
+  title={Online-to-Confidence-Set Conversions and Application to Sparse Stochastic Bandits.},
+  author={Abbasi-Yadkori, Yasin and Pal, David and Szepesvari, Csaba},
+  booktitle={International Conference on Artificial Intelligence and Statistics},
+  volume={22},
+  pages={1--9},
+  year={2012}
+}
+
+% LP for contextual bandits
+@article{Guha2010Approximation,
+  title={Approximation algorithms for restless bandit problems},
+  author={Guha, Sudipto and Munagala, Kamesh and Shi, Peng},
+  journal={Journal of the ACM (JACM)},
+  volume={58},
+  number={1},
+  pages={3},
+  year={2010},
+  publisher={ACM}
+}
+
+@article{Veatch2013MOR:ALP,
+  title={Approximate linear programming for average cost {MDPs}},
+  author={Veatch, Michael H},
+  journal={Mathematics of Operations Research},
+  volume={38},
+  number={3},
+  pages={535--544},
+  year={2013},
+  publisher={INFORMS}
+}
+
+% parameterized/dependent bandit
+@article{Rusmevichientong2010MOR:linearly,
+  title={Linearly parameterized bandits},
+  author={Rusmevichientong, Paat and Tsitsiklis, John N},
+  journal={Mathematics of Operations Research},
+  volume={35},
+  number={2},
+  pages={395--411},
+  year={2010},
+  publisher={INFORMS},
+  abstract = {Study bandit problem where the reward each arm is a linear function of a r-dimensional vector.
+  unit-spere arm: both Bayesian risk and regret is lower bounded by $\Theta(r\sqrt{T})$;
+  A phase-based policy achieves the asymptotic optimality;
+  General case: near-optimal policy, achieve $O(r\sqrt{T}\log^{3/2}T)$},
+}
+
+@incollection{Bento2013PKDD:LinearContextualMAB,
+  title={A Time and Space Efficient Algorithm for Contextual Linear Bandits},
+  author={Bento, Jos{\'e} and Ioannidis, Stratis and Muthukrishnan, S and Yan, Jinyun},
+  booktitle={Machine Learning and Knowledge Discovery in Databases},
+  pages={257--272},
+  year={2013},
+  publisher={Springer}
+}
+
+% continuum-armed bandit
+@article{Cope2009TAC:ContAB,
+ author = {Eric W. Cope},
+ title = {Regret and Convergence Bounds for a Class of Continuum-Armed Bandit Problems},
+ journal = tac,
+ volume = {54},
+ number = {6},
+ month = {June},
+ year = {2009},
+ pages = {1243--1253},
+ publisher = {IEEE Press},
+ address = {Piscataway, NJ, USA},
+ abstract = {Analyze continuum-armed bandit problem with smooth function; a lower bound $O(\sqrt{T})$ on the regret is presented
+ and shown to be tight under WF stochasthic approximation.},
+}
+
+% Sleeping experts/bandits
+@article{Kleinberg2010ML:Sleeping,
+  title={Regret bounds for sleeping experts and bandits},
+  author={Kleinberg, Robert and Niculescu-Mizil, Alexandru and Sharma, Yogeshwer},
+  journal={Machine learning},
+  volume={80},
+  number={2-3},
+  pages={245--272},
+  year={2010},
+  publisher={Springer},
+  abstract={This paper studies online decision problems where the available set varies over time.
+  They consider both the best expert and multi-armed bandit settings, both with stochastic and adversal rewards;
+  They propose Flow-The-Awake-Leader, and Awake Upper Estimated Reward algorithms that achieve the lower bound
+  of the regret.}
+}
+
+% MAB with budget/time constraints
+
+@article{Flajolet&Patrick2015TR:BwK,
+  title={Low regret bounds for Bandits with Knapsacks},
+  author={Flajolet, Arthur and Jaillet, Patrick},
+  journal={arXiv preprint arXiv:1510.01800},
+  year={2015}
+}
+
+@inproceedings{Badanidiyuru2012EC:OnlineProcurement,
+  title={Learning on a budget: posted price mechanisms for online procurement},
+  author={Badanidiyuru, Ashwinkumar and Kleinberg, Robert and Singer, Yaron},
+  booktitle={ACM Conference on Electronic Commerce},
+  pages={128--145},
+  year={2012},
+}
+
+@inproceedings{Badanidiyuru2014COLT,
+  title={Resourceful Contextual Bandits},
+  author={Badanidiyuru, Ashwinkumar and Langford, John and Slivkins, Aleksandrs},
+  booktitle={Conference on Learning Theory (COLT)},
+  year={2014}
+}
+
+@article{Agrawal2015TR:CB,
+  title={Contextual Bandits with Global Constraints and Objective},
+  author={Agrawal, Shipra and Devanur, Nikhil R and Li, Lihong},
+  journal={arXiv preprint arXiv:1506.03374},
+  year={2015}
+}
+@article{Agrawal2015TR:LCB,
+  title={Linear Contextual Bandits with Global Constraints and Objective},
+  author={Agrawal, Shipra and Devanur, Nikhil R},
+  journal={arXiv preprint arXiv:1507.06738},
+  year={2015}
+}
+
+@inproceedings{Badanidiyuru2013FOCS,
+  title={Bandits with knapsacks},
+  author={Badanidiyuru, Ashwinkumar and Kleinberg, Robert and Slivkins, Aleksandrs},
+  booktitle={IEEE 54th Annual Symposium on Foundations of Computer Science (FOCS)},
+  pages={207--216},
+  year={2013}
+}
+
+@inproceedings{Ding2013AAAI:MAB_BV,
+  title={Multi-Armed Bandit with Budget Constraint and Variable Costs},
+  author={Ding, Wenkui and Qin, Tao and Zhang, Xu-Dong and Liu, Tie-Yan},
+  booktitle=aaai,
+  year={2013}
+}
+
+@inproceedings{Tran2010EpsFirst,
+  title={$\epsilon$--{First} policies for budget--limited multi-armed bandits},
+  author={Tran-Thanh, Long and Chapman, Archie and Munoz de Cote, Enrique and Rogers, Alex and Jennings, Nicholas R},
+  booktitle=aaai,
+  year={2010},
+  abstract={}
+}
+
+@inproceedings{Tran2012AAAI:MAB_BF,
+  title={Knapsack Based Optimal Policies for Budget-Limited Multi-Armed Bandits},
+  author={Tran-Thanh, Long and Chapman, Archie C and Rogers, Alex and Jennings, Nicholas R},
+  booktitle=aaai,
+  year={2012}
+}
+
+@inproceedings{Qin&Liu2015IJCAI:TS,
+  title={Thompson Sampling for Budgeted Multi-armed Bandits},
+  author={Xia, Yingce and Li, Haifang and Qin, Tao and Yu, Nenghai and Liu, Tie-Yan},
+  booktitle={International Joint Conference on Artificial Intelligence},
+  year={2015}
+}
+
+@inproceedings{Babaioff2012EC:DP,
+  title={Dynamic pricing with limited supply},
+  author={Babaioff, Moshe and Dughmi, Shaddin and Kleinberg, Robert and Slivkins, Aleksandrs},
+  booktitle={ACM Conference on Electronic Commerce (EC)},
+  pages={74--91},
+  year={2012},
+}
+
+@article{Slivkins2013TR,
+  title={Dynamic ad allocation: Bandits with budgets},
+  author={Slivkins, Aleksandrs},
+  journal={arXiv preprint arXiv:1306.0155},
+  year={2013}
+}
+
+@inproceedings{Jiang2013CDC,
+  title={Bandits with budgets},
+  author={Jiang, Chong and Srikant, R},
+  booktitle={IEEE 52nd Annual Conference on Decision and Control (CDC)},
+  pages={5345--5350},
+  year={2013},
+}
+
+@inproceedings{Combes&Srikant2015Sigmetrics,
+  title={Bandits with Budgets: Regret Lower Bounds and Optimal Algorithms},
+  author={Combes, Richard and Jiang, Chong and Srikant, R},
+  booktitle={ACM Sigmetrics},
+  pages={},
+  year={2015},
+}
+
+% Non-statonary MAB
+@inproceedings{Garivier2011nonstationaryUCB,
+  title={On upper-confidence bound policies for non-stationary bandit problems},
+  author={Garivier, Aur{\'e}lien and Moulines, Eric},
+  booktitle={International Conference on Algorithmic Learning Theory},
+  year={2011},
+}
+
+% MDP/Learning for MDP
+@article{Altman1993AsymptoticCMDP,
+  title={Asymptotic properties of constrained {Markov} decision processes},
+  author={Altman, Eitan},
+  journal={Zeitschrift f{\"u}r Operations Research},
+  volume={37},
+  number={2},
+  pages={151--170},
+  year={1993},
+  publisher={Springer}
+}
+
+@article{Kurano1987JAP,
+  title={Learning algorithms for {Markov} decision processes},
+  author={Kurano, Masami},
+  journal={Journal of applied probability},
+  pages={270--276},
+  year={1987},
+  publisher={JSTOR},
+  abstract={Consider MDPs with unknown rewards and distributions;
+ Use empirical distribution (ML estimate) and rewards for learning;
+  Use non-stationary value iterations for finding the optimal policy;
+  Show the convergence of the results, but not the regret.}
+}
+
+@article{Abounadi&Bertsekas2001JCC,
+  title={Learning algorithms for {Markov} decision processes with average cost},
+  author={Abounadi, Jinane and Bertsekas, D and Borkar, Vivek S},
+  journal={SIAM Journal on Control and Optimization},
+  volume={40},
+  number={3},
+  pages={681--698},
+  year={2001},
+  publisher={Society for Industrial and Applied Mathematics},
+  abstract={This is not the model we consider; they just study how to use Q-Learning, R-Learning in finding the optimal policy}
+}
+
+@inproceedings{Tewari2008NIPS:OLP,
+  title={Optimistic linear programming gives logarithmic regret for irreducible {MDPs}},
+  author={Tewari, Ambuj and Bartlett, Peter L},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={1505--1512},
+  year={2008}
+}
+
+@inproceedings{Dick2014ICML:LearnForMDP,
+  title={Online learning in {Markov} decision processes with changing cost sequences},
+  author={Dick, Travis and Gyorgy, Andras and Szepesvari, Csaba},
+  booktitle={Proceedings of The 31st International Conference on Machine Learning},
+  pages={512--520},
+  year={2014}
+}
+
+
+%--------------------------------------------------
+%  Detection/Estimation theory
+%--------------------------------------------------
+@article{Gill1995applications,
+  title={Applications of the van Trees inequality: a Bayesian Cram{\'e}r-Rao bound},
+  author={Gill, Richard D and Levit, Boris Y},
+  journal={Bernoulli},
+  pages={59--79},
+  year={1995},
+  publisher={JSTOR}
+}
+
+@article{Broder2012DyPricing,
+  title={Dynamic pricing under a general parametric choice model},
+  author={Broder, Josef and Rusmevichientong, Paat},
+  journal={Operations Research},
+  volume={60},
+  number={4},
+  pages={965--980},
+  year={2012},
+  publisher={INFORMS}
+}
+
+@techreport{Harrison2011DyPricing,
+  title={Dynamic pricing with an unknown linear demand model: asymptotically optimal semi-myopic policies},
+  author={Harrison, J Michael and Keskin, N Bora and Zeevi, Assaf},
+  year={2011},
+  institution={Working paper}
+}
+%--------------------------------------------------
+%  Pure exploration
+%--------------------------------------------------
+@inproceedings{Audibert2010COLT,
+  title={Best arm identification in multi-armed bandits},
+  author={Audibert, Jean-Yves and Bubeck, S{\'e}bastien and Munos, R{\'e}mi},
+  booktitle=colt,
+  year={2010}
+}
+
+%--------------------------------------------------
+%  Reinforce learning
+%--------------------------------------------------
+@inproceedings{Auer2007UCB4RL,
+  title={Logarithmic Online Regret Bounds for Undiscounted Reinforcement Learning},
+  author={Auer, Peter and Ortner, Ronald},
+  booktitle=nips,
+  pages={49--56},
+  year={2007}
+}
+
+%--------------------------------------------------
+% Backpressure
+%--------------------------------------------------
+@article{Neely2010Book:BP,
+  title={Stochastic network optimization with application to communication and queueing systems},
+  author={Neely, Michael J},
+  journal={Synthesis Lectures on Communication Networks},
+  volume={3},
+  number={1},
+  pages={1--211},
+  year={2010},
+  publisher={Morgan \& Claypool Publishers}
+}
+
+@inproceedings{Huang2015MobiHoc:RAM,
+  title={The Value-of-Information in Matching with Queues},
+  author={Huang, Longbo},
+  booktitle=mobihoc,
+  pages={},
+  year={2015},
+  organization={ACM}
+}
+
+
+@inproceedings{Ouyang&Shroff2010Allerton,
+  title={Scheduling with rate adaptation under incomplete knowledge of channel/estimator statistics},
+  author={Ouyang, Wenzhuo and Murugesan, Sugumar and Eryilmaz, Atilla and Shroff, Ness B},
+  booktitle={Communication, Control, and Computing (Allerton), 2010 48th Annual Allerton Conference on},
+  pages={670--677},
+  year={2010},
+  organization={IEEE}
+}
+
+@inproceedings{Huang&Liu2014Sigmetrics:OLAC,
+  title={The power of online learning in stochastic network optimization},
+  author={Huang, Longbo and Liu, Xin and Hao, Xiaohong},
+  booktitle={ACM Sigmetrics},
+  pages={153--165},
+  year={2014},
+  organization={ACM}
+}
+
+@article{Neely2012TAC:MWLearning,
+  title={Max weight learning algorithms for scheduling in unknown environments},
+  author={Neely, Michael J and Rager, Scott T and La Porta, Thomas F},
+  journal=tac,
+  volume={57},
+  number={5},
+  pages={1179--1191},
+  year={2012},
+  publisher={IEEE}
+}
+
+
+
+
+%--------------------------------------------------
+%  Flow/Job Scheduling
+%--------------------------------------------------
+% Job scheduling
+@article{Schrage1968OptRes:SRPT,
+  author        = "L. E. Schrage",
+  title         = "A proof of the optimality of the shortest remaining processing time discipline",
+  journal       = "Operations Research",
+  volume        = "16",
+  number        = "",
+  month         = "",
+  year          = "1968",
+  pages         = "678 - 690",
+  abstract      = "",
+}
+
+@article{Yang&HarcholBalter2012ITAC:SMART,
+  author        = "C. Yang and A. Wierman and S. Shakkottai and M. {Harchol-Balter}",
+  title         = "Many flows asymptotics for {SMART} scheduling policies",
+  journal       = "IEEE Trans. Automatic Control",
+  volume        = "57",
+  number        = "2",
+  month         = "Feb.",
+  year          = "2012",
+  pages         = "376 - 391",
+  abstract      = "Objective: analyze the many flows asymptotic decay rate for SMART-LD and FB policies;
+  Strategies: 2D queuing framework",
+}
+
+@phdthesis{Mok1983PhD,
+  author        = "A. K.-L. Mok",
+  title         = "Fundamental design problems of distributed systems for the hard-real-time environment",
+  school        = "MIT",
+  address       = "Cambridge, MA",
+  month         = "May.",
+  year          = "1983",
+  abstract      = "",
+}
+
+@article{Koren1995Dover,
+  author        = "G. Koren and D. Shasha",
+  title         = "{D-Over}: an optimal on-line scheduling algorithm for overload real-time systems",
+  journal       = "SIAM Journal of Computing",
+  volume        = "24",
+  number        = "",
+  month         = "",
+  year          = "1995",
+  pages         = "318 - 319",
+  abstract      = "",
+}
+
+
+% Flow-level opportunistic scheduling (Minimize mean sojourn time)
+@inproceedings{Borst2003Infocom,
+  author        = "S. Borst",
+  title         = "User-Level Performance of Channel-Aware Scheduling Algorithms in Wireless Data Networks",
+  booktitle     = "Proc. IEEE INFOCOM",
+  address       = "",
+  month         = "",
+  year          = "2003",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Borst2005ToN:UserLevelSched,
+  author        = "S. Borst",
+  title         = "User-Level Performance of Channel-Aware Scheduling Algorithms in Wireless Data Networks",
+  journal       = "IEEE/ACM Trans. Networking",
+  volume        = "13",
+  number        = "3",
+  month         = "Jun.",
+  year          = "2005",
+  pages         = "636 - 647",
+  abstract      = "",
+}
+
+@article{Prakash2007ITIT,
+  author        = "R. Prakash and V. V. Veeravalli",
+  title         = "Centralized wireless data networks with user arrivals and departures",
+  journal       = "IEEE Trans. Information Theory",
+  volume        = "513",
+  number        = "2",
+  month         = "Feb.",
+  year          = "2007",
+  pages         = "695 - 713",
+  abstract      = "",
+}
+
+@inproceedings{Borst2006WiOpt,
+  author        = "S. Borst and M. Jonckheere",
+  title         = "Flow-level stability of channel-aware scheduling algorithms",
+  booktitle     = "Proc.4th International Symposium on Modeling and Optimization in Mobile, Ad Hoc and Wireless Networks",
+  address       = "",
+  month         = "Apr.",
+  year          = "2006",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Sadiq2009Allerton,
+  author        = "B. Sadiq and G. {de Veciana}",
+  title         = "Throughput optimality of delay-driven {MaxWeight} scheduler for a wireless system with flow dynamics",
+  booktitle     = "Proc. 47th Annual Allerton Conference on Communication, Control, and Computing",
+  address       = "",
+  month         = "Sept. - Oct.",
+  year          = "2009",
+  pages         = "1097 - 1102",
+  abstract      = "",
+}
+
+@inproceedings{Sadiq2010ITC:SRPTvsOPP,
+  author        = "B. Sadiq and G. {de Veciana}",
+  title         = "Balancing {SRPT} prioritization vs opportunistic gain in wireless systems with flow dynamics",
+  booktitle     = "Proc. 22nd International Teletraffic Congress (ITC)",
+  address       = "Amsterdam",
+  month         = "Sept.",
+  year          = "2010",
+  pages         = "",
+  abstract      = "Objective: minimize mean sojourn time with flow-level dynamics and channel diversity;
+  Strategies: 1) Shortest Remaining Processing Time (SRPT) + Opportunistic Scheduling;
+  2) Time scale separation argument: channel gain varies (but only fast fading) much faster than flow-level dynamics -> capacity region;
+  3) Equivalent transform: heterogenous channels -> i.i.d. channel (symetric capacity region) -> M/GI/C queue;
+  4) Original capacity region -> polymatroid (lower bound of the mean sojourn time; always max total service rate, no trade-off is necessary)
+  Strengths: 1) Transform the problem into M/GI/C queue;
+  2) optimal policy for the polymatroid (lower bound) is obtained;
+  3) Performances for policies with file-size information (SRPT + HPR, SRPT + OPS) and without this information (OPS) are obtained and compared;
+
+  Weaknesses:1) Rigorous analysis is only for transient system;
+  2) No slow fading (mobility) is concerned;
+  3) Minimize mean sojourn time; deadline is not concerned",
+}
+
+@phdthesis{Sadiq2010PhD,
+  author        = "B. Sadiq",
+  title         = "Optimality and robustness in opportunistic scheduler design for wireless networks",
+  school        = "The University of Texas at Austin",
+  address       = "",
+  month         = "Aug.",
+  year          = "2010",
+  abstract      = "Chapter 5 is a detailed version of \cite{Sadiq2010ITC:SRPTvsOPP};
+  Also, in Chapter 4, they studied the delay-driven (instead of traditional backlog-driven) MaxWeight policy;
+  and show it is thoughput optimal (all stabilizable setting will be stable under this policy);
+  The method they use is fluid-limit theory",
+}
+
+@inproceedings{Lassila&Aalto2008MSWiM,
+  author        = "P. Lassila and S. Aalto",
+  title         = "Combining opportunistic and size-based scheduling in wireless systems",
+  booktitle     = "Proc. ACM MSWiM",
+  address       = "",
+  month         = "",
+  year          = "2008",
+  pages         = "323 - 332",
+  abstract      = "",
+}
+
+@inproceedings{Aalto2010NGI,
+  author        = "S. Aalto and P. Lassila",
+  title         = "Flow-level stability and performance of channel-aware priority-based schedulers",
+  booktitle     = "Proc. 6th EURO-NF Conference on Next Generation Internet",
+  address       = "Paris",
+  month         = "Jun.",
+  year          = "2010",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Aalto2011SIGMETRIX,
+  author        = "S. Aalto and A. Penttinen and P. Lassila and P. Osti",
+  title         = "On the optimal trade-off between {SRPT} and opportunistic scheduling",
+  booktitle     = "Proc. ACM SIGMETRIX'11",
+  address       = "",
+  month         = "",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Aalto2012QueSyst,
+  author        = "S. Aalto and A. Penttinen and P. Lassila and P. Osti",
+  title         = "Optimal size-based opportunistic scheduler for wireless systems",
+  journal       = "Springer Queueing Syst",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "2012",
+  pages         = "",
+  abstract      = "",
+}
+
+@mastersthesis{Osti&Aalto2011Master,
+  author        = "P. Osti",
+  title         = "Optimal flow-level performance of opportunistic scheduling with size information",
+  school        = "Aalto University",
+  month         = "Dec.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+
+@inproceedings{Liu2010SIGMETRIX:MultichnlSched,
+  author        = "S. Liu and L. Ying and R. Srikant",
+  title         = "Scheduling in Multichannel Wireless Networks with Flow-Level Dynamics",
+  booktitle     = "Proc. ACM SIGMETRICS'10",
+  address       = "New York",
+  month         = "Jun.",
+  year          = "2010",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Liu2010INFOCOM,
+  author        = "S. Liu and L. Ying and R. Srikant",
+  title         = "Throughput-Optimal Opportunistic Scheduling in the Presence of Flow-Level Dynamics",
+  booktitle     = "Proc. IEEE INFOCOM'10",
+  address       = "San Diego",
+  month         = "Mar.",
+  year          = "2010",
+  pages         = "",
+  abstract      = "Workload-based Scheduling with learning; Maximize throughput and stabilize the networks",
+}
+
+@article{Liu2011ToN,
+  author        = "S. Liu and L. Ying and R. Srikant",
+  title         = "Throughput-Optimal Opportunistic Scheduling in the Presence of Flow-Level Dynamics",
+  journal       = "IEEE/ACM Trans. Networking",
+  volume        = "19",
+  number        = "4",
+  month         = "Aug.",
+  year          = "2011",
+  pages         = "1057 - 1070",
+  abstract      = "",
+}
+
+@inproceedings{Ghaderi2012INFOCOM,
+  author        = "J. Ghaderi and T. Ji and R. Srikant",
+  title         = "Connection-Level Scheduling in Wireless Networks Using Only MAC-Layer Information",
+  booktitle     = "Proc. IEEE INFOCOM'12",
+  address       = "",
+  month         = "",
+  year          = "2012",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Ayesta2011Allerton,
+  author        = "U. Ayesta and M. Erausquin and P. Jacko",
+  title         = "Resource-sharing in a single server with time-varying capacity",
+  booktitle     = "Proc. Forty-ninth Annual Allerton Conference",
+  address       = "Illinois",
+  month         = "Sept.",
+  year          = "2011",
+  pages         = "377 - 383",
+  abstract      = "",
+}
+
+@article{Ayesta2010PerfEval,
+  author        = "U. Ayesta and M. Erausquin and P. Jacko",
+  title         = "A modeling framework for optimizing the flow-level scheduling with time-varying channels",
+  journal       = "ELSEVIER Performance Evaluation",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "2010",
+  pages         = "1014 - 1029",
+  abstract      = "MDP framework -> MAB problem -> Decomposition and PI (Potential Improvement) Index policies;
+  Minimize the number of backlogged users",
+}
+
+@inproceedings{Ayesta2011ValueTools,
+  author        = "U. Ayesta and M. Erausquin and M. Jonckheere and I.M. Verloop",
+  title         = "Stability and asymptotic optimality of opportunistic schedulers in wireless systems",
+  booktitle     = "Proc. the 5th ICST VALUETOOLS",
+  address       = "",
+  month         = "",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+
+
+@inproceedings{Bonald2004EuWireless:SB,
+  author        = "T. Bonald",
+  title         = "A score-based opportunistic scheduler for fading radio channels",
+  booktitle     = "Proc. European Wireless",
+  address       = "",
+  month         = "",
+  year          = "2004",
+  pages         = "283 - 292",
+  abstract      = "",
+}
+
+
+% Flow-level opportunistic scheduling (Maximize number of completions)
+@inproceedings{Yang2011ICC:DPS,
+  author        = "S. Yang and C. K. Yeo and B. S. Lee",
+  title         = "Predictive scheduling in {Drive-thru} networks with flow-level dynamics and deadlines",
+  booktitle     = "Proc. IEEE International Conference on Communications",
+  address       = "Kyoto",
+  month         = "Jun.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "Objective: minimize proportion of uncompleted jobs with deadline in roadside AP accessing networks;
+  Key Assumptions: 1) Data rate is fixed and depends on the distance between the device and the AP;
+  Strategies: 1) Dynamic Predictive Scheduling (DPS) algorithm;
+  2) Predict the remaining bandwidth and construct a scheduling tree for selecting jobs to serve.
+  Strengths: 1) Consider the deadline constrained;
+  Weaknesses:1) Fixed rate (when the device is close enough to the AP), no trade-off between Earliest Deadline First vs OppSched;
+  2) WiFi, single AP, the deadline is the time that the device stay in the coverage of the AP",
+}
+@article{Ganguly2006ITCom,
+  author        = "S. Ganguly and M. Chatterjee and R. Izmailov",
+  title         = "Non-real-time Content Scheduling Algorithms for Wireless Data Networks",
+  journal       = "IEEE Transactions on Computers",
+  volume        = "55",
+  number        = "7",
+  month         = "Jul.",
+  year          = "2006",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Ayesta2011INFOCOM,
+  author        = "U. Ayesta and P. Jacko and V. Novak",
+  title         = "A nearly-optimal index rule for scheduling of users with abandonment",
+  booktitle     = "Proc. IEEE INFOCOM 2011",
+  address       = "",
+  month         = "",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Bender1998SODA,
+  author        = "M. A. Bender and S. Chakrabarti and S. Muthukrishnan",
+  title         = "Flow and stretch metrics for scheduling continuous job streams",
+  booktitle     = "Proc. the ninth annual ACM-SIAM symposium on discrete algorithms",
+  address       = "",
+  month         = "270 - 279",
+  year          = "1998",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Tzeng2011WCMC,
+  author        = "S.-S. Tzeng and H.-Y. Lu",
+  title         = "{QoS} provisioning for multiple non-real-time services in cellular wireless networks",
+  journal       = "Wireless Communications and Mobile Computing",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "2011",
+  pages         = "1392 - 1405",
+  abstract      = "",
+}
+
+@inproceedings{Chen&Tong2011Allerton,
+  author        = "S. Chen and L. Tong and T. He",
+  title         = "Optimal deadline scheduling with commitment",
+  booktitle     = "Proc. Allerton Conference on Communication, Control and Computing",
+  address       = "",
+  month         = "Oct.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Chen&Tong2011SecSched,
+  author        = "S. Chen and T. He and H. Y. S. Wong and K.-W. Lee and L. Tong",
+  title         = "Secondary job scheduling in the cloud with deadlines",
+  booktitle     = "Proc. IEEE IPDPSW 2011",
+  address       = "",
+  month         = "May",
+  year          = "2011",
+  pages         = "1009 - 1016",
+  abstract      = "",
+}
+
+% Context-aware opportunistic scheduling Prof. Kaschub, M. from Germany
+@inproceedings{Proebster&Kaschub2011IWSOS,
+  author        = "M. Proebster and M. Kaschub and S. Valentin",
+  title         = "Self-Organizing {QoS} Optimization by Context-Aware Resource Allocation",
+  booktitle     = "Proc. the Fifth International Workshop on Self-Organizing Systems (IWSOS)",
+  address       = "Karlsruhe",
+  month         = "Feb.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+
+
+@inproceedings{Proebster&Kaschub2011ICC,
+  author        = "M. Proebster and M. Kaschub and S. Valentin",
+  title         = "Context-Aware Resource Allocation to Improve the Quality of Service of Heterogeneous Traffic",
+  booktitle     = "Proc. IEEE International Conference on Communications (ICC 2011)",
+  address       = "",
+  month         = "Jun.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+@article{Lee&Jindal2013TIT,
+  author        = "J. Lee and N. Jindal",
+  title         = "Asymptotically Optimal Policies for Hard-Deadline Scheduling over Fading Channels",
+  journal       = "IEEE Transactions on Information Theory",
+  volume        = "59",
+  number        = "4",
+  month         = "Apr.",
+  year          = "2013",
+  pages         = "2482 - 2500",
+  abstract      = "Single user",
+}
+
+@article{Dua2007TMC,
+  title={Downlink wireless packet scheduling with deadlines},
+  author={Dua, Aditya and Bambos, Nicholas},
+  journal={IEEE Transactions on Mobile Computing},
+  volume={6},
+  number={12},
+  pages={1410--1425},
+  year={2007},
+  publisher={IEEE}
+}
+
+
+@article{Fu&Modiano2006TWC,
+  author        = "A. Fu and E. Modiano and J. N. Tsitsiklis",
+  title         = "Optimal Transmission Scheduling over a Fading Channel with Energy and Deadline Constraints",
+  journal       = "IEEE Transactions on Wireless Communications",
+  volume        = "5",
+  number        = "3",
+  month         = "Mar.",
+  year          = "2006",
+  pages         = "630 - 641",
+  abstract      = "Single user, dynamic programing",
+}
+
+@article{Zafer&Modiano2009TAC,
+  author        = "M. Zafer and E. Modiano",
+  title         = "Minimum Energy Transmission over a Wireless Channel with Deadline and Power Constraints",
+  journal       = "IEEE Transactions on Automatic Control",
+  volume        = "54",
+  number        = "12",
+  month         = "Dec.",
+  year          = "2009",
+  pages         = "2841 - 2852",
+  abstract      = "Single user",
+}
+
+@article{Proebster&Kaschub2012EURASIP,
+  author        = "M. Proebster and M. Kaschub and T. Werthmann and S. Valentin",
+  title         = "Context-aware resource allocation for cellular wireless networks",
+  journal       = "EURASIP Journal on Wireless Communications and Networking",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "2012",
+  pages         = "",
+  abstract      = "Note: They also have another paper investigating channel prediction: T. Werthmann, Simple Channel Predictors for Lookahead Scheduling",
+}
+
+
+@inproceedings{Xing&Lu2011ICSNC,
+  author        = "T. Xing and X. Tao and J. Lu",
+  title         = "High Spectrum Efficiency Delay Tolerant Scheduling and Resource Allocation of Diverse Traffic in LTE Networks",
+  booktitle     = "Proc. the Sixth International Conference on Systems and Networks Communications (ICSNC)",
+  address       = "Barcelona, Spain",
+  month         = "Oct.",
+  year          = "2011",
+  pages         = "15 - 19",
+  abstract      = "",
+}
+
+@inproceedings{Hou&Kumar2010MobiHoc,
+  author        = "I-H. Hou and P.R. Kumar",
+  title         = "Utility-optimal scheduling in time-varying wireless networks with delay constraints",
+  booktitle     = "Proc. ACM MobiHoc, 2010",
+  address       = "",
+  month         = "",
+  year          = "31 - 40",
+  pages         = "",
+  abstract      = "",
+}
+@inproceedings{Hou2013MobiHoc,
+  author        = "I-H. Hou and R. Singh",
+  title         = "Capacity and scheduling of access points for multiple live video streams",
+  booktitle     = "Proc. ACM MobiHoc, 2013",
+  address       = "Bangalore, India",
+  month         = "Aug.",
+  year          = "2013",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Hou&Kumar2012IWC,
+  author        = "I-H. Hou and P.R. Kumar",
+  title         = "Real-time communication over unreliable wireless links: a theory and its applications",
+  journal       = "IEEE Wireless Communications",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "2012",
+  pages         = "48 - 59",
+  abstract      = "",
+}
+
+@article{Jaramillo&Srikant2011JSAC,
+  author        = "J. J. Jaramillo and R. Srikant and L. Ying",
+  title         = "Scheduling for Optimal Rate Allocation in {Ad Hoc} netorks with heterogeneous delay constraints",
+  journal       = "IEEE Journal on Selected Areas in Communications",
+  volume        = "29",
+  number        = "5",
+  month         = "May",
+  year          = "2011",
+  pages         = "979 - 987",
+  abstract      = "",
+}
+
+@article{Li2012TIT},
+  author        = "R. Li and H. Gangammanavar and A. Eryilmaz",
+  title         = "Optimal Dynamic Coding-Window Selection for Serving Deadline-Constrained Traffic Over Time-Varying Channels",
+  journal       = "IEEE Transactions on Information Theory",
+  volume        = "58",
+  number        = "10",
+  month         = "Oct.",
+  year          = "2012",
+  pages         = "6556 - 6571",
+  abstract      = "Scenario: periodic arrival and identical deadline;
+  Define: the set of requirement satisfying arrival proceses, and a satisfiable requirement region",
+}
+
+@inproceedings{Hou&Kumar2009Infocom,
+  author        = "I.-H. Hou and V. Borkar and P. R. Kumar",
+  title         = "A Theory of {QoS} for Wireless",
+  booktitle     = "Proc. IEEE INFOCOM",
+  address       = "Rio de Janeiro",
+  month         = "Apr.",
+  year          = "2009",
+  pages         = "486 - 494",
+  abstract      = "
+  A framework for scheduling with QoS under two-state i.i.d. channels;
+  Necessary and sufficient conditions for feasibility;
+  Two feasibility optimal policies: largest debt first
+  - largest time-based debt first and largest weighted-delivery debt first policy",
+}
+
+% Partial value
+@inproceedings{Agarwal2002INFOCOM,
+  author        = "M. Agarwal and A. Puri",
+  title         = "Base station scheduling of requests with fixed deadlines",
+  booktitle     = "Proc. IEEE INFOCOM",
+  address       = "",
+  month         = "",
+  year          = "2002",
+  pages         = "",
+  abstract      = "",
+}
+
+
+% Scheduling with mobility
+@article{Bonald&Borst2009QueSyst,
+  author        = "T. Bonald and S. Borst and N. Hegde and M. Jonckheere and A. Proutiere",
+  title         = "Flow-level performance and capacity of wireless networks with user mobility",
+  journal       = "Journal of Queueing Systems: Theory and Applications",
+  volume        = "63",
+  number        = "",
+  month         = "Dec.",
+  year          = "2009",
+  pages         = "",
+  abstract      = "",
+}
+
+@inproceedings{Borst2009INFOCOM,
+  author        = "S.C. Borst and N. Hegde and A. Proutiere",
+  title         = "Mobility-driven Scheduling in Wireless Networks",
+  booktitle     = "Proc. IEEE INFOCOM'09",
+  address       = "Rio de Janeiro",
+  month         = "Apr.",
+  year          = "2009",
+  pages         = "1260 - 1268",
+  abstract      = "",
+}
+
+@article{Karray2011WirelessNet,
+  author        = "M. K. Karray",
+  title         = "User��s mobility effect on the performance of wireless cellular networks serving elastic traffic",
+  journal       = "Journal of Wireless Networks",
+  volume        = "17",
+  number        = "1",
+  month         = "Jan.",
+  year          = "2011",
+  pages         = "247 - 262",
+  abstract      = "",
+}
+
+%--------------------------------------------------
+%  Channel Model & Mobility Model
+%--------------------------------------------------
+
+@inproceedings{Seetharam2012INFOCOM:MarkovShadowing,
+  author        = "A. Seetharam and K. Kurose and D. Goeckel and G. Bhanage",
+  title         = "A {Markov} chain model for coarse timescale channel variation in an 802.16e wireless network",
+  booktitle     = "Proc. IEEE INFOCOM'12",
+  address       = "",
+  month         = "Mar.",
+  year          = "2012",
+  pages         = "1800 - 1801",
+  abstract      = "",
+}
+
+@article{wang:95:markovchannelmodel,
+  AUTHOR = {Hong Shen Wang  and Nader Moayeri },
+  TITLE ={Finite-state Markov channel-a useful model for radio communication channels},
+   JOURNAL ={IEEE Trans. Vehicular Technology },
+   YEAR ={1995 },
+     VOLUME ={44},
+     NUMBER ={1},
+     PAGES  ={ },
+     MONTH ={},
+     NOTE={}
+}
+
+@misc{3GPP2006TR25814,
+  title         = "Physical layer aspects for evolved {Universal Terrestrial Radio Access ({UTRA})}",
+  author        = "{3GPP TR 25.814 V7.1.0}",
+  howpublished  = "",
+  month         = "Sept.",
+  url           = "",
+  year          = "2006",
+  abstract      = "",
+}
+
+@misc{3GPP2011TS36213,
+  author        = "{3GPP TS 36.213 V11.0.0}",
+  title         = "Physical layer procedures",
+  howpublished  = "",
+  month         = "Sept.",
+  year          = "2012",
+  abstract      = "",
+  note          = "",
+}
+
+@inproceedings{Mehlfuhrer2009EUSIPCO:SNR2CQI,
+  author        = {C. Mehlf\"uhrer and M. Wrulich and J. C. Ikuno and D. Bosanska and M. Rupp},
+  title         = "Simulating the long term evolution physical layer",
+  booktitle     = "Proc. the 17th European Signal Processing Conference",
+  address       = "Glasgow, Scotland",
+  month         = "Aug.",
+  year          = "2009",
+  pages         = "1471 - 1478",
+  abstract      = "",
+}
+
+@article{Hyytia2007WirelessNet,
+  author        = "E. {Hyyti\"a} and J. Virtamo",
+  title         = "Random waypoint mobility model in cellular networks",
+  journal       = "Journal of Wireless Networks",
+  volume        = "13",
+  number        = "2",
+  month         = "Apr.",
+  year          = "2007",
+  pages         = "177 - 188",
+  abstract      = "",
+}
+
+
+%--------------------------------------------------
+%  Asymptotic Analysis
+%--------------------------------------------------
+@article{Courcoubetis1996AppProb,
+  author        = "C. Courcoubetis and R. Weber",
+  title         = "Buffer overflow asymptotics for a buffer handling many traffic sources",
+  journal       = "Journal of Applied Probability",
+  volume        = "",
+  number        = "",
+  month         = "",
+  year          = "1996",
+  pages         = "886 - 903",
+  abstract      = "",
+}
+
+@inproceedings{Sharma&Lin2011ITA,
+  author        = "M. Sharma and X. Lin",
+  title         = "{OFDM} downlink scheduling for delay-optimality: Many-channel Many-source asymptotics with general arrival processes",
+  booktitle     = "Proc. Information Theory and Applications Workshop",
+  address       = "San Diego, CA",
+  month         = "Feb.",
+  year          = "2011",
+  pages         = "",
+  abstract      = "",
+}
+@article{Neely2008ToN:DelayOpt,
+  author        = "M. J. Neely",
+  title         = "Order Optimal Delay for Opportunistic Scheduling in Multi-User Wireless Uplinks and Downlinks",
+  journal       = "IEEE/ACM Trans. Networking",
+  volume        = "16",
+  number        = "5",
+  month         = "Oct.",
+  year          = "2008",
+  pages         = "1188 - 1199",
+  abstract      = "Minimize the (order of) average delay: indepedent of the number of users
+  Systems: ON-OFF channels; i.i.d. across time; may be asymptotic system (the first order-minimization work on asymptotic system)
+  Main idea: queue grouping - devide them into groups, and serve each group with Longest-Connected-Queue (LCQ) policy;
+             Lyapunov drift analysis and statistical multiplexing concepts.",
+}
+
+@article{Neely2010Book:BP,
+  title={Stochastic network optimization with application to communication and queueing systems},
+  author={Neely, Michael J},
+  journal={Synthesis Lectures on Communication Networks},
+  volume={3},
+  number={1},
+  pages={1--211},
+  year={2010},
+  publisher={Morgan \& Claypool Publishers}
+}
+
+@inproceedings{Neely2011Infocom,
+  title={Opportunistic scheduling with worst case delay guarantees in single and multi-hop networks},
+  author={M. J. Neely},
+  booktitle={Prof. IEEE Infocom'11},
+  pages={1728--1736},
+  year={2011},
+  organization={IEEE}
+}
+
+@article{Li2015ITSC:HybridCloud,
+  title={Towards Operational Cost Minimization in Hybrid Clouds for Dynamic Resource Provisioning with Delay-Aware Optimization},
+  author={Li, Song and Zhou, Yangfan and Jiao, Lei and Yan, Xinya and Wang, Xin and Lyu, Michael Rung-Tsong},
+  journal={Services Computing, IEEE Transactions on},
+  volume={8},
+  number={3},
+  pages={398--409},
+  year={2015},
+  publisher={IEEE}
+}
+
+
+
+%--------------------------------------------------
+%  Traditional Opportunistic Scheduling
+%--------------------------------------------------
+% Tutorials and Survey
+@article{Cao&Li2001IEEEProc,
+  author        = "Y. Cao and V. O.K. Li",
+  title         = "Scheduling algorithms in broad-band wireless networks",
+  journal       = "Proceedings of the IEEE",
+  volume        = "89",
+  number        = "1",
+  month         = "",
+  year          = "2001",
+  pages         = "76 - 87",
+  abstract      = "",
+}
+
+@article{Lin2006JSAC,
+  author        = "X. Lin and N. B. Shroff and R. Srikant",
+  title         = "A tutorial on cross-layer optimization in wireless networks",
+  journal       = "IEEE Journal on Selected Areas in Communications",
+  volume        = "24",
+  number        = "81",
+  month         = "",
+  year          = "2006",
+  pages         = "1452 - 1463",
+  abstract      = "",
+}
+
+@article{Shariat2009ICST,
+  author        = "M. Shariat and A. U. Quddus and S. A. Ghorashi and R. Tafazolli",
+  title         = "Scheduling as an important cross-layer operation for emerging broadband wireless systems",
+  journal       = "IEEE Communications Surveys \& Tutorials",
+  volume        = "11",
+  number        = "2",
+  month         = "",
+  year          = "2009",
+  pages         = "74 - 86",
+  abstract      = "",
+}
+
+@article{Shuman&Liu2011,
+  author        = "D. I. Shuman and M. Liu",
+  title         = "Opportunistic scheduling with deadline constraints in wireless networks",
+  journal       = "Springer Optimization and Its Applications",
+  volume        = "46",
+  number        = "",
+  month         = "",
+  year          = "2011",
+  pages         = "127 - 155",
+  abstract      = "",
+}
+
+@article{Andrew2007WirelessCom,
+  author        = "M. Andrews",
+  title         = "A survey of scheduling theory in wireless data networks",
+  journal       = "Springer Wireless Communications",
+  volume        = "07974",
+  number        = "",
+  month         = "",
+  year          = "2007",
+  pages         = "1 - 17",
+  abstract      = "",
+}
+
+@inproceedings{Andrew2007IMA:Survey,
+  author        = "M. Andrews",
+  title         = "A survey of scheduling theory in wireless data networks",
+  booktitle     = "Proc. IMA Summer Workshop on Wireless Communications",
+  address       = "",
+  month         = "",
+  year          = "2000",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Liu2004Rev,
+  author        = "X. Liu and N. B. Shroff and E. K. P. Chong",
+  title         = "Opportunistic scheduling: An illustration of cross-layer design",
+  journal       = "Telecommun Rev",
+  volume        = "14",
+  number        = "6",
+  month         = "",
+  year          = "2004",
+  pages         = "947 - 959",
+  abstract      = "",
+}
+
+
+% NUM
+@article{Kelly1998OprtRes,
+  author        = "F. P. Kelly and A. K. Maullo and D. K. H. Tan",
+  title         = "Rate control for communiction networks: shadow prices, proportional fairness and stability",
+  journal       = "Journal of the Operational Research Society",
+  volume        = "1998",
+  number        = "49",
+  month         = "",
+  year          = "1998",
+  pages         = "237 - 252",
+  abstract      = "Network Utility Maximizationg (NUM) problem",
+}
+
+
+% Round Robin
+% Max C/I
+% PF
+@inproceedings{Jalali2000VTC,
+  author        = "A. Jalali and R. Padovani and R. Pankaj",
+  title         = "Data throughput of {CDMA-HDR} a high efficiency-high dara rate personal communication wireless system",
+  booktitle     = "Proc. IEEE VTC",
+  address       = "",
+  month         = "",
+  year          = "2000",
+  pages         = "",
+  abstract      = "",
+}
+@article{Viswanath&Tse2002ITIT,
+  author        = "P. Viswanath and D. Tse and R. Laroia",
+  title         = "Opportunistic beamforming using dumb antennas",
+  journal       = "IEEE Trans. Infomation Theory",
+  volume        = "48",
+  number        = "6",
+  month         = "",
+  year          = "2002",
+  pages         = "1277 - 1294",
+  abstract      = "",
+}
+
+@article{Bender2000IMCOM,
+  author        = "P. Bender and P. Black and M. Grob and R. Padovani and N. Sindhushyana and A. Viterbi",
+  title         = "{CDMA/HDR}: a bandwidth-efficient high-speed wireless data service for nomadic users",
+  journal       = "IEEE Communications Magazine",
+  volume        = "38",
+  number        = "7",
+  month         = "Jul.",
+  year          = "2000",
+  pages         = "70 - 77",
+  abstract      = "",
+}
+
+@article{Mo2000ToN,
+  author        = "J. Mo and J. Walrand",
+  title         = "Fair end-to-end window-based congestion control",
+  journal       = "IEEE/ACM Trans. Networking",
+  volume        = "8",
+  number        = "5",
+  month         = "Oct.",
+  year          = "2000",
+  pages         = "556 - 567",
+  abstract      = "$\alpha$-fair policies.
+  $\alpha = 0$, MaxCI (throughput optimization);
+  $\alpha \to 1$, Proportional fair;
+  $\alpha \= 2$, Delay minimization;
+  $\alpha \to \infty$, Maximum fairness;",
+}
+
+@misc{Tse2001TR,
+  author        = "D. Tse",
+  title         = "Multiuser diversity in Wireless Networks",
+  howpublished  = "",
+  month         = "Apr.",
+  year          = "2001",
+  url           = "http://www.eecs.berkeley.edu/\~dtse/stanford416.ps",
+  abstract      = "",
+  note          = "",
+}
+@article{Kushner2004ITWC,
+  author        = "H. J. Kushner and P. A. Whiting",
+  title         = "Convergence of proportional-fair sharing algorithms under general conditions",
+  journal       = "IEEE Transactions on Wireless Communications",
+  volume        = "3",
+  number        = "4",
+  month         = "Jul.",
+  year          = "2004",
+  pages         = "1250 - 1259",
+  abstract      = "",
+}
+
+@article{Stolyar2005OptRes,
+  author        = "A. L. Stolyar",
+  title         = "On the asymptotic optimality of the gradient scheduling algorithm for multiuser throughput allocation",
+  journal       = "Operation Research",
+  volume        = "53",
+  number        = "1",
+  month         = "Jan. - Feb.",
+  year          = "2005",
+  pages         = "12 - 25",
+  abstract      = "",
+}
+
+@article{Stolyar2005QueSyst:GPD,
+  author        = "A. L. Stolyar",
+  title         = "Maximizing queueing network utility subject to stability: {Greedy} primal-dual algorithm",
+  journal       = "Queueing Syst.",
+  volume        = "2005",
+  number        = "50",
+  month         = "",
+  year          = "",
+  pages         = "401 - 457",
+  abstract      = "",
+}
+
+@article{Andrews2004ITWC,
+  author        = "M. Andrews",
+  title         = "Instability of the proportional fair scheduling algorithm for {HDR}",
+  journal       = "IEEE Trans. Wireless Communications",
+  volume        = "3",
+  number        = "5",
+  month         = "Sept.",
+  year          = "2004",
+  pages         = "1422 - 1426",
+  abstract      = "",
+}
+
+@inproceedings{Andrews&Stolyar2005Infocom:PFMR,
+  author        = "M. Andrews and L. Qian and A. Stolyar",
+  title         = "Optimal utility based multi-user throughput allocation subject to throughput constraints",
+  booktitle     = "Proc. IEEE INFOCOM 2005",
+  address       = "",
+  month         = "",
+  year          = "2005",
+  pages         = "2415 - 2424",
+  abstract      = "",
+}
+
+% SA-based OppSched
+@article{Liu2003ComNet,
+  author        = "X. Liu and E. K. P. Chong and N. B. Shroff",
+  title         = "A Framework for Opportunistic Scheduling in Wireless Networks",
+  journal       = "Computer Networks",
+  volume        = "41",
+  number        = "4",
+  month         = "Mar.",
+  year          = "2003",
+  pages         = "451 - 474",
+  abstract      = "",
+}
+
+
+
+% MaxWeight (M-LWDF)
+@article{Tassiulas1993ITIT:LCQ,
+  author        = "L. Tassiulas and A. Ephremides",
+  title         = "Dynamic Server Allocation to Parallel Queues with Randomly Varying Connectivity",
+  journal       = "IEEE Trans. Information Theory",
+  volume        = "39",
+  number        = "2",
+  month         = "Mar.",
+  year          = "1993",
+  pages         = "466 - 478",
+  abstract      = "maxWeight: LCQ",
+}
+
+@article{Andrews2001IMCOM,
+  author        = "M. Andrews and K. Kumaran and K. Ramanan and A. Stolyar and P. Whiting and R. Vijayakumar",
+  title         = "Providing quality of service over a shared wireless link",
+  journal       = "IEEE Comm. Mag.",
+  volume        = "39",
+  number        = "2",
+  month         = "Feb.",
+  year          = "2001",
+  pages         = "150 - 154",
+  abstract      = "",
+}
+
+@article{Andrews2004MLWDF,
+  author        = "M. Andrews and K. Kumaran and K. Ramanan and A. Stolyar and R. Vijayakumar and P. Whiting",
+  title         = "Scheduling in a queueing system with asynchronously varying service rates",
+  journal       = "Journal of Probability in the Engineering and Informational Sciences",
+  volume        = "18",
+  number        = "2",
+  month         = "Apr.",
+  year          = "2004",
+  pages         = "191 - 217",
+  abstract      = "maxWeight",
+}
+
+@article{Stolyar2004MaxWeight,
+  author        = "A. L. Stolyar",
+  title         = "MaxWeight scheduling in a generalized switch: state space collapse and workload minimization in heavy traffic",
+  journal       = "The Annals of Applied Probability",
+  volume        = "14",
+  number        = "1",
+  month         = "",
+  year          = "2004",
+  pages         = "1 - 53",
+  abstract      = "maxWeight",
+}
+
+
+
+@inproceedings{Ven2009Infocom,
+  author        = "P. {van de Ven} and S. Borst and S. Shneer",
+  title         = "Instability of {MaxWeight} scheduling algorithms",
+  booktitle     = "Proc. IEEE INFOCOM",
+  address       = "",
+  month         = "",
+  year          = "2009",
+  pages         = "",
+  abstract      = "",
+}
+
+
+
+
+
+% ExpRule
+@article{Shakkottai2002ExpRule,
+  author        = "S. Shakkottai and A. Stolyar",
+  title         = "Scheduling for multiple flows sharing a time-varying channel: The exponential rule",
+  journal       = "American Mathematical Society Translations, Series 2",
+  volume        = "207",
+  number        = "",
+  month         = "",
+  year          = "2002",
+  pages         = "",
+  abstract      = "Exp rule",
+}
+
+@inproceedings{Shakkottai2001ITC,
+  author        = "S. Shakkottai and A. L. Stolyar",
+  title         = "Scheduling algorithms for a mixture of real-time and non-real-time data in {HDR}",
+  booktitle     = "Proc. the International Teletraffic Congress",
+  address       = "",
+  month         = "Sept.",
+  year          = "2001",
+  pages         = "793 - 804",
+  abstract      = "Simulation of MaxWeight and Exp",
+}
+
+@inproceedings{Stolyar2006Allerton,
+  author        = "A. L. Stolyar",
+  title         = "Large deviations of queues under {QoS} scheduling algorithms",
+  booktitle     = "Proc. the 44th Annual Allerton Conference",
+  address       = "",
+  month         = "Sept.",
+  year          = "2006",
+  pages         = "",
+  abstract      = "",
+}
+
+@article{Stolyar2008QueSyst,
+  author        = "A. L. Stolyar",
+  title         = "Large deviations of queues sharing a randomly time-varying server",
+  journal       = "Queueing Systems: Theory and Applications",
+  volume        = "59",
+  number        = "1",
+  month         = "May",
+  year          = "2008",
+  pages         = "",
+  abstract      = "Exp rule",
+}
+
+
+% LogRule
+@inproceedings{Sadiq2008Allerton,
+  author        = "B. Sadiq and G. {de Veciana}",
+  title         = "Optimality and large deviations of queues under the pseudo-{Log} rule opportunistic scheduling",
+  booktitle     = "Proc. the 46th Annual Allerton Conference",
+  address       = "",
+  month         = "Sept.",
+  year          = "2008",
+  pages         = "776 - 783",
+  abstract      = "",
+}
+
+@article{Sadiq2011ToN:LogRule,
+  author        = "B. Sadiq and S. J. Baek and G. {de Veciana}",
+  title         = "Delay-optimal opportunistic scheduling and approximations: the log rule",
+  journal       = "IEEE/ACM Trans. Networking",
+  volume        = "19",
+  number        = "2",
+  month         = "Apr.",
+  year          = "2011",
+  pages         = "405 - 418",
+  abstract      = "Log rule",
+}
+
+@article{Sadiq2010ITIT:RSM,
+  author        = "B. Sadiq and G. {de Veciana}",
+  title         = "Large deviations sum-queue optimality of a radial sum-rate monotone opportunistic scheduler",
+  journal       = "IEEE Trans. Information Theory",
+  volume        = "56",
+  number        = "7",
+  month         = "Jul.",
+  year          = "2010",
+  pages         = "3395 - 3412",
+  abstract      = "RSM",
+}
+
+@inproceedings{Lin2009Allerton,
+  author        = "X. Lin and V. J. Venkataramanan",
+  title         = "On the large-deviations optimality of scheduling policies minimizing the drift of a {Lyapunov} function",
+  booktitle     = "Proc. the 45th Annual Allerton Conference",
+  address       = "",
+  month         = "Sept. - Oct.",
+  year          = "2009",
+  pages         = "",
+  abstract      = "",
+}
+
+% Deadline-constrained PL-OppSched
+% hard deadline
+
+@article{Wu2003EC,
+  author        = "D. Wu and R. Negi",
+  title         = "Effective capacity: a wireless link model for support of quality of service",
+  journal       = "IEEE Trans. Wireless Communications",
+  volume        = "2",
+  number        = "4",
+  month         = "",
+  year          = "2003",
+  pages         = "630--643",
+  abstract      = "",
+}
+
+@article{Shakkottai2002WirelessNet:FEDD,
+  author        = "S. Shakkottai and R. Srikant",
+  title         = "Scheduling real-time traffic with deadlines over a wireless channel",
+  journal       = "ACM/Baltzer Wireless Networks",
+  volume        = "8",
+  number        = "1",
+  month         = "Jan",
+  year          = "2002",
+  pages         = "13 - 26",
+  abstract      = "FEDD",
+}
+
+@inproceedings{Khattab&Elsayed2004MSWiM:CD-EDD,
+  author        = "A. K. F. Khattab and K. M. F. Elsayed",
+  title         = "Channel-quality dependent earliest deadline due fair scheduling schemes for wireless multimedia networks",
+  booktitle     = "Proc. ACM MSWiM'04",
+  address       = "Venezia, Italy",
+  month         = "Oct.",
+  year          = "2004",
+  pages         = "31 - 38",
+  abstract      = "",
+}
+@article{Elsayed&Khattab2006WPC:CD-EDD,
+  author        = "K. M. F. Elsayed and A. K. F. Khattab",
+  title         = "Channel-aware earliest deadline due fair scheduling for wireless multimedia networks",
+  journal       = "Wireless Personal Communications",
+  volume        = "2006",
+  number        = "38",
+  month         = "",
+  year          = "2006",
+  pages         = "233 - 252",
+  abstract      = "The survey is good",
+}
+
+@phdthesis{Scriba2009PhD,
+  author        = "S. M. Scriba",
+  title         = "Analysis of the {EDF} family of schedulers",
+  school        = "The University of Kwazulu-Natal",
+  address       = "Durban, South Africa",
+  month         = "Feb.",
+  year          = "2009",
+  abstract      = "",
+}
+
+@inproceedings{Chen1999SigMetrics,
+  author        = "K. Chen and L. Decreusefond",
+  title         = "An approximate analysis of waiting time in multi-class {M/G/1/./EDF} queues",
+  booktitle     = "Proc. ACM SIGMETRICS'96",
+  address       = "",
+  month         = "",
+  year          = "1996",
+  pages         = "190 - 199",
+  abstract      = "",
+}
+
+@article{Sivaraman1999PerfEval,
+  author        = "V. Sivaraman and F. M. Chiussi",
+  title         = "Statistical analysis of delay bound violations at an earliest deadline first {(EDF)} scheduler",
+  journal       = "Performance Evaluation",
+  volume        = "36 - 37",
+  number        = "1 - 4",
+  month         = "",
+  year          = "1999",
+  pages         = "457 - 470",
+  abstract      = "",
+}
+
+@article{Kargahi2006SupCom,
+  author        = "M. Kargahi and A. Movaghar",
+  title         = "A method for performance analysis of earliest-deadline-first scheduling policy",
+  journal       = "Journal of Supercomputing",
+  volume        = "37",
+  number        = "",
+  month         = "",
+  year          = "2006",
+  pages         = "197 - 222",
+  abstract      = "",
+}
+
+
+%--------------------------------------------------
+%  TUF-driven Scheduling
+%--------------------------------------------------
+@inproceedings{Ravindran2005ISORC,
+  author        = "B. Ravindran and E. D. Jensen and P. Li",
+  title         = "On recent advances in time/utility function real-time scheduling and resource management",
+  booktitle     = "Proc. the 8th IEEE ISORC",
+  address       = "",
+  month         = "May",
+  year          = "2005",
+  pages         = "55 - 60",
+  abstract      = "",
+}
+
+
+
+%--------------------------------------------------
+%  Stability analysis
+%--------------------------------------------------
+@article{Hajek1982ITAC,
+  author        = "B. Hajek and T. van Loon",
+  title         = "Decentralized dynamic control of a multiaccess broadcast channel",
+  journal       = "IEEE Trans. Automatic Control",
+  volume        = "27",
+  number        = "3",
+  month         = "Jun.",
+  year          = "1982",
+  pages         = "559 - 569",
+  abstract      = "",
+}
+
+%--------------------------------------------------
+%  Math
+%--------------------------------------------------
+
+@inproceedings{Nedic2008CISS,
+  author        = "A. Nedic and A. Ozdaglar",
+  title         = "Subgradient Methods in Network Resource Allocation: Rate Analysis",
+  booktitle     = "Proc. the 42nd Annual Conference on Information Sciences and Systems",
+  address       = "",
+  month         = "Mar",
+  year          = "2008",
+  pages         = "1189 - 1194",
+  abstract      = "",
+}
+
+@article{Lin2006TAC:MultiPath,
+  author        = "X. Lin and N. B. Shroff",
+  title         = "Utility Maximization for Communication Networks with Multi-path Routing",
+  journal       = "IEEE Trans. Automatic Control",
+  volume        = "51",
+  number        = "5",
+  month         = "May",
+  year          = "2006",
+  pages         = "766 - 781",
+  abstract      = "",
+}
+
+%--------------------------------------------------
+%  Some books
+%--------------------------------------------------
+
+%% math
+@book{Ross2010Probability,
+  author       = "S. M. Ross",
+  edition      = "10",
+  title        = "Introduction to Probability Models",
+  year         = "2010",
+  publisher    = "Academic Press",
+}
+
+
+@book{Zhang2004Matrices,
+  author       = "���ʹ�",
+  edition      = "",
+  title        = "����������Ӧ��",
+  year         = "2004",
+  publisher    = "�廪��ѧ������",
+}
+
+@book{Billingsley1986,
+  author       = "P. Billingsley",
+  edition      = "2nd",
+  title        = "Probability and Measurement",
+  year         = "1986",
+  publisher    = "John Wiley \& Sons",
+}
+
+@inbook{Mitzenmacher2005ProbCom,
+  author        = "M. Nutzebnacher and E. Upfal",
+  title         = "Probability and Computing: Randmoized algorithms and Probabilistic analysis",
+  chapter       = "4",
+  publisher     = "Cambridge University Press",
+  year          = "2005",
+}
+
+@book{Altman1998CMDP,
+  author        = "E. Altman",
+  title         = "{Constrained Markov Decision Processes}",
+  volume        = "7",
+  publisher     = "CRC Press",
+  year          = "1999",
+}
+
+@book{Puterman2005MDP,
+  author       = "M. Puterman",
+  edition      = "1st",
+  title        = "Markov Decision Processes: Discrete Stochastic Dynamic Programming",
+  year         = "2005",
+  publisher    = "Wiley",
+}
+
+@book{Koole2007MonotonicityMDP,
+  title={Monotonicity in {Markov} reward and decision chains: Theory and applications},
+  author={Koole, Ger},
+  volume={1},
+  year={2007},
+  publisher={Now Publishers Inc}
+}
+
+
+@book{Bertsekas2005DP,
+  author       = "D. P. Bertsekas",
+  edition      = "3rd",
+  title        = "Dynamic Programming and Optimal Control, Volume I",
+  year         = "2005",
+  publisher    = "Athena Scientific",
+}
+
+
+@inbook{Kleinberg2005AlgDesign,
+  author        = "J. Kleinberg and \`E. Tardos",
+  title         = "Algorithm Design",
+  chapter       = "2",
+  publisher     = "Cambridge University Press",
+  year          = "2005",
+}
+
+@book{Kushner1997SA,
+  author        = "H. J. Kushner and G. G. Yin",
+  title         = "Stochastic Approximation and recursive algorithms and applications",
+  publisher     = "Springer",
+  year          = "1997",
+}
+
+@book{Boyd2004CV,
+  author        = "S. Boyd and L. Vandenberghe",
+  title         = "Convex optimization",
+  publisher     = "Cambridge University Press",
+  year          = "2004",
+}
+
+%% detection, estimation
+@book{van2001detection,
+  title={Detection, estimation, and modulation theory, {Part I}},
+  author={Van Trees, Harry L},
+  year={2001},
+  publisher={John Wiley \& Sons}
+}
+
+
+
+%% communcation and networks
+@book{Goldsmith2005WC,
+  author        = "A. Goldsmith",
+  title         = "Wireless Communications",
+  publisher     = "Cambridge University Press",
+  year          = "2005",
+}
+
+@book{Tse2005FWC,
+  author        = "D. Tse and P. Viswanath",
+  title         = "Fundamentals of Wireless Communication",
+  publisher     = "Cambridge University Press",
+  year          = "2005",
+}

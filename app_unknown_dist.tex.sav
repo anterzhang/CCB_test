@@ -1,0 +1,62 @@
+\section{Constrained Contextual Bandits with Unknown Context Distribution} \label{app:unknown_dist} 
+In this section, we relax the assumption of known context distribution and study unit-cost systems with unknown context distribution vector $\boldsymbol{\pi}$. Unlike the rewards, the arrival of contexts is independent of the actions taken by the agent.
+A natural idea is to implement the ALP or UCB-ALP algorithm based on the empirical distribution as follows:
+
+\textbf{EALP and UCB-EALP Algorithms:} the agent maintains  the empirical distribution of the contexts, denoted by $\hat{\boldsymbol{\pi}}_t = (\hat{\pi}_{1,t}, \hat{\pi}_{2,t}, \ldots, \hat{\pi}_{J,t})$, where $\hat{\pi}_{j,t} = \frac{1}{t}\sum_{t' = 1}^t \mathbbm{1}(X_{t'} = j)$. In each round, the agent execute the ALP (when the expected rewards are known) or UCB-ALP (when the expected rewards are unknown) algorithms with the context distribution $\boldsymbol{\pi}$ in $\mathcal{LP}_{\tau, b}$ replaced by $\hat{\boldsymbol{\pi}}_t$,  which are referred to as Empirical ALP (EALP) and UCB-EALP, respectively.
+
+As we can see from the numerical simulations in Appendix~\ref{sec:sim_results}, the above EALP and UCB-EALP algorithms have similar performance as ALP and UCB-ALP, respectively. However, the regret analysis for these algorithms are challenging because using the empirical distribution introduces complex coupling effect since the empirical distribution depends on the context arrivals in all the past rounds, which make it difficult to analyze the evolution of the remaining budget. Thus, focus on the non-boundary cases and consider algorithms that stop updating the empirical distribution from the $T_1$-th (will be defined later) round and use the fixed estimate $\hat{\boldsymbol{\pi}}(T_1)$ for the remaining rounds, which are  referred to as EALP2 (as shown in Algorithm~\ref{alg:ealp2}) and UCB-EALP2, respectively. We focus on the EALP2 algorithm for the case where the expected rewards are known, while the properties of UCB-EALP2 can be obtained by similar techniques in the analysis of UCB-ALP combined with the properties of EALP2.
+\begin{algorithm}[htbp]
+\caption{EALP2}
+\label{alg:ealp2}
+\begin{algorithmic}
+\STATE {\bfseries Input:} Time horizon $T$, budget $B$, learning stage length $T_1$, and expected rewards $u_j^*$'s;
+
+\STATE {\bfseries Init:} $\tau = T$; $b = B$; $\hat{\pi}_{j,0} = 0$, $\forall j$;
+
+\FOR{$t = 1$ {\bfseries to} $T$}
+\IF{$t \leq T_1$}
+\STATE{$\hat{\pi}_{j,t} \gets \frac{(t-1)\hat{\pi}_{j,t-1} + \mathbbm{1}(X_t = j)}{t}$, $\forall j$;}
+\ENDIF
+\IF{$b > 0$}
+\STATE{Obtain the probabilities $p_j(b/\tau)$'s by solving $\mathcal{LP}_{\tau,b}$ with $\boldsymbol{\pi}$ replaced by $\hat{\boldsymbol{\pi}}_t$.}
+\STATE{Take action $k_{X_t}^*$ with probability $p_{X_t}(b/\tau)$.}
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+Now we show that for sufficiently large $T$ and an appropriate chosen $T_1$, the EALP2 algorithm achieves similar performance as ALP in the non-boundary cases.
+\begin{theorem} \label{thm:ealp2_regret}
+Given any fixed $\rho \in (0,1)$, $\rho \neq q_j$, $T  \geq ??$ and $T_1 = J^2\log^3 T/g^2_{\rho}$, where $g_{\rho} = \frac{1}{2}\min\{q_{\tilde{j}(\rho) + 1} - \rho, \rho - q_{\tilde{j}(\rho)}\}$, the regret of EALP2 satisfies $R_{\rm EALP2}(T,B) = O(1)$.
+\end{theorem}
+
+Similar to the non-boundary cases in Theorem~\ref{thm:alp_regret}, the key idea of proving Theorem~\ref{thm:ealp2_regret} is to show that under EALP2, the average remaining budget $b_\tau/\tau$ will not cross the boundaries with high probability. To achieve this, we examine the expectation of $b_\tau/\tau$ and its concentration properties under EALP2.  
+
+\textbf{Step 1: Estimation error of $\hat{\boldsymbol{\pi}}_{T_1}$.} Let $\delta = g_{\rho}/(J\log T)s$. According to Hoeffding-Chernoff bound, we have
+\begin{eqnarray}
+\mathbb{P}\{|\hat{\pi}_{j,T_1} - {\pi}_j| \leq \delta, \forall j\} \geq 1 - \frac{2J}{T^2}. 
+\end{eqnarray}
+
+\textbf{Step 2: Bound on the expectation of $b_{\tau}/\tau$.} First, we note that the average remaining budget $b_{\tau}/\tau$ is close to the initial value $\rho$ at round $T_1$ because for $t = T_1$ (or equivalently, $\tau = T- T_1 + 1$),
+\begin{eqnarray}
+\leq \frac{B - T_1}{T-T_1+1} \leq \frac{b_{\tau}}{\tau} \leq \frac{B}{T-T_1+1} \leq .
+\end{eqnarray}
+
+Now we show that $|\mathbb{E}[b_{\tau}/\tau] - \rho| \leq J\delta\sum_{\tau' = T-T_1 + 1}^\tau\frac{1}{\tau'} + ??$ for $\tau <T - T_1 + 1$ (i.e., $t > T_1$) by mathematical induction. 
+
+
+\textbf{Step 3: Concentration of $b_{\tau}/\tau$.} To show the concentration of $b_{\tau}/\tau$, we first use the coupling argument to show the following lemma and then use \blue{the method of averaged bounded differences} \cite{Dubhashi2009Concentration}.
+\begin{lemma} \label{thm:bounded_diff}
+Assume $|\hat{\pi}_{j,T_1} - \pi_j| \leq \delta$ for all $j$. The remaining budget $b_\tau$ in round $t = T- \tau + 1$ satisfies
+\begin{eqnarray}
+|\mathbb{E}[b_\tau | A_{T_1:t'}, A_{t'+1} > 0] - \mathbb{E}[A_{T_1:t'}, A_{t'+1} = 0]| \leq ??,T_1 < t' < t.
+\end{eqnarray}
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+Then, according to  Lemma~\ref{thm:bounded_diff} and Theorem~?? in \cite{Dubhashi2009Concentration}, we have ???.
+
+
+\textbf{Step 4: Upper bound of $R_{\rm EALP2}(T,B)$.}

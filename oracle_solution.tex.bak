@@ -1,0 +1,150 @@
+\section{Approximations of the Oracle} \label{sec:oracle_solution}
+In this section, we study approximations of the oracle, where the statistics of bandits are known to the agent. This will provide a benchmark for the regret analysis and insights into the design of constrained contextual bandit algorithms.
+
+As a starting point, we focus on unit-cost systems, i.e., $c_{j,k} = 1$ for each $j$ and $k$, from Section~\ref{sec:oracle_solution} to  Section~\ref{sec:unknown_dist}, which will be relaxed in Section \ref{sec:het_cost}.
+In unit-cost systems, the quality of action $k$ under context $j$ is fully captured by its expected reward $u_{j,k}$. Let $u_j^*$ be the highest expected reward under context $j$, and  $k_j^*$ be the best
+action for context $j$, i.e.,
+$u_j^* = \max_{k \in \mathcal{A}} u_{j,k}$ and $k_j^* = \argmax_{k \in \mathcal{A}} u_{j,k}$.
+For ease of exposition, we assume that the best action under each context is unique, i.e., $u_{j,k} < u_j^*$ for all $j$ and $k \neq k_j^*$.
+Similarly, we also assume  $u_1^* > u_2^*  > \ldots > u_J^*$ for simplicity.
+
+With the knowledge of $u_{j,k}$'s, the agent  knows the best action $k_j^*$ and its expected reward $u_j^*$ under any context $j$.
+In each round $t$, the task of the oracle is deciding whether to take  action $k_{X_t}^*$ or not depending on  the remaining time $\tau = T- t + 1$  and the remaining  budget $b_\tau$.
+
+The special case of two-context systems ($J = 2$) is trivial, where the agent just needs to procrastinate for the better context (see Appendix~\ref{app:two_contex} of the supplementary material).
+When considering more general cases with $J > 2$, however, it is computationally intractable to exactly characterize the oracle solution.
+% due to the coupling effect introduced by the budget and time constraints.
+Therefore, we resort to approximations  based on linear programming (LP).
+
+\subsection{Upper Bound: Static Linear Programming}
+%Obtaining an explicit representation of the maximum expected reward $U^*(T,B)$ obtained by the oracle algorithm is challenging,
+%if not impossible, due to the curse of dimensionality. Therefore,
+We propose an upper bound for the expected total reward $U^*(T,B)$ of the oracle by relaxing the hard constraint to an average constraint
+and solving the corresponding constrained LP problem. Specifically, let $p_j \in [0,1]$ be the probability that the agent takes action $k_j^*$ for context $j$,
+and $1-p_j$ be the probability that the agent skips context $j$ (i.e., taking action $A_t = 0$).
+Denote the probability vector as $\bs{p} = (p_1, p_2, \ldots, p_J)$. For a time-horizon $T$
+and budget $B$, consider the following LP problem:
+\vspace{-0.1cm}
+\begin{eqnarray}
+(\mathcal{LP}_{T,B})~~\text{maximize}_{\boldsymbol{p}} && \sum_{j = 1}^J p_j \pi_j u_j^*,  \label{eq:staticLP_obj} \\
+\text{subject to~~} && \sum_{j=1}^J p_j \pi_j \leq B/T, \label{eq:staticLP_const}\\
+&&\bs{p} \in [0,1]^J. \nonumber
+\end{eqnarray}
+%Recall that contexts are sorted in the ascending order of their highest expected reward, i.e.,
+%$u_1^* < u_2^* < \ldots < u_J^*$.
+Define the following threshold as a function of the average budget $\rho = B/T$:
+\vspace{-0.1cm}
+\begin{eqnarray} \label{eq:context_threhold}
+\tilde{j}(\rho) = \max\{j: \sum_{j' = 1}^j\pi_{j'} \leq \rho\}
+\end{eqnarray}
+with the convention that $\tilde{j}(\rho) = 0$ if $\pi_1 > \rho$.
+We can verify that the following solution is optimal for $\mathcal{LP}_{T,B}$:
+\begin{eqnarray}\label{eq:LP_solution}
+p_j(\rho) =
+\begin{cases}
+1, &\text{if $1 \leq j \leq  \tilde{j}(\rho)$},\\
+\frac{\rho - \sum_{j' = 1}^{\tilde{j}(\rho)}\pi_{j'}}{\pi_{\tilde{j}(\rho)+1}}, & \text{if $j = \tilde{j}(\rho)+1$},\\
+0, & \text{if $j > \tilde{j}(\rho)+1$}.\\
+\end{cases}
+\end{eqnarray}
+Correspondingly, the optimal value of  $\mathcal{LP}_{T,B}$ is
+\begin{eqnarray}\label{eq:LP_single_step_value}
+{v}(\rho) = \sum_{j =1}^{ \tilde{j}(\rho)} \pi_j u_j^*
++ p_{\tilde{j}(\rho) + 1}(\rho) \pi_{\tilde{j}(\rho) + 1} u_{\tilde{j}(\rho) + 1}^*.
+\end{eqnarray}
+This optimal value ${v}(\rho)$ can be viewed as the maximum expected reward in a single round with average budget $\rho$.
+Summing over the entire horizon, the total expected reward becomes $\widehat{U}(T,B) = T{v}(\rho)$, which is an upper bound of $U^*(T,B)$.
+%The average constraint in $\mathcal{LP}_{T,B}$ relaxes the hard constraint in the original problem,
+%while the oracle algorithm satisfies the hard budget constraint for any realization.
+%Therefore, we have that $\widehat{U}(T,B)$ is an upper bound on the expected total reward for the original problem.
+\begin{lemma}\label{thm:upper_bound}
+For a unit-cost system with known statistics, if the time-horizon is $T$ and the budget is $B$,
+then  $\widehat{U}(T,B) \geq U^*(T,B)$.
+\end{lemma}
+%\proof{See Appendix~\ref{app:proof_upper_bound} in the supplementary material.}
+%Lemma~\ref{thm:upper_bound} can be viewed as a special case of Lemma~4 in \cite{Badanidiyuru2014COLT}.
+
+The proof of Lemma~\ref{thm:upper_bound} is available in Appendix~\ref{app:proof_upper_bound} of the supplementary material. With Lemma~\ref{thm:upper_bound}, we can bound the regret of any algorithm by comparing its performance
+with the upper bound $\widehat{U}(T,B)$  instead of $U^*(T,B)$.
+Since $\widehat{U}(T,B)$ has a simple expression,
+as we will see later, it significantly reduces the complexity of regret analysis.
+
+\subsection{Adaptive Linear Programming} \label{subsec:adaptive_lp}
+Although the solution \eqref{eq:LP_solution} provides an upper bound on the expected reward,
+using such a fixed algorithm will not achieve good performance as the ratio $b_{\tau}/\tau$, referred to as {\emph{average remaining budget}},
+ fluctuates over time.
+We propose an Adaptive Linear Programming (ALP) algorithm that adjusts the threshold and randomization probability according to the
+instantaneous value of $b_{\tau}/\tau$.
+
+Specifically, when the remaining time is $\tau$ and the remaining budget is $b_\tau = b$, we consider
+an LP problem $\mathcal{LP}_{\tau, b}$ which is the same as $\mathcal{LP}_{T,B}$ except that
+$B/T$ in Eq.~\eqref{eq:staticLP_const} is replaced with $b/\tau$.
+%Replacing $\rho$ in Eq.~\ref{eq:context_threhold} with $b/\tau$, we know that  the  optimal solution for $\mathcal{LP}_{\tau,b}$ is
+%\begin{eqnarray}\label{eq:alp_solution}
+%&&\tilde{p}_j(\tau, b) \nonumber \\
+%&=&
+%\begin{cases}
+%0, &\text{if $1 \leq j <  \tilde{j}(b/\tau)-1$},\\
+%\frac{\rho - \sum_{j' = \tilde{j}_{{\rm th}(\tau, b)}}^J\pi_{j'}}{\pi_{\tilde{j}(b/\tau)-1}}, & \text{if $j = \tilde{j}(b/\tau)-1$},\\
+%1, & \text{if $j \geq \tilde{j}(b/\tau)$}.\\
+%\end{cases}
+%\end{eqnarray}
+Then, the optimal solution for $\mathcal{LP}_{\tau,b}$ can be obtained by replacing $\rho$ in Eqs.~\eqref{eq:context_threhold},
+ \eqref{eq:LP_solution}, and \eqref{eq:LP_single_step_value} with $b/\tau$. The ALP algorithm then makes decisions based on this optimal solution.
+
+
+\textbf{ALP Algorithm:} At each round $t$ with remaining budget $b_{\tau} = b$, obtain $p_j(b/\tau)$'s by solving $\mathcal{LP}_{\tau, b}$; take an action $A_t = k^*_{X_t}$ with probability $p_{X_t}(b/\tau)$, and $A_t = 0$ with probability $1 - p_{X_t}(b/\tau)$.
+
+The above ALP algorithm only requires the ordering of the expected rewards instead of their accurate values. This highly desirable feature allows us to combine ALP with classic MAB algorithms such as UCB \cite{Auer2002ML:UCB} for the case without knowledge of expected rewards. Moreover, this simple ALP algorithm achieves very good performance within a constant distance from the optimum, i.e., $O(1)$ regret, except for certain boundary cases. Specifically, for $1 \leq j \leq J$, let $q_j$ be the cumulative probability defined as
+$q_j = \sum_{j'=1}^j \pi_{j'}$ with the convention that $q_{0} = 0$.
+The following theorem states  the near optimality of ALP.
+%: for the cases where $\rho \neq q_j$ ($j = 1,2,\ldots, J-1$). We note that $j = 0$ and $j = J$ are  trivial cases where ALP is optimal.
+\begin{theorem} \label{thm:alp_regret}
+Given any fixed $\rho \in (0,1)$, the regret of ALP satisfies:\\
+1) (Non-boundary cases) if $\rho \neq q_j$ for any $j \in \{ 1,2,\ldots, J-1\}$, then $R_{\rm ALP}(T,B) \leq \frac{u_1^* - u_J^*}{1 - e^{-2\delta^2}}$,
+where $\delta = \min\{\rho - q_{\tilde{j}(\rho)},
+q_{\tilde{j}(\rho)+1} -\rho\}$.\\
+2) (Boundary cases) if $\rho = q_j$ for some $j \in \{1,2,\ldots, J-1\}$, then $R_{\rm ALP}(T,B) \leq \Theta^{\rm (o)} \sqrt{T} + \frac{u_1^* - u_J^*}{1 - e^{-2(\delta')^2}}$, where $\Theta^{\rm (o)} =  2(u_1^* - u_J^*) \sqrt{\rho (1-\rho)}$ and $\delta' = \min\{\rho - q_{\tilde{j}(\rho) - 1}, q_{\tilde{j}(\rho) +1} - \rho\}$.
+\end{theorem}
+
+Theorem~\ref{thm:alp_regret} shows that ALP achieves $O(1)$ regret except for certain boundary cases, where it still achieves $O(\sqrt{T})$ regret. This implies that the regret due to the linear relaxation is negligible in most cases. Thus, when the expected rewards are unknown, we can achieve low regret, e.g., logarithmic regret, by combining ALP with appropriate information-acquisition mechanisms.
+
+
+{\it \textbf{Sketch of Proof:}} Although the ALP algorithm seems fairly intuitive, its regret analysis is non-trivial. The key to the proof is to analyze the evolution of the remaining budget $b_\tau$ by mapping ALP to ``sampling without replacement''.
+%Thus, we study the evolution of  $b_\tau$ to evaluate the total expected reward under ALP.
+Specifically, from Eq.~\eqref{eq:LP_solution}, we can verify that when the remaining time is $\tau$ and the remaining budget is $b_{\tau} = b$,
+the system consumes one unit of budget with probability $b/\tau$, and consumes nothing with probability $1-b/\tau$.
+When considering the remaining budget, the ALP algorithm can be viewed as  ``sampling  without replacement''.
+%\footnote{Consider $T$ balls in an urn, including $B$ black balls and $T-B$ white balls. Running ALP is equivalent to randomly drawing a ball without replacement. Taking an action $A_t > 0$ is equivalent to drawing  a black ball and taking the dummy action $A_t = 0$ is equivalent to drawing a white ball. The event that $b_{\tau} = b$ is equivalent to the event that the agent draws $T- \tau$ balls, and the number of drawn black balls is $B-b$.},
+Thus, we can show that $b_\tau$ follows the hypergeometric distribution \cite{Dubhashi2009Concentration} and has the following properties:
+\begin{lemma}\label{thm:alp_to_hypergeo}
+Under the ALP algorithm, the remaining budget $b_{\tau}$ satisfies:\\
+1) The expectation and variance of  $b_{\tau}$ are $\mathbb{E}[b_{\tau}] = \rho \tau$
+and  ${\rm Var}(b_{\tau}) = \frac{T-\tau}{T-1}\tau\rho(1-\rho)$, respectively.\\
+2) For any positive  number $\delta$ satisfying $0 < \delta <  \min\{\rho, 1-\rho\}$, the tail distribution of $b_{\tau}$ satisfies
+\begin{eqnarray}
+\mathbb{P}\{b_{\tau} < (\rho - \delta) \tau\} \leq e^{-2\delta^2 \tau}~~\text{and}~~
+\mathbb{P}\{b_{\tau} > (\rho + \delta) \tau\} \leq e^{-2\delta^2 \tau}. \nonumber
+\end{eqnarray}
+\end{lemma}
+
+%Now, we are ready to investigate the performance of the  ALP algorithm.
+%We bound the regret of ALP by comparing its performance with the upper bound provided by $\mathcal{LP}_{T,B}$.
+%Intuitively, from Lemma~\ref{thm:alp_to_hypergeo}, the expectation of the
+%average remaining budget, i.e., $\mathbb{E}[b_{\tau}/\tau]$, remains unchanged over time. Thus, {\it if the threshold stays the same,
+%i.e., $\tilde{j}(b_\tau/\tau) = \tilde{j}(\rho)$ for all possible $b$'s,}
+%then the expected single-step value of ALP will be the same as
+%the optimal value of the static LP problem $\mathcal{LP}_{T,B}$, i.e., $\mathbb{E}[v(b_\tau/\tau)] = {v}(\rho)$.
+%The difference in the expected total reward results from the changing of thresholds.
+%Lemma~\ref{thm:alp_to_hypergeo} also states that  the average remaining budget $b_\tau/\tau$
+%stays in a neighborhood of the initial average budget $\rho$ with high probability.
+%Hence, if the  initial average budget $\rho$ is not on boundaries,
+%i.e., the critical values under which the threshold $\tilde{j}(\rho)$ changes,
+%then the probability of threshold changing is bounded.
+%Therefore, we can show that the ALP algorithm achieves a very good performance
+%{within a constant distance from the optimum}, except for certain boundary cases.
+
+Then, we prove Theorem~\ref{thm:alp_regret} based on Lemma~\ref{thm:alp_to_hypergeo}. Note that the expected total reward under ALP is $U_{\rm ALP}(T,B) = \mathbb{E}\big[\sum_{\tau = 1}^{T}v(b_{\tau}/\tau)\big]$,
+where $v(\cdot)$ is defined in \eqref{eq:LP_single_step_value} and the expectation is taken over  the distribution of $b_{\tau}$.
+For the non-boundary cases, the single-round expected reward satisfies $\mathbb{E}[v(b_\tau/\tau)] = {v}(\rho)$ if the threshold $\tilde{j}(b_\tau/\tau) = \tilde{j}(\rho)$  for all possible $b_\tau$'s. The regret then is bounded by a constant because the probability of the event $\tilde{j}(b_\tau/\tau) \neq \tilde{j}(\rho)$ decays exponentially due to the concentration property of $b_\tau$.  For the boundary cases, we show the conclusion by relating the regret with the variance of $b_\tau$.
+Please refer to Appendix~\ref{app:proof_alp_regret} of the supplementary material for details.

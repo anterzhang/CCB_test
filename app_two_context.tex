@@ -1,0 +1,211 @@
+%%%%%%%%%%
+\section{Two-Context Systems with Unit-Cost} \label{app:two_contex}
+%%%%%%%%%%
+As a special case, the oracle algorithm can be obtained for two-context systems with unit costs. When the context distribution and expected rewards are unknown, the oracle algorithm can be combined with the UCB method to achieve logarithmic regret under both boundary and non-boundary cases.
+
+%%%%%%%%%%
+\subsection{Oracle Algorithm: Procrastinate-for-the-Better-context}
+%%%%%%%%%%
+When there are only two contexts, the oracle algorithm is trivial.
+Under the unit-cost assumption, skipping the worse context does not waste any opportunities if $b_\tau < \tau$.
+Thus, the agent can reserve budget for the better context, unless there is sufficient budget; i.e., we have the following algorithm:
+
+\textbf{Procrastinate-for-the-Better (PB):} If $X_t = 1$ and $b_\tau > 0$, or if $b_\tau \geq \tau$, take action  $A_t = k_{X_t}^*$;
+otherwise, $A_t = 0$.
+
+We can verify that the above PB algorithm achieves the highest expected reward for any realization of the context arrival process.
+Thus, the PB algorithm is optimal in two-context systems. We note that the PB algorithm does not need to know the context distribution and only requires the ordering of the expected rewards. This property allows us to extend it to the case where the context distribution or expected rewards are unknown.
+%%%%%%%%%%%
+%\subsection{Lemma~\ref{thm:context_action_pair_errorprob_wContext}: Occurrence Bound} \label{app:proof_context_action_pair_errorprob_wContext}
+%%%%%%%%%%%
+%Recall that  $(\hat{X}_t, \hat{A}_t)$ is the context-action pair that has the  highest UCB in round $t$, and the remaining time $\tau = T- t+ 1$. Let $\hat{\boldsymbol{X}}_t = (\hat{X}_1, \hat{X}_2, \ldots, \hat{X}_t)$ and $\hat{\boldsymbol{A}}_t = (\hat{A}_1, \hat{A}_2, \ldots, \hat{A}_t)$. Furthermore, let $\hat{\boldsymbol{x}}_t$ and $\hat{\boldsymbol{a}}_t$  be the realizations of $\hat{\boldsymbol{X}}_t$ and $\hat{\boldsymbol{A}}_t$, respectively. Let $\hat{C}_{j,k}^{(\hat{\boldsymbol{x}}, \hat{\boldsymbol{a}})}(t) = \sum_{t' = 1}^{t}\mathds{1}(\hat{x}_{t'} = j, \hat{a}_{t'} = a)$. Then,
+%\begin{align}
+%&\quad \mathbb{P}\{C_{j,k}(t) < \pi_j(1 - \epsilon) n, \hat{C}_{j,k}(t) \geq n, b_{\tau} > 0\} \nonumber \\
+%&=\sum_{\hat{C}_{j,k}^{(\hat{\boldsymbol{x}}, \hat{\boldsymbol{a}})}(t) \geq n}\mathbb{P}\{C_{j,k}(t) < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} > 0\}. \nonumber
+%\end{align}
+%
+%For any possible realization $(\hat{\boldsymbol{x}}_t, \hat{\boldsymbol{a}}_t)$, we evaluate the probability $\mathbb{P}\{C_{j,k}(t) < \pi_j(1 - \epsilon) n,(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_\tau > 0\}$ from round $t$ to round $1$. We note that the context arrives independently with $\mathbb{P}\{X_t = j\} = \pi_j$ and under UCB-PB, the action $\hat{A}_t$ will be taken under context $j$ if $\hat{X}_t = j$, $\hat{A}_t = k$, and the remaining budget $b_\tau > 0$. In other words, $\mathbb{P}\{X_t = j, A_t = k|\hat{X}_t = j, \hat{A}_t = k, b_{\tau} > 0\} = \pi_j$. Thus, if $(\hat{x}_t, \hat{a}_t) =(j,k)$, we introduce a Bernoulli distributed random variable $W_{t}$,
+%with $\mathbb{P}\{W_{t} = 1\} =  \pi_j$ and $\mathbb{P}\{W_{t} = 0\} = 1 - \pi_j$ (independent of $\hat{\boldsymbol{X}}_t$ and $\hat{\boldsymbol{A}}_t$). Then, we have:
+%\begin{align}
+%&\quad\mathbb{P}\{C_{j,k}(t)  < \pi_j(1 - \epsilon) n, (\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} > 0\} \nonumber \\
+%& \leq   \mathbb{P}\{C_{j,k}(t-1) + W_{t} < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} > 0\}. \nonumber
+%\end{align}
+%{This is because:
+%\begin{align}
+%&\quad\mathbb{P}\big\{C_{j,k}(t)  < \pi_j(1 - \epsilon) n, (\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t)\big\} \nonumber \\
+%&=  \mathbb{P}\big\{C_{j,k}(t)  < \pi_j(1 - \epsilon) n, (\hat{\boldsymbol{X}}_{t-1},\hat{\boldsymbol{A}}_{t-1}) = (\hat{\boldsymbol{x}}_{t-1},  \hat{\boldsymbol{a}}_{t-1})\nonumber \\
+%&~~|(\hat{X}_t, \hat{A}_t) = (\hat{x}_t,  \hat{a}_t),b_\tau > 0\big\} \mathbb{P}\big\{(\hat{X}_t, \hat{A}_t) = (\hat{x}_t,  \hat{a}_t),b_\tau > 0\big\} \nonumber \\
+%& \leq   \mathbb{P}\big\{C_{j,k}(t-1) +W_t  < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~(\hat{\boldsymbol{X}}_{t-1},\hat{\boldsymbol{A}}_{t-1}) = (\hat{\boldsymbol{x}}_{t-1},  \hat{\boldsymbol{a}}_{t-1})|(\hat{X}_t, \hat{A}_t) = (\hat{x}_t,  \hat{a}_t),b_\tau > 0\big\}\nonumber \\
+%&~~\times \mathbb{P}\big\{(\hat{X}_t, \hat{A}_t) = (\hat{x}_t,  \hat{a}_t), b_\tau > 0\big\} \nonumber \\
+%& = \mathbb{P}\big\{C_{j,k}(t-1) +W_t  < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~~~(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t),b_\tau > 0\big\}.\nonumber
+%\end{align}
+%}
+%Similarly, if $(\hat{x}_t, \hat{a}_t) \neq (j,k)$, we have
+%\begin{align}
+%&\quad\mathbb{P}\big\{C_{j,k}(t)  < \pi_j(1 - \epsilon) n, (\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} > 0\big\} \nonumber \\
+%&\leq  \mathbb{P}\big\{C_{j,k}(t-1)  < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~~~(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau}> 0\big\}. \nonumber
+%\end{align}
+%
+%Using the similar technique to rounds $t-1, t-2, \ldots, 1$, we have
+%\begin{align}
+%&\quad\mathbb{P}\{C_{j,k}(t)  < \pi_j (1-\epsilon) n, (\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} >0\} \nonumber \\
+%&\leq \mathbb{P}\{\sum_{t':(\hat{x}_{t'}, \hat{a}_{t'}) = (j,a)} W_{t'} < \pi_j(1 - \epsilon) n, \nonumber \\
+%&~~~~~~~~~~(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} >0\}\nonumber \\
+%&\leq  \mathbb{P}\{\sum_{t':(\hat{x}_{t'}, \hat{a}_{t'}) = (j,a)} W_{t'} < \pi_j(1 - \epsilon) n \}\nonumber\\
+%&~~~~~~~~~~\times \mathbb{P}\{(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)  = (\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t), b_{\tau} >0\}
+%\end{align}
+%The last equality in the above equation is obtained from the independency of $W_{t'}$ and $(\hat{\boldsymbol{X}}_t,\hat{\boldsymbol{A}}_t)$.
+%When $\hat{C}_{j,k}^{(\hat{\boldsymbol{x}}, \hat{\boldsymbol{a}})}(t) \geq n$,
+%$\sum_{t':(\hat{x}_{t'}, \hat{a}_{t'}) = (j,a)} W_{t'}$ is the sum of $\hat{C}_{j,k}^{(\hat{\boldsymbol{x}}, \hat{\boldsymbol{a}})}(t)$ (which is no less than $n$)~i.i.d.~Bernoulli distributed random variables with success probability $\pi_j$.
+%Using Hoeffding-Chernoff bound \cite{Dubhashi2009Concentration} and summing over all possible realizations $(\hat{\boldsymbol{x}}_t,  \hat{\boldsymbol{a}}_t)$ satisfying $\hat{C}_{j,k}^{(\hat{\boldsymbol{x}}, \hat{\boldsymbol{a}})}(t) \geq n$, we obtain the conclusion of the lemma.
+
+%%%%%%%%%%
+\subsection{UCB-PB: Logarithmic Regret Algorithm for Two-Context Bandits with Unit-Cost}\label{app:ucb_pb}
+%%%%%%%%%%
+When the context distribution and expected rewards are unknown, we propose the UCB-based Procrastinate-for-the-Better (UCB-PB) algorithm for solving the constrained contextual bandit problem with two contexts and unit costs.
+
+\begin{algorithm}[htbp]
+\caption{UCB-PB}
+\label{alg:ucb_dp}
+\begin{algorithmic}
+\STATE {\bfseries Input:} Time-horizon $T$, budget $B$;
+
+\STATE {\bfseries Init:} Remaining time $\tau = T$, remaining budget $b = B$; \\
+~~~~~~$C_{j,k}(0) = 0$, $\bar{u}_{j,k}(0) = 0$, $\hat{u}_{j,k}(0) = 1$, for all $j \in \mathcal{X}$ \\
+~~~~~~and $k\in \mathcal{A}$; $\hat{u}^*_{j}(0) = 1$ for all $j \in \mathcal{X}$;
+
+\FOR{$t = 1$ {\bfseries to} $T$}
+\STATE{$k^{*}_j(t) \gets \argmax_{k} \hat{u}_{j,k}(t), ~\forall j$;}
+\STATE{$\hat{u}_{j}^*(t) \gets \hat{u}_{j,k_{j}^*(t)}^*(t), ~\forall j$;}
+\STATE{${j}^*(t) \gets \argmax_{j} \hat{u}_{j}^*(t)$;}
+\IF{$b \geq \tau$ \OR  ($0 < b < \tau$ \AND $X_t = j^*(t)$)}
+\STATE{ Take action $k^{*}_{X_t}(t)$;}
+\ENDIF
+\STATE{Update $\tau$, $b$, $C_{j,k}(t)$, $\bar{u}_{j,k}(t)$, and $\hat{u}_{j,k}(t)$;}
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+As shown in Algorithm~\ref{alg:ucb_dp}, the agent maintains UCB estimates $\hat{u}_{j,k}(t)$'s for the expected rewards of all context-action pairs. In each round, the agent implements the PB algorithm based on these estimates.
+
+
+
+Next, we study the regret of the UCB-PB algorithm.  We  show that the UCB-PB algorithm achieves logarithmic regret for any given $\rho \in (0,1)$.
+\begin{theorem}\label{thm:regret_ucb_dp}
+For a constrained contextual bandit with unit-cost and two contexts, the UCB-PB algorithm achieves  logarithmic regret as $T$ goes to infinity, i.e.,
+\begin{eqnarray}
+\limsup_{T \to \infty} \frac{R_{\text{UCB-PB}}(T, B)}{\log T} \leq \sum_{k=1}^K \bigg[\frac{27}{2\pi_2\Delta^{(1)}_{2,k}} + 2\Delta^{(1)}_{2,k} \bigg] + \sum_{j=1}^2 \sum_{k \neq k_j^*}\bigg[\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\bigg]. \nonumber
+\end{eqnarray}
+\end{theorem}
+\begin{proof}
+The proof of Theorem~\ref{thm:regret_ucb_dp} is similar to that of Theorem~\ref{thm:regret_ucb_alp}, while the analysis on the error events is even simpler.
+Note that the regret is defined as the difference between the expected total rewards achieved by the UCB-PB algorithm and the oracle algorithm. For the oracle algorithm, let $C_j^*(t) = \sum_{t' = 1}^t \mathds{1}\{X_{t'} = j, A_{t'} = k_j^*\}$ be the number of times that the context-action pair $(j, k_j^*)$ has been executed up to round $t$. For the UCB-PB algorithm, Recall that $C_{j,k}(t) = \sum_{t' = 1}^t \mathds{1}\{X_{t'} = j, A_{t'} = k_j\}$ is the number of times that the context-action pair $(j,k)$ has been executed up to round $t$, and let $C_j(t) = \sum_{k=1}^K C_{j,k}(t)$.
+%Then, the expected total reward obtained by the oracle solution is
+%\begin{eqnarray}
+%U^*(T,B) =  \sum_{j = 1}^J u_j^* \mathbb{E}[C_j^*(T)].\nonumber
+%\end{eqnarray}
+%On the other hand, the expected total reward obtained by UCB-PB can be represented as
+%\begin{eqnarray}
+%U_{\text{UCB-PB}}(T,B)& =&  \sum_{j = 1}^J \sum_{k =1}^K u_{j,k} \mathbb{E}[C_{j,k}(T)] \nonumber\\
+%& = & \sum_{j=1}^J [u_j^* C_j(T)] - \sum_{j=1}^J \sum_{k\neq k_j^*} \Delta^{(j)}_{j,k}\mathbb{E}[C_{j,k}(T)], \nonumber
+%\end{eqnarray}
+%where $C_j(T) = \sum_{k=1}^K C_{j,k}(T)$ is the total number that actions have been taken for context $j$ under UCB-PB up to round $T$.
+Then the regret of UCB-PB can be expressed as
+\begin{eqnarray} \label{eq:regret_ucb_dp_details}
+&&R_{\text{UCB-PB}}(T, B) \nonumber \\
+&=& \sum_{j = 1}^J u_j^* \mathbb{E}[C_j^*(T)] - \sum_{j = 1}^J \sum_{k =1}^K u_{j,k} \mathbb{E}[C_{j,k}(T)] \nonumber\\
+& =& \sum_{j=1}^J \sum_{k=1}^K \Delta^{(j)}_{j,k}\mathbb{E}[C_{j,k}(T)] + \sum_{j = 1}^J u_j^* \mathbb{E}\big[C_j^*(T) -\sum_{k=1}^K C_{j,k}(T)\big]\nonumber \\
+& =& R_{\text{UCB-PB}}^{\rm (a)}(T, B) + R_{\text{UCB-PB}}^{\rm (c)}(T, B),
+\end{eqnarray}
+where $R_{\text{UCB-PB}}^{\rm (a)}(T, B)$ is the regret due to action-ranking errors, i.e.,
+\begin{eqnarray}
+R_{\text{UCB-PB}}^{\rm (a)}(T, B) &=& \sum_{j=1}^J \sum_{k\neq k_j^*} \Delta^{(j)}_{j,k}\mathbb{E}[C_{j,k}(T)], \nonumber
+\end{eqnarray}
+and $R_{\text{UCB-PB}}^{\rm (c)}(T, B)$ is the regret due to context-ranking errors, i.e.,
+\begin{eqnarray} \label{eq:regret_ucb_dp_context}
+R_{\text{UCB-PB}}^{\rm (c)}(T, B) &=& \sum_{j = 1}^J u_j^* \mathbb{E}\big[C_j^*(T) -\sum_{k=1}^K C_{j,k}(T)\big] =(u_1^* - u_2^*) \mathbb{E}\big[C_1^*(T) - C_1(T)\big]. 
+\end{eqnarray}
+%The last equality in \eqref{eq:regret_ucb_dp_details}
+The expression of $R_{\text{UCB-PB}}^{\rm (c)}(T, B)$ uses the fact that both the oracle algorithm and UCB-PB  will exhaust their entire budget, i.e., $\sum_{j=1}^J C_j^*(T) = \sum_{j=1}^J C_j(T) = B$.
+
+For $R_{\text{UCB-PB}}^{\rm (a)}(T, B)$, we note that  Lemma~\ref{thm:regret_withincontext} also holds under UCB-PB, i.e.,
+\begin{eqnarray} \label{eq:regret_ucb_dp_action}
+R_{\text{UCB-PB}}^{\rm (a)}(T, B)
+\leq \sum_{j=1}^J \sum_{k \neq k_j^*} \bigg[\big(\frac{2}{\Delta_{j,k}^{(j)}} + 2\Delta_{j,k}^{(j)}\big) \log T + 2 \Delta_{j,k}^{(j)}\bigg].
+\end{eqnarray}
+
+Next, we show that $R_{\text{UCB-PB}}^{\rm (c)}(T, B)$ is also of order $O(\log T)$.
+Let $(\hat{X}_t, \hat{A}_t)$ be the context-action pair that has the highest UCB in round $t$. Moreover, let $\hat{C}_j(t)$ be the number of events that context $j$ has the maximum index up to round $t$, i.e., $\hat{C}_j(t) = \sum_{t' = 1}^{t}\mathds{1}(\hat{X}_t = j)$, and $\hat{C}_{j,k}(t)$ be the number of events that the context-action pair $(j,k)$ has the highest UCB up to round $t$, i.e., $\hat{C}_{j,k}(t) = \sum_{t' = 1}^{t}\mathds{1}(\hat{X}_t = j, \hat{A}_t = k)$. We show that the UCB-PB algorithm mistakes the suboptimal context as the optimal context for at most $O(\log T)$ times, i.e., $\mathbb{E} [\hat{C}_2(T)] = O(\log T)$, and then $\mathbb{E}\big[C_1^*(T) - C_1(T)\big] \leq \mathbb{E} [\hat{C}_2(T)] = O(\log T)$.
+
+Specifically, consider the suboptimal context $j =  2$.
+% we have
+%\begin{eqnarray}
+%\mathbb{E}[\hat{C}_1(T)] & = & \sum_{k = 1}^K\mathbb{E}\big[\hat{C}_{1,k}(T)\big].
+%\end{eqnarray}
+For  $1 \leq k \leq K$, we have
+\begin{align}
+\mathbb{E}\big[\hat{C}_{2,k}(T)\big] \leq \hat{\ell}_{2,k}^{(1)}+ \sum_{t = 1}^T \mathbb{P}\{\hat{X}_t = 2, \hat{A}_t = k, b_{\tau} > 0, \hat{C}_{2,k}(t-1) \geq \hat{\ell}_{2,k}^{(1)}\}, \nonumber
+\end{align}
+where $\hat{\ell}_{2,k}^{(1)} = \frac{2\log T}{\pi_2(1-\epsilon)\epsilon^2(\Delta_{2,k}^{(1)})^2}$, and $\epsilon  \in (0,1)$.
+%Thus,
+%\begin{eqnarray} \label{eq:upperbound_obverve0}
+%\mathbb{E}[\hat{C}_j(T)] & = & \mathbb{E}\big[\sum_{t = 0}^T\mathds{1}(\hat{I}^{(c)}_t = j)\big]\nonumber\\
+%&\leq &  \sum_{k = 1}^K\hat{\ell}_{j,k} + \sum_{t = 1}^T\sum_{k = 1}^K\mathbb{P}(\mathcal{E}_{t,j,k}),
+%\end{eqnarray}
+%where $\mathcal{E}_{t,j,k} = \{\hat{I}^{(c)}_t = j, \hat{I}^{(a)}_t = k, \hat{C}_{j,k}(t-1) \geq \hat{\ell}_{j,k}\}$.
+
+%Note that at each round $t$, the context $X_t = j$ with probability $\pi_j$ independent of the index. Thus,  the agent will take action $k$ under context $2$ with probability $\pi_2$ if $\hat{I}_t^{\rm (c)} = 2$ and $\hat{I}_t^{\rm (a)} = k$. Recall that $C_{j,k}(t)$ is the number that action $k$ has been taken  under context $j$.
+Based on Lemma~\ref{thm:context_action_pair_errorprob_wContext},  we have
+\begin{align} \label{eq:lowerbound_pull}
+\mathbb{P}\{{C}_{2,k}(t-1) < \pi_2(1 - \epsilon)\hat{\ell}_{2,k}^{(1)}, b_\tau > 0, \hat{C}_{2,k}(t-1) \geq \hat{\ell}_{2,k}^{(1)}\} \leq e^{-2\epsilon^2\hat{\ell}_{2,k}}\leq T^{-4}.
+\end{align}
+Thus,
+\begin{align}
+&\quad\mathbb{P}\{\hat{X}_t = 2, \hat{A}_t = k, \hat{C}_{2,k}(t-1) \geq \hat{\ell}_{2,k}^{(1)}, b_\tau > 0\} \nonumber \\
+%&=& \mathbb{P}\{\hat{I}^{(c)}_t = j, \hat{I}^{(a)}_t = k, {C}_{j,k}(t-1) \geq \pi_2(1 - \epsilon)\hat{\ell}_{j,k}, \nonumber \\
+%&&~~~~\hat{C}_{j,k}(t-1) \geq \hat{\ell}_{j,k}\} \nonumber \\
+%&&+ \mathbb{P}\{\hat{I}^{(c)}_t = j, \hat{I}^{(a)}_t = k, {C}_{j,k}(t-1) < \pi_j(1 - \epsilon)\hat{\ell}_{j,k}, \nonumber \\
+%&&~~~~\hat{C}_{j,k}(t-1) \geq \hat{\ell}_{j,k}\} \nonumber\\
+&\leq  \mathbb{P}\{\hat{X}_t = 2, \hat{A}_t = k, {C}_{2,k}(t-1) \geq \pi_2(1 - \epsilon)\hat{\ell}_{2,k}^{(1)}\} \nonumber\\
+&\quad+ \mathbb{P}\{{C}_{2,k}(t-1) < \pi_2(1 - \epsilon)\hat{\ell}_{2,k}^{(1)}, \hat{C}_{2,k}(t-1) \geq \hat{\ell}_{2,k}^{(1)}, b_\tau > 0\} \nonumber \\
+&\leq  \mathbb{P}\{\hat{u}_{2,k}^*(t) > \hat{u}_{1,k_1^*}(t)| {C}_{2,k}(t-1) \geq \pi_2(1 - \epsilon)\hat{\ell}_{2,k}^{(1)}\} \nonumber \\
+&\quad+ \mathbb{P}\{{C}_{2,k}(t-1) < \pi_2(1 - \epsilon)\hat{\ell}_{2,k}^{(1)}, \hat{C}_{2,k}(t-1) \geq \hat{\ell}_{2,k}^{(1)}, b_\tau >0\} \nonumber \\
+&\leq 2t^{-1} + T^{-4}, \nonumber
+\end{align}
+where the last inequality results from Lemma~\ref{thm:context_action_pair_errorprob} (note that for $j=2$, $\hat{u}_{2,k}(t) < \hat{u}_{1,k_1^*}(t) \leq \hat{u}_1^*(t)$) and  Eq.~\eqref{eq:lowerbound_pull}.
+
+Summing over all actions,  we have
+\begin{eqnarray}
+\mathbb{E}[\hat{C}_2(T)]   &= & \sum_{k = 1}^K\mathbb{E}\big[\hat{C}_{2,k}(T)\big]
+  \leq   \sum_{k = 1}^K\hat{\ell}_{2,k}^{(1)} + \sum_{t = 1}^T\sum_{k = 1}^K(2t^{-1} +T^{-4}) \nonumber \\
+&=&\sum_{k = 1}^K \bigg[\frac{2}{\pi_2(1-\epsilon)\epsilon^2(\Delta_{2,k}^{(1)})^2} + 2\bigg]\log T + O(1). \nonumber
+\end{eqnarray}
+
+%\begin{figure}[thbp]
+%\begin{center}
+%        {\includegraphics[angle = 0,width = 0.75\linewidth]{fig/evol_remainres}}
+%\end{center}
+%\vspace{-0.2cm}
+%\caption{Evolution of remaining budget and remaining time.}
+%\label{fig:evol_remainres}
+%\end{figure}
+
+%Now we bound the difference between $C_1^*(T)$ and $C_1(T)$.
+%Let $T^*$ be the first round that the remaining budget $b_{\tau}$ equals the remaining time $\tau$ under the oracle algorithm; similarly, let $T^\sharp$ be the first round that $b_{\tau} = \tau$ under UCB-PB. We note that it is only before $T^\sharp$ that UCB-PB may mistake the suboptimal context as the better context and fail to take an action under the better context $j = 1$. Thus,
+%\begin{eqnarray}
+%\mathbb{E}[C_1^*(T) - C_1(T)] \leq \mathbb{E}[\hat{C}_2(T^\sharp)] \leq \mathbb{E}[\hat{C}_2(T)]. \nonumber
+%\end{eqnarray}
+Consequently,
+\begin{eqnarray} \label{eq:regret_ucb_dp_context_num}
+\mathbb{E}[C_1^*(T) - C_1(T)]
+&\leq & \sum_{k = 1}^K \bigg[\frac{2}{\pi_2(1-\epsilon)\epsilon^2(\Delta_{2,k}^{(1)})^2} + 2\bigg]\log T + O(1) \nonumber \\
+& = & \sum_{k = 1}^K \bigg[\frac{27}{2\pi_2(\Delta_{2,k}^{(1)})^2} + 2\bigg]\log T + O(1).
+\end{eqnarray}
+The last equality is obtained by letting $\epsilon = 2/3$.
+Combining Eqs.~\eqref{eq:regret_ucb_dp_action}, \eqref{eq:regret_ucb_dp_context}, and \eqref{eq:regret_ucb_dp_context_num},  and using the fact that $u_1^* - u_2^* \leq u_1^* - u_{2,k}$ for all $k$, we can obtain the conclusion of Theorem~\ref{thm:regret_ucb_dp}.
+\end{proof}
